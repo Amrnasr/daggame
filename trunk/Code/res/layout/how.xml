@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	android:id="@+id/how_layout"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	>
+	<TextView
+		android:id="@+id/title_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="How to Play:"
+		android:textSize="24sp"
+		android:layout_gravity="center_horizontal"
+		>
+	</TextView>
+	<TextView
+		android:id="@+id/par1_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:padding="10px"
+		android:text="Points follow their cursor on the screen, eat other points from other players if they are moving away from them, and get eaten otherwise. An eaten point joins the army that ate it. Wins whoever gets all the points."
+		>
+	</TextView>
+	<TextView
+		android:id="@+id/par2_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:padding="10px"
+		android:text="In single player mode, the camera stays centered on the player’s cursor, and doesn’t zoom. In multiplayer, as both players must see their cursors, map zooms out if players get far from each other, and zooms back if they get closer."
+		>
+	</TextView>
+	<TextView
+		android:id="@+id/par3_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:padding="10px"
+		android:text="When the game loads, a big “START!” message appears on screen and the game doesn’t start until the player clicks the screen. This is done so the start of the game doesn’t catch the player by surprise."
+		>
+	</TextView>
+</LinearLayout>
+
