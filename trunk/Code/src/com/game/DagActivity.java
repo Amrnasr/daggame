@@ -16,8 +16,11 @@ import android.view.View;
 public class DagActivity extends Activity 
 {
 	private Profiler profiler;
-	public enum SceneType { MENU_SCENE, SINGLE_SCENE, MULTI_SCENE, OPTIONS_SCENE, 
-		HOW_SCENE, ABOUT_SCENE, PLAY_SCENE, GAMEOVER_SCENE};
+	public enum SceneType 
+	{ MENU_SCENE, SINGLE_SCENE, MULTI_SCENE, OPTIONS_SCENE, HOW_SCENE, ABOUT_SCENE, PLAY_SCENE, GAMEOVER_SCENE};
+	
+	public RelativeLayout gameView;
+	public DagLogicThread gameLogic;
 	
     /** 
      * Called when the activity is first created. 
@@ -29,6 +32,8 @@ public class DagActivity extends Activity
         super.onCreate(savedInstanceState);
 
         createAndSetView(SceneType.MENU_SCENE);
+        
+        createAndStartThread();
     }
     
     /**
@@ -39,7 +44,7 @@ public class DagActivity extends Activity
     private void createAndSetView(SceneType view) 
     {
     	// Create a relative layout
-    	RelativeLayout relative = new RelativeLayout(this);
+    	gameView = new RelativeLayout(this);
     	
     	
     	// Create xml view and callbacks
@@ -61,11 +66,32 @@ public class DagActivity extends Activity
     	profiler = new Profiler();
         
     	// Add xml & profiler views to the relative view
-    	relative.addView(xmlLayout);
-    	profiler.Attach(relative, this);
+    	gameView.addView(xmlLayout);
+    	profiler.Attach(gameView, this);
     	
     	// Set relative view as view
-    	setContentView(relative);
+    	setContentView(gameView);
+    }
+    
+    /**
+     * Creates and starts the logic thread for the game.
+     */
+    private void createAndStartThread()
+    {
+    	gameLogic = new DagLogicThread();
+    	gameLogic.start();
+    }
+    
+    /**
+     * Called when the activity stops, it also stops the thread.
+     */
+    @Override protected void onStop()
+    {
+    	super.onStop();
+    	if(gameLogic.isAlive())
+    	{
+    		gameLogic.stopGame();
+    	}
     }
     
    
