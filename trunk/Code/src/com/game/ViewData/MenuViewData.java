@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.game.MsgType;
 import com.game.R;
 
 /**
@@ -18,7 +19,9 @@ import com.game.R;
  */
 public class MenuViewData extends ViewData 
 {
-	
+	/**
+	 * @see ViewData createXMLView(Activity activity) 
+	 */
 	@Override public View createXMLView(Activity activity) 
 	{
 		Log.i("MenuViewData", "Got here!");
@@ -29,13 +32,13 @@ public class MenuViewData extends ViewData
         // Create button callbacks. 
         // It's important to create them from the xmlLayout object, not the activity, as
         // the activity has no layout assigned yet.
-        // TODO: Add some real functionality to the buttons, probably with a event system.
         Button singleButton = (Button) xmlLayout.findViewById(R.id.single_but);
         singleButton.setOnClickListener(new OnClickListener() 
         {
           @Override
           public void onClick(View v) {
-            Log.i("View Data", " Clicked Single button");
+            Log.i("ViewData", " Clicked Single button");
+            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.single_but, 0));
           }
         });
         
@@ -44,7 +47,8 @@ public class MenuViewData extends ViewData
         {
           @Override
           public void onClick(View v) {
-            Log.i("View Data", " Clicked Multiplayer button");
+            Log.i("ViewData", " Clicked Multiplayer button");
+            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.multi_but, 0));
           }
         });
         
@@ -53,7 +57,8 @@ public class MenuViewData extends ViewData
         {
           @Override
           public void onClick(View v) {
-            Log.i("View Data", " Clicked Options button");
+            Log.i("ViewData", " Clicked Options button");
+            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.options_but, 0));
           }
         });
         
@@ -62,7 +67,8 @@ public class MenuViewData extends ViewData
         {
           @Override
           public void onClick(View v) {
-            Log.i("View Data", " Clicked How to play button");
+            Log.i("ViewData", " Clicked How to play button");
+            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.how_but, 0));
           }
         });
         
@@ -71,7 +77,8 @@ public class MenuViewData extends ViewData
         {
           @Override
           public void onClick(View v) {
-            Log.i("View Data", " Clicked About us button");
+            Log.i("ViewData", " Clicked About us button");
+            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.about_but, 0));
           }
         });
         

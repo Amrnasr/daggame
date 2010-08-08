@@ -39,5 +39,16 @@
 		android:text="When the game loads, a big “START!” message appears on screen and the game doesn’t start until the player clicks the screen. This is done so the start of the game doesn’t catch the player by surprise."
 		>
 	</TextView>
+	<Button
+		android:id="@+id/ok_how_but"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20px"
+		android:text="OK"
+		android:textStyle="bold"
+		android:gravity="center"
+		android:layout_gravity="center_horizontal"
+		>
+	</Button>
 </LinearLayout>
 

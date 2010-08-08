@@ -25,6 +25,9 @@ public class ViewDataFactory
 		case MENU_SCENE:
 	        viewData = new MenuViewData();
 			break;
+		case HOW_SCENE:
+	        viewData = new HowViewData();
+			break;
 		// TODO: Add more xmlviews
 		default:
 			throw new Exception("View data to create is not defined in the Factory yet");

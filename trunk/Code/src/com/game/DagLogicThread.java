@@ -1,5 +1,9 @@
 package com.game;
 
+import com.game.DagActivity.SceneType;
+import com.game.Scenes.Scene;
+import com.game.Scenes.SceneManager;
+
 import android.util.Log;
 
 
@@ -10,7 +14,11 @@ import android.util.Log;
  */
 public class DagLogicThread extends Thread 
 {
+	/// Keeps the hearth beating! Jokes aside, it's the while() condition for the run function.
 	private boolean gameRuning;
+	
+	/// Controls all scenes in general, the current one in particular.
+	private SceneManager sceneManager;
 	
 	/**
 	 * Creates the thread object and initializes default values
@@ -18,6 +26,7 @@ public class DagLogicThread extends Thread
 	public DagLogicThread()
 	{
 		this.gameRuning = true;
+		this.sceneManager = new SceneManager();
 	}
 	
 	/**
@@ -27,7 +36,15 @@ public class DagLogicThread extends Thread
 	{
 		while(gameRuning)
 		{
-			Log.i("Thread", "Runnin' baby!");
+			//Log.i("Thread", "Runnin' baby!");
+			if(sceneManager != null)
+			{
+				sceneManager.Update();
+			}
+			else
+			{
+				Log.i("DagLogicThread", "No scene manager yet!!");
+			}
 			
 		}
 	}
@@ -38,5 +55,34 @@ public class DagLogicThread extends Thread
 	public void stopGame()
 	{
 		gameRuning = false;
+	}
+	
+	/**
+	 * Sets the current scene. DO NOT CALL DIRECTLY from a scene!!!. 
+	 * Let the Activity do it, use the ACTIVITY_CHANGE_SCENE message to change.
+	 * 
+	 * @param scene To change to.
+	 * @throws Exception If the scene required is not available yet.  
+	 */
+	public void setScene(SceneType scene) throws Exception
+	{
+		sceneManager.ChangeScene(scene);
+	}
+	
+	/**
+	 * Gets the current scene.
+	 * @return currentScene.
+	 */
+	public Scene getCurrentScene()
+	{
+		if(sceneManager == null)
+		{
+			Log.i("DagLogicThread", "Scene manager not initialized yet! Call startWithScene()");
+			return null;
+		}
+		else
+		{
+			return sceneManager.getCurrentScene();
+		}
 	}
 }

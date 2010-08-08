@@ -15,27 +15,28 @@ public final class R {
         public static final int title=0x7f020001;
     }
     public static final class id {
-        public static final int about_but=0x7f05000b;
-        public static final int color_spin=0x7f050014;
-        public static final int color_text=0x7f050013;
-        public static final int enemy_spin=0x7f050011;
-        public static final int enemy_text=0x7f05000f;
-        public static final int how_but=0x7f05000a;
+        public static final int about_but=0x7f05000c;
+        public static final int color_spin=0x7f050015;
+        public static final int color_text=0x7f050014;
+        public static final int enemy_spin=0x7f050012;
+        public static final int enemy_text=0x7f050010;
+        public static final int how_but=0x7f05000b;
         public static final int how_layout=0x7f050000;
-        public static final int input_spin=0x7f05000e;
-        public static final int input_text=0x7f05000d;
-        public static final int logo_img=0x7f050006;
-        public static final int maps_gal=0x7f050015;
-        public static final int menu_layout=0x7f050005;
-        public static final int multi_but=0x7f050008;
-        public static final int options_but=0x7f050009;
-        public static final int options_layout=0x7f05000c;
+        public static final int input_spin=0x7f05000f;
+        public static final int input_text=0x7f05000e;
+        public static final int logo_img=0x7f050007;
+        public static final int maps_gal=0x7f050016;
+        public static final int menu_layout=0x7f050006;
+        public static final int multi_but=0x7f050009;
+        public static final int ok_how_but=0x7f050005;
+        public static final int options_but=0x7f05000a;
+        public static final int options_layout=0x7f05000d;
         public static final int par1_text=0x7f050002;
         public static final int par2_text=0x7f050003;
         public static final int par3_text=0x7f050004;
-        public static final int powerups_check=0x7f050010;
-        public static final int showmin_check=0x7f050012;
-        public static final int single_but=0x7f050007;
+        public static final int powerups_check=0x7f050011;
+        public static final int showmin_check=0x7f050013;
+        public static final int single_but=0x7f050008;
         public static final int title_text=0x7f050001;
     }
     public static final class layout {

@@ -5,6 +5,14 @@ import javax.microedition.khronos.opengles.GL10;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 
+/**
+ * Renderer for the GLSurface
+ * 
+ * TODO: This is a stub class so I din't forget how it was done. Lots of work still.
+ * 
+ * @author Ying
+ *
+ */
 public class DagRenderer implements GLSurfaceView.Renderer 
 {
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
