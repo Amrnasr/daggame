@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	android:id="@+id/menu_layout"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	>
+	<ImageView
+		android:id="@+id/logo_img"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20px"
+		android:layout_gravity="center_horizontal"
+		android:src="@drawable/title"
+		>
+	</ImageView>
+	<Button
+		android:id="@+id/single_but"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20px"
+		android:text="Single Player"
+		android:textStyle="bold"
+		android:gravity="center"
+		android:layout_gravity="center_horizontal"
+		>
+	</Button>
+	<Button
+		android:id="@+id/multi_but"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20px"
+		android:text="Multiplayer"
+		android:textStyle="bold"
+		android:gravity="center"
+		android:layout_gravity="center_horizontal"
+		>
+	</Button>
+	<Button
+		android:id="@+id/options_but"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20px"
+		android:text="Options"
+		android:textStyle="bold"
+		android:gravity="center"
+		android:layout_gravity="center_horizontal"
+		>
+	</Button>
+	<Button
+		android:id="@+id/how_but"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20px"
+		android:text="How to Play"
+		android:textStyle="bold"
+		android:gravity="center"
+		android:layout_gravity="center_horizontal"
+		>
+	</Button>
+	<Button
+		android:id="@+id/about_but"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10px"
+		android:text="About Us"
+		android:textSize="10sp"
+		android:gravity="center"
+		android:layout_gravity="right"
+		>
+	</Button>
+</LinearLayout>
+

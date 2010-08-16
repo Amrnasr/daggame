@@ -1,0 +1,160 @@
+Marquet data
+
+- Aprox 50% of devices run on 2.1, about 10 % of devices run on 2.2. All others (~40%) run on versions under 2.1.
+- Aprox 55% of all mobiles run on medium-density and 45% on high-density, whereas practically all devices run on Normal sized screens.
+
+Technical articles
+
+- Memory leaks: 
+	Be carefull with Contex. Check Resources/List of articles when writing code that uses context.
+- Backward Compatibility: 
+	Using the minSdkVersion tag in the xml code ensures that it won't be available for older sdks.
+	Got to check if the functions we use are available on older sdks, otherwise they will fail.
+	For multiple systems, best use reflection.
+- Intent: 
+	Used for sending messages to other applications.
+- Creating an Input Method:
+	For personalized text input
+- More later
+
+Fundamental Architecture:
+
+A program is a set of components (the 4 below).
+- Activity: Display stuff
+- Service:  Run on background
+- Broadcast receiver: React to messages
+- Content provider:   Make app data available to other apps.
+
+
+- Intent: Async message that activates a component.
+- Ending: Activities can end with finish(), services with stopSelf()
+- Manifest file: Keeps the components and intent filters, among other things.
+- Task: Stack of activities to present the user with a single "application experience"
+
+- Process: Each component can run in a process or any combination of components can.
+- Threads: Standar Java threads, though android has some convenience classes ready.
+- Remote procedure calls: Complex mechanism to call procedures on other processes and get the result.
+
+Activity Lifecycle: 
+
+Active -> Paused -> Stoped -> Active
+
+void onCreate(Bundle savedInstanceState) 
+	void onStart() (preceded by void onRestart() if we were Stopped before)
+		void onResume() 
+		void onPause() (preceded by onSaveInstanceState() if you want)
+	void onStop() 
+void onDestroy()
++onRestoreInstanceState() called after a onSaveI..() 
+
+- Saving: Doesnt happen always (for example, not after pressing the back key) so active state in osSaveI() and all the rest in onPause().
+- Process Importance Hiearchy:
+	Foreground process
+	Visible process
+	Service process
+	Background process
+	Empty process
+
+User Interface:
+- Views and viewgroups are organized in a tree and we pass the root of the tree to setContentView()
+- Lots of things can be defined in xml O.o
+- Positions are left-top and relative to the parent.
+ 
+XML: 
+- Animation resources: Has animation xml representation for views
+- Drawable Resources/ State list: XML for buttons and such, that can have several states with different images.
+
+Application resources:
+- Alow to set resources for different configurations :D yey!
+- NEVER save resource files directly inside the res/ directory—it will cause a compiler error.
+- Default resources are:  medium-density, normal, not-long screens because of 1.5 devices.
+
+Runtime changes:
+- Happen when the user tilts the screen, for example
+- App is destroyed and reloaded, we can take on of the folowing solutions
+- Can: (a) Keep a object in memory, (b) Handle changes ourselves so we don't suffer as much.
+
+Localization of resources:
+- Keep all strings in the values file
+- Keep all constants in the values file
+- Easy to expand and add new locales
+
+
+Intents and filters:
+- Used to access capabilities of components
+- For us, it's interesting for EDIT of fields like player name or something.
+
+Data storage:
+- 5 types of storage
+- Shared preferences are good for storing preference files of key,value pairs. Good for small datasaves.
+- Internal storage writes byte-streams, good ol' byte streams. Private to your app.
+
+Content provider: 
+- Used to share data among apps, or to access data from other apps (contacts)
+
+Security: Meh
+
+AndroidManifest.xml
+- MUST appear named exactlly like that in the root folder.
+- Used, among others, to specify the minimum API the app requires
+- There is a list of legal members, can`t use any other tags in the xml
+- Naming: Either put the complete "com.example....blah.MyActivity", or as a shorthand, start with a period ".MyActivity" and it will be appended to the package name specified in the <manifest> atrribute.
+
+Graphics:
+- Custom lib for 2D, OGL 1.0 for 3D
+
+2D Graphics:
+- Options:
+	Draw using views
+	Draw directlly on canvas (recomended for Videogames)
+		In the same thread
+		In a separate thread (like the pros!)
+- To draw on a canvas use either the onDraw() callback or SurfaceHolder.LockCanvas(), or create a bitmap and  custom canvas.
+- Canvas object has all the drawBitmap(), drawText()... type functions
+- For slow paced games, using views and their onDraw() methods is acceptable. To force android to draw a vew, you must call invalidate().
+- When using views, we use the SurfaceView, which offews drawing to a secondary thread, for multithreading.
+
+- Android offers android.graphics.drawable / .animation for 2D gfx.
+- File types in preferent order: png, jpg, gif.
+- Access files from the resources by R.drawable.file_name (NO extension ej: R.drawable.img, not R.drawable.img.png) 
+- There are tween and frame animations avaialbe from xml.
+- For frame animations, keep an eye out for the AnimationDrawable class.
+
+Audio/Video:
+- Play sounds using mediaplayer class
+	create
+	start
+		pause
+		start
+
+		reset
+		prepare
+		start
+	stop
+- For complex editing, use the JetPlayer class
+- File or stream audio can also be played
+- Recoding audio and video is posible and not too hard
+
+Location and maps:
+- You can querry last know location or register for updates/itents in location change.
+- For maps there is a class that acts as a ViewGroup "MapView" which you can use to display maps.
+
+App widgets:
+- Apps that attach to others (like the home screen) and display data.
+
+Bluetooth: Meh
+
+Search: Meh
+
+Testing:
+- Got to investigate JUnit
+- For testing on the device, use Dalvik Device Monitor
+- Traceview for profiling
+- dmtracedump to generate a tree of calls made by the app, cool!!
+- logcat and the Log class for logging (Log.i(), Log.v(), ...)
+- The adb pluging in theory allows you to acess debug tools from eclipse, instead of having to go to the tools directory.
+
+Cool tools:
+- Hierarchy Viewer: Provides a visual representation of the views hierarchy.
+- UI/Application Exerciser Monkey: Generates pseudo-random streams of user events such as clicks, touches, or gestures. Cool for stress test.
+- zipalign: Does compresion magic to a signed .apk file, to run at the very end.
