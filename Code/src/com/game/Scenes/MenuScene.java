@@ -63,7 +63,9 @@ public class MenuScene extends Scene
 			break;
 		case R.id.about_but:
 			Log.i("MenuScene", "About button handler called");
-			// TODO: Stuff here
+			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(
+					MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
+    				SceneType.ABOUT_SCENE.ordinal(), 0));
 			break;
 		case R.id.how_but:
 			Log.i("MenuScene", "How button handler called");

@@ -59,6 +59,9 @@ public class SceneManager
 		case HOW_SCENE:
 			newScene = new HowScene();
 			break;
+		case ABOUT_SCENE:
+			newScene = new AboutScene();
+			break;
 		// TODO: Add more xmlviews
 		default:
 			throw new Exception("Scene to change to is not defined!");
