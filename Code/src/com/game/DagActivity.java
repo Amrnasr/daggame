@@ -22,6 +22,7 @@ import android.view.View;
  * 
  * @author Ying
  */
+
 public class DagActivity extends Activity 
 {
 	/// Used to display ram and fps on screen in any view.
