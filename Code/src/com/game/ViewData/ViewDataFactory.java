@@ -34,6 +34,9 @@ public class ViewDataFactory
 		case GAMEOVER_SCENE:
 	        viewData = new GameOverViewData();
 			break;
+		case OPTIONS_SCENE:
+	        viewData = new OptionsViewData();
+			break;
 		// TODO: Add more xmlviews
 		default:
 			throw new Exception("View data to create is not defined in the Factory yet");

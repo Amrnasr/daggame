@@ -16,7 +16,8 @@ import android.widget.Button;
  * @author Ying
  *
  */
-public class HowViewData extends ViewData {
+public class HowViewData extends ViewData 
+{
 
 	/**
 	 * @see ViewData createXMLView(Activity activity) 
