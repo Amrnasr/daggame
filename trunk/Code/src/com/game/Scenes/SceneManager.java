@@ -65,6 +65,9 @@ public class SceneManager
 		case GAMEOVER_SCENE:
 			newScene = new GameOverScene();
 			break;
+		case OPTIONS_SCENE:
+			newScene = new OptionsScene();
+			break;
 		// TODO: Add more xmlviews
 		default:
 			throw new Exception("Scene to change to is not defined!");
