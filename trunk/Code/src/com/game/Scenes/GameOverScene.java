@@ -7,16 +7,16 @@ import com.game.MsgType;
 import com.game.DagActivity.SceneType;
 
 /**
- * A specific scene for the "About Us" screen.
+ * A specific scene for the "Game Over" screen.
  * @author Ying
  *
  */
-public class AboutScene extends Scene 
+public class GameOverScene extends Scene 
 {
 	/**
 	 * Initializes and sets the handler callback.
 	 */
-	public AboutScene()
+	public GameOverScene()
 	{
 		super();
 		
