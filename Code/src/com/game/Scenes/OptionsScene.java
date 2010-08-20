@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.game.MsgType;
+import com.game.DagActivity.SceneType;
 
 
 /**
@@ -24,7 +25,7 @@ public class OptionsScene extends Scene
 		{
 	        public void handleMessage(Message msg) 
 	        {
-	        	/*
+	        	
 	        	// If the "ok" button (which is the only button in the scene) is clicked, go back to the menu
 	        	if(msg.what == MsgType.BUTTON_CLICK.ordinal())
 	        	{
@@ -32,7 +33,7 @@ public class OptionsScene extends Scene
 	        				SceneType.MENU_SCENE.ordinal(), 0));
 	        	}
 	        	// If the activity tells us to stop, we stop.
-	        	else */
+	        	else 
 	        	if(msg.what == MsgType.STOP_SCENE.ordinal())
 	        	{
 	        		runScene = false;

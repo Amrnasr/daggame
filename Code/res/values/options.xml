@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+<string-array name="count_names">
+<item>Very Few</item>
+<item>Few</item>
+<item>Normal</item>
+<item>Above Average</item>
+<item>Lots</item>
+<item>HSWTF?!</item>
+</string-array>
+
+<string-array name="speed_names">
+<item>Crawl</item>
+<item>Slow</item>
+<item>Normal</item>
+<item>Fast</item>
+<item>Really Fast</item>
+<item>Superman</item>
+</string-array>
 </resources>
