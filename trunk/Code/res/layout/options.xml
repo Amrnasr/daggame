@@ -35,7 +35,7 @@ android:text="Units in each team:"
 >
 </TextView>
 <Spinner
-android:id="@+id/widget41"
+android:id="@+id/num_units_spin"
 android:layout_width="fill_parent"
 android:layout_height="wrap_content"
 >
@@ -49,7 +49,7 @@ android:text="Unit movement speed:"
 >
 </TextView>
 <Spinner
-android:id="@+id/widget43"
+android:id="@+id/move_speed_spin"
 android:layout_width="fill_parent"
 android:layout_height="wrap_content"
 >
@@ -63,12 +63,26 @@ android:text="Unit eating speed:"
 >
 </TextView>
 <Spinner
-android:id="@+id/widget45"
+android:id="@+id/eat_speed_spin"
 android:layout_width="fill_parent"
 android:layout_height="wrap_content"
 >
 </Spinner>
-<Button android:id="@+id/ok_options_but" android:layout_height="wrap_content" android:layout_width="fill_parent" android:text="OK"/>
+<CheckBox
+android:id="@+id/sound_mute"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content"
+android:text="Sound"
+>
+</CheckBox>
+
+<Button 
+android:id="@+id/ok_options_but" 
+android:layout_height="wrap_content" 
+android:layout_width="fill_parent" 
+android:text="OK"
+>
+</Button>
 
 </LinearLayout>
 
