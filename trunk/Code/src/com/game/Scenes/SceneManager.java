@@ -56,6 +56,9 @@ public class SceneManager
 		case MENU_SCENE:
 			newScene = new MenuScene();
 			break;
+		case SINGLE_SCENE:
+			newScene = new SingleSelectScene();
+			break;
 		case HOW_SCENE:
 			newScene = new HowScene();
 			break;

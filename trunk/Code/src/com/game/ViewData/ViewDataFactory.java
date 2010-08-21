@@ -25,6 +25,9 @@ public class ViewDataFactory
 		case MENU_SCENE:
 	        viewData = new MenuViewData();
 			break;
+		case SINGLE_SCENE:
+			viewData = new SingleViewData();
+			break;
 		case HOW_SCENE:
 	        viewData = new HowViewData();
 			break;
