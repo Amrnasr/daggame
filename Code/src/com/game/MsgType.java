@@ -30,6 +30,29 @@ public enum MsgType
 	BUTTON_CLICK,
 	
 	/**
+	 * Sent when a checkbox in a view is clicked. 
+	 * arg1: the R.id of the checkbox clicked
+	 */
+	
+	CHECKBOX_CLICK,
+	
+	/**
+	 * Sent when a gallery item in a view is clicked. 
+	 * arg1: the R.id of the gallery clicked
+	 * arg2: the position of the gallery item clicked
+	 */
+	
+	GALLERY_ITEM_CLICK,
+	
+	/**
+	 * Sent when a spinner item in a view is clicked. 
+	 * arg1: the R.id of the spinner clicked
+	 * arg2: the position of the spinner item clicked
+	 */
+	
+	SPINNER_ITEM_CLICK,
+	
+	/**
 	 * Sent when a touch happens on screen. Not implemented yet (It's a PLAY_SCENE thing)
 	 */
 	TOUCH_EVENT,

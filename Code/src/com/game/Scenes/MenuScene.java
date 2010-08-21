@@ -56,7 +56,7 @@ public class MenuScene extends Scene
 			// @Neom: When you change this code, put it in the "OK" button in the singleScene
 			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(
 					MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
-    				SceneType.PLAY_SCENE.ordinal(), 0));
+    				SceneType.SINGLE_SCENE.ordinal(), 0));
 			break;
 		case R.id.multi_but:
 			Log.i("MenuScene", "Multi button handler called");
