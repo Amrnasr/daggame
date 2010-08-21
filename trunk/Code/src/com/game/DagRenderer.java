@@ -34,6 +34,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 									30f, -25f, 0.0f,
 									-25f, -25f, 0.0f };
 	
+	private int height;
+	private int width;
 	public DagRenderer()
 	{
 		super();
@@ -50,6 +52,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        	
 	        }
 	    };
+	    
+	    height = 0;
+	    width = 0;
 	}
 	
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
@@ -69,6 +74,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		gl.glColor4f(1, 0, 0, 0.5f);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		
+		height = h;
+		width = w;
 	}
 	 
 	public void onDrawFrame(GL10 gl) 
@@ -78,7 +86,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		
-		gl.glTranslatef(-0,-0,-100);
+		gl.glTranslatef(-width/2,-height/2,-(2*height));
 		
 		// Draw debug square
 		gl.glColor4f(1, 0, 0, 0.5f);
