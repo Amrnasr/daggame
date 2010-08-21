@@ -39,6 +39,7 @@ public class HowScene extends Scene
 	        }
 	    };
 	}
+	
 	@Override
 	public void End() 
 	{

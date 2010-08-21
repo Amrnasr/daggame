@@ -11,7 +11,7 @@ import com.game.DagActivity.SceneType;
 public class ViewDataFactory 
 {
 	/**
-	 * Instanciates the correct ViewData for the scene indicated.
+	 * Instantiates the correct ViewData for the scene indicated.
 	 * 
 	 * @param scene is which scene we are creating the data for 
 	 * @return a initialized ViewData object
@@ -36,6 +36,9 @@ public class ViewDataFactory
 			break;
 		case OPTIONS_SCENE:
 	        viewData = new OptionsViewData();
+			break;
+		case PLAY_SCENE:
+	        viewData = new PlayViewData();
 			break;
 		// TODO: Add more xmlviews
 		default:
