@@ -55,5 +55,11 @@ public enum MsgType
 	 * Sent by a scene to the Activity as a reply to STOP_SCENE, when the 
 	 * scene is stopped and ready to change.
 	 */
-	SCENE_STOPED_READY_FOR_CHANGE
+	SCENE_STOPED_READY_FOR_CHANGE,
+	
+	/**
+	 * Sent from the renderer to the logic thread to give the logic thread
+	 * a handler to send messages to the renderer.
+	 */
+	RENDERER_LOGIC_HANDLER_LINK
 }
