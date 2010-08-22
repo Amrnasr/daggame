@@ -1,24 +1,24 @@
 package com.game.Scenes;
 
-import com.game.MsgType;
-import com.game.R;
-import com.game.DagActivity.SceneType;
-
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.game.MsgType;
+import com.game.R;
+import com.game.DagActivity.SceneType;
+
 /**
- * A specific scene for the "Single Player" screen.
+ * Specific scene for the "Multiplayer" screen.
  * @author NeoM
  *
  */
 
-public class SingleSelectScene extends Scene {
+public class MultiSelectScene extends Scene {
 	/**
-	 * Initializes and sets the handler callback.
+	 * Initializes and sets the callback for the handler.
 	 */
-	public SingleSelectScene(){
+	public MultiSelectScene(){
 		super();
 		
 		this.handler = new Handler()
@@ -49,31 +49,27 @@ public class SingleSelectScene extends Scene {
 			}
 		};
 	}
-
-	/**
-	 * Given which button has been pressed, do something
-	 * @param which button to react to
-	 */
+	
 	private void handleButtonClick(int which)
 	{
 		switch (which) 
     	{	
-		case R.id.finger_single_but:
-			Log.i("SingleSelectScene", "Finger button handler called");
+		case R.id.finger_multi_but:
+			Log.i("MultiSelectScene", "Finger button handler called");
 			break;
-		case R.id.ball_single_but:
-			Log.i("SingleSelectScene", "Ball button handler called");
+		case R.id.ball_multi_but:
+			Log.i("MultiSelectScene", "Ball button handler called");
 			break;
-		case R.id.joystick_single_but:
-			Log.i("SingleSelectScene", "Joystick button handler called");
+		case R.id.joystick_multi_but:
+			Log.i("MultiSelectScene", "Joystick button handler called");
 			break;
-    	case R.id.ok_single_but:
-			Log.i("SingleSelectScene", "Ok button handler called");
+    	case R.id.ok_multi_but:
+			Log.i("MultiSelectScene", "Ok button handler called");
 			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
     				SceneType.PLAY_SCENE.ordinal(), 0));
     		break;
     	default:
-			Log.e("SingleSelectScene", "No handler options for that message!!");
+			Log.e("MultiSelectScene", "No handler options for that message!!");
 			break;		
     	}
 	}
@@ -85,14 +81,14 @@ public class SingleSelectScene extends Scene {
 	private void handleCheckBoxClick(int which){
 		switch (which) 
     	{	
-		case R.id.minimap_single_check:
-			Log.i("SingleSelectScene", "Minimap checkbox handler called");
+		case R.id.minimap_multi_check:
+			Log.i("MultiSelectScene", "Minimap checkbox handler called");
 			break;
-		case R.id.powerups_single_check:
-			Log.i("SingleSelectScene", "Power-ups checkbox handler called");
+		case R.id.powerups_multi_check:
+			Log.i("MultiSelectScene", "Power-ups checkbox handler called");
 			break;
     	default:
-			Log.e("SingleSelectScene", "No handler options for that message!!");
+			Log.e("MultiSelectScene", "No handler options for that message!!");
 			break;		
     	}
 	}
@@ -105,11 +101,11 @@ public class SingleSelectScene extends Scene {
 	private void handleGalleryItemClick(int which, int position){
 		switch (which) 
     	{	
-		case R.id.maps_single_gal:
-			Log.i("SingleSelectScene", "Maps gallery handler called");
+		case R.id.maps_multi_gal:
+			Log.i("MultiSelectScene", "Maps gallery handler called");
 			break;
     	default:
-			Log.e("SingleSelectScene", "No handler options for that message!!");
+			Log.e("MultiSelectScene", "No handler options for that message!!");
 			break;		
     	}
 	}
@@ -122,14 +118,17 @@ public class SingleSelectScene extends Scene {
 	private void handleSpinnerItemClick(int which, int position){
 		switch (which) 
     	{	
-		case R.id.color_single_spin:
-			Log.i("SingleSelectScene", "Color spinner handler called");
+		case R.id.color1_multi_spin:
+			Log.i("MultiSelectScene", "Color 1 spinner handler called");
 			break;
-		case R.id.op_single_spin:
-			Log.i("SingleSelectScene", "Opponents spinner handler called");
+		case R.id.color2_multi_spin:
+			Log.i("MultiSelectScene", "Color 2 spinner handler called");
+			break;
+		case R.id.op_multi_spin:
+			Log.i("MultiSelectScene", "Opponents spinner handler called");
 			break;
 		default:
-			Log.e("SingleSelectScene", "No handler options for that message!!");
+			Log.e("MultiSelectScene", "No handler options for that message!!");
 			break;	
     	}
 	}
@@ -140,18 +139,15 @@ public class SingleSelectScene extends Scene {
 
 	}
 
-	/**
-	 * It's a passive scene, so just update the profiler.
-	 */
 	@Override
-	public void Update() 
-	{
+	public void Update() {
 		actHandlerRef.sendEmptyMessage(MsgType.UPDATE_PROFILER.ordinal());
 	}
-	
+
 	@Override
 	public void End() {
 		// TODO Auto-generated method stub
 
 	}
+
 }
