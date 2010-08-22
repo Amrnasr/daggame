@@ -2,26 +2,28 @@ package com.game.ViewData;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Gallery;
-import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.game.MsgType;
 import com.game.R;
 
+/**
+ * ViewData for the Single Player scene.
+ * 
+ * @author NeoM
+ *
+ */
 
 public class SingleViewData extends ViewData {
 
@@ -43,7 +45,7 @@ public class SingleViewData extends ViewData {
         {
           @Override
           public void onClick(View v) {
-            Log.i("ViewData", "Clicked finger button");
+            Log.i("SingleViewData", "Clicked finger button");
             handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.finger_single_but, 0));
           }
         });
@@ -53,7 +55,7 @@ public class SingleViewData extends ViewData {
         {
           @Override
           public void onClick(View v) {
-            Log.i("ViewData", "Clicked ball button");
+            Log.i("SingleViewData", "Clicked ball button");
             handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.ball_single_but, 0));
           }
         });
@@ -63,7 +65,7 @@ public class SingleViewData extends ViewData {
         {
           @Override
           public void onClick(View v) {
-            Log.i("ViewData", "Clicked joystick button");
+            Log.i("SingleViewData", "Clicked joystick button");
             handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.joystick_single_but, 0));
           }
         });
@@ -73,7 +75,7 @@ public class SingleViewData extends ViewData {
         {
           @Override
           public void onClick(View v) {
-            Log.i("ViewData", "Clicked OK button");
+            Log.i("SingleViewData", "Clicked OK button");
             handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.ok_single_but, 0));
           }
         });
@@ -84,7 +86,7 @@ public class SingleViewData extends ViewData {
 			
 			@Override
 			public void onClick(View v) {
-				Log.i("ViewData", "Clicked minimap checkbox");
+				Log.i("SingleViewData", "Clicked minimap checkbox");
 				handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.CHECKBOX_CLICK.ordinal(), R.id.minimap_single_check, 0));	
 			}
 		});
@@ -94,7 +96,7 @@ public class SingleViewData extends ViewData {
 			
 			@Override
 			public void onClick(View v) {
-				Log.i("ViewData", "Clicked power-ups checkbox");
+				Log.i("SingleViewData", "Clicked power-ups checkbox");
 				handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.CHECKBOX_CLICK.ordinal(), R.id.powerups_single_check, 0));	
 			}
 		});
@@ -105,7 +107,7 @@ public class SingleViewData extends ViewData {
 
         mapsGallery.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
-            	Log.i("ViewData", "Clicked maps gallery item");
+            	Log.i("SingleViewData", "Clicked maps gallery item");
             	handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.GALLERY_ITEM_CLICK.ordinal(), R.id.maps_single_gal, position));
             }
         });
@@ -119,30 +121,30 @@ public class SingleViewData extends ViewData {
         colorSpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
-        		Log.i("ViewData", "Selected color spinner item");
+        		Log.i("SingleViewData", "Selected color spinner item");
         		handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.SPINNER_ITEM_CLICK.ordinal(), R.id.color_single_spin, position));
         	}
 
         	public void onNothingSelected(AdapterView parent) {
-        		Log.i("ViewData", "No color spinner item has been selected");
+        		Log.i("SingleViewData", "No color spinner item has been selected");
         	}
 
         });
         
         Spinner opponentsSpinner = (Spinner) xmlLayout.findViewById(R.id.op_single_spin);
         ArrayAdapter<CharSequence> opponentsAdapter = ArrayAdapter.createFromResource(
-        		activity, R.array.op_array, android.R.layout.simple_spinner_item);
+        		activity, R.array.op_single_array, android.R.layout.simple_spinner_item);
         opponentsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         opponentsSpinner.setAdapter(opponentsAdapter);
         opponentsSpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
-        		Log.i("ViewData", "Selected opponents spinner item");
+        		Log.i("SingleViewData", "Selected opponents spinner item");
         		handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.SPINNER_ITEM_CLICK.ordinal(), R.id.op_single_spin, position));
         	}
 
         	public void onNothingSelected(AdapterView parent) {
-        		Log.i("ViewData", "No opponents spinner item has been selected");
+        		Log.i("SingleViewData", "No opponents spinner item has been selected");
         	}
 
         });
@@ -151,60 +153,4 @@ public class SingleViewData extends ViewData {
         
         return xmlLayout;
 	}
-	
-	public class MapsImageAdapter extends BaseAdapter {
-		int mGalleryItemBackground;
-		private Context mContext;
-		
-		private Integer[] mImageIds = {
-	            R.drawable.sample_1,
-	            R.drawable.sample_2,
-	            R.drawable.sample_3,
-	            R.drawable.sample_4,
-	            R.drawable.sample_5,
-	            R.drawable.sample_6,
-	            R.drawable.sample_7
-	    };
-
-
-		public MapsImageAdapter(Context c) {
-			mContext = c;
-	        TypedArray a = c.obtainStyledAttributes(R.styleable.mapsGallery);
-
-	        mGalleryItemBackground = a.getResourceId(
-	                R.styleable.mapsGallery_android_galleryItemBackground, 0);
-	        a.recycle();
-
-	    }
-		
-		@Override
-		public int getCount() {
-			return mImageIds.length;
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return position;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			ImageView i = new ImageView(mContext);
-			
-			i.setImageResource(mImageIds[position]);
-	        i.setLayoutParams(new Gallery.LayoutParams(150, 100));
-	        i.setScaleType(ImageView.ScaleType.FIT_XY);
-	        i.setBackgroundResource(mGalleryItemBackground);
-
-			
-			return i;
-		}
-
-	}
-
 }

@@ -1,6 +1,7 @@
 package com.game.ViewData;
 
 import com.game.DagActivity.SceneType;
+import com.game.Scenes.SingleSelectScene;
 
 /**
  * Factory used to create the correct kind of ViewData.
@@ -27,6 +28,9 @@ public class ViewDataFactory
 			break;
 		case SINGLE_SCENE:
 			viewData = new SingleViewData();
+			break;
+		case MULTI_SCENE:
+			viewData = new MultiViewData();
 			break;
 		case HOW_SCENE:
 	        viewData = new HowViewData();

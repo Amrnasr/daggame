@@ -59,6 +59,9 @@ public class SceneManager
 		case SINGLE_SCENE:
 			newScene = new SingleSelectScene();
 			break;
+		case MULTI_SCENE:
+			newScene = new MultiSelectScene();
+			break;
 		case HOW_SCENE:
 			newScene = new HowScene();
 			break;
