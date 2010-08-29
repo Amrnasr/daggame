@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+
+<RelativeLayout
 android:id="@+id/single_layout"
 android:layout_width="fill_parent"
 android:layout_height="fill_parent"
+android:gravity="center"
+xmlns:android="http://schemas.android.com/apk/res/android"
+>
+
+<ScrollView
+android:id="@+id/single_scroll"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+xmlns:android="http://schemas.android.com/apk/res/android"
+>
+
+<LinearLayout
+android:id="@+id/single_layout_inner"
+android:layout_width="wrap_content"
+android:layout_height="fill_parent"
 android:orientation="vertical"
+android:gravity="left"
+android:layout_gravity="center"
 xmlns:android="http://schemas.android.com/apk/res/android"
 >
 <Gallery
@@ -114,3 +132,5 @@ android:layout_gravity="center_horizontal"
 >
 </Button>
 </LinearLayout>
+</ScrollView>
+</RelativeLayout>

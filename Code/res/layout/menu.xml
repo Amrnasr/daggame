@@ -7,7 +7,7 @@ android:gravity="center"
 xmlns:android="http://schemas.android.com/apk/res/android"
 >
 <ScrollView
-android:id="@+id/widget28"
+android:id="@+id/menu_scroll"
 android:layout_width="fill_parent"
 android:layout_height="fill_parent"
 xmlns:android="http://schemas.android.com/apk/res/android"
