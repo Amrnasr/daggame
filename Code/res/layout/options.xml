@@ -1,92 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-android:id="@+id/widget47"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-android:orientation="vertical"
-xmlns:android="http://schemas.android.com/apk/res/android"
->
-<TextView
-android:id="@+id/widget48"
-android:layout_width="fill_parent"
-android:layout_height="wrap_content"
-android:text="Options"
->
-</TextView>
+<RelativeLayout
+	android:id="@+id/options_layout"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	android:gravity="center_horizontal"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	>
+	<TextView
+		android:id="@+id/options_title"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20px"
+		android:text="@string/options_title"
+		android:textSize="18sp"
+		android:layout_centerHorizontal="true"		
+		android:layout_alignParentTop="true"		
+		>
+	</TextView>
+	<ScrollView
+		android:id="@+id/options_layout_scroll"
+		android:layout_marginTop="10px"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@+id/options_title"	
+		android:gravity="center_horizontal"
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		>
+		<LinearLayout
+			android:id="@+id/options_layout_inner_scroll"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:orientation="vertical"
+			android:gravity="left"
+			android:layout_gravity="center_horizontal"
+			xmlns:android="http://schemas.android.com/apk/res/android"
+			>			
+			<TextView
+				android:id="@+id/widget40"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10px"
+				android:text="Units in each team:"
+				>
+			</TextView>
+			<Spinner
+				android:id="@+id/num_units_spin"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				>
+			</Spinner>
+			<TextView
+				android:id="@+id/widget42"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10px"
+				android:text="Unit movement speed:"
+				>
+			</TextView>
+			<Spinner
+				android:id="@+id/move_speed_spin"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				>
+			</Spinner>
+			<TextView
+				android:id="@+id/widget44"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10px"
+				android:text="Unit eating speed:"
+				>
+			</TextView>
+			<Spinner
+				android:id="@+id/eat_speed_spin"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				>
+			</Spinner>
+			<CheckBox
+				android:id="@+id/sound_mute"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Sound"
+				>
+			</CheckBox>
+			<TextView
+				android:id="@+id/options_bottom_filler_text_do_not_remove"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="10px"
+				android:lines="3"
+				android:text=""
+				>
+			</TextView>
+		</LinearLayout>
+	</ScrollView>
+	<Button
+		android:id="@+id/ok_options_but"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="100px"
+		android:text="Back"
+		android:gravity="center_horizontal"
+		android:layout_alignParentBottom="true"		
+		>
+	</Button>
+</RelativeLayout>
 
-<ScrollView
-android:id="@+id/widget46"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
->
 
-<LinearLayout
-android:id="@+id/widget33"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-android:orientation="vertical"
->
-<TextView
-android:id="@+id/widget40"
-android:layout_width="fill_parent"
-android:layout_height="wrap_content"
-android:layout_marginTop="10px"
-android:text="Units in each team:"
->
-</TextView>
-<Spinner
-android:id="@+id/num_units_spin"
-android:layout_width="fill_parent"
-android:layout_height="wrap_content"
->
-</Spinner>
-<TextView
-android:id="@+id/widget42"
-android:layout_width="fill_parent"
-android:layout_height="wrap_content"
-android:layout_marginTop="10px"
-android:text="Unit movement speed:"
->
-</TextView>
-<Spinner
-android:id="@+id/move_speed_spin"
-android:layout_width="fill_parent"
-android:layout_height="wrap_content"
->
-</Spinner>
-<TextView
-android:id="@+id/widget44"
-android:layout_width="fill_parent"
-android:layout_height="wrap_content"
-android:layout_marginTop="10px"
-android:text="Unit eating speed:"
->
-</TextView>
-<Spinner
-android:id="@+id/eat_speed_spin"
-android:layout_width="fill_parent"
-android:layout_height="wrap_content"
->
-</Spinner>
-<CheckBox
-android:id="@+id/sound_mute"
-android:layout_width="fill_parent"
-android:layout_height="wrap_content"
-android:text="Sound"
->
-</CheckBox>
-
-<Button 
-android:id="@+id/ok_options_but" 
-android:layout_height="wrap_content" 
-android:layout_width="fill_parent" 
-android:text="OK"
->
-</Button>
-
-</LinearLayout>
-
-</ScrollView>
-
-
-</LinearLayout>

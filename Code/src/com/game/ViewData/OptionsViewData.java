@@ -7,11 +7,16 @@ import com.game.R;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 /**
@@ -33,9 +38,12 @@ public class OptionsViewData extends ViewData
 		// Access xml layout
 		LayoutInflater li = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View xmlLayout = (View) li.inflate(R.layout.options, null);
-        
-        // Callback for the buttons & views
-        
+
+        // Center in screen at 80% width
+        LinearLayout centerLinerarLayout = (LinearLayout)xmlLayout.findViewById(R.id.options_layout_inner_scroll);
+        this.Set80PercentWidth(activity, centerLinerarLayout);
+
+        // Callback for the buttons & views        
         Button okButton = (Button) xmlLayout.findViewById(R.id.ok_options_but);
         okButton.setOnClickListener(new OnClickListener() 
         {

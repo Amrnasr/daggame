@@ -4,4 +4,6 @@
     <string name="app_name">Dag</string>
     <string name="about_title"> <b><u>CREDITS</u></b> </string>
     <string name="how_title"> <b><u>HOW TO PLAY</u></b> </string>
+    <string name="options_title"> <b><u>OPTIONS</u></b> </string>
+    <string name="single_title"> <b><u>SINGLE PLAYER</u></b> </string>
 </resources>

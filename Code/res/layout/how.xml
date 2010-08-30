@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-	android:id="@+id/about_layout"
+	android:id="@+id/how_layout"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:orientation="vertical"
@@ -19,7 +19,7 @@
 		>
 	</TextView>
 	<ScrollView
-		android:id="@+id/about_layout_scroll"
+		android:id="@+id/how_layout_scroll"
 		android:layout_marginTop="10px"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
@@ -28,7 +28,7 @@
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		>
 		<LinearLayout
-			android:id="@+id/about_layout_inner_scroll"
+			android:id="@+id/how_layout_inner_scroll"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
 			android:orientation="vertical"
