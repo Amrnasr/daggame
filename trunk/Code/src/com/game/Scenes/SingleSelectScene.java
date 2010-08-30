@@ -58,19 +58,15 @@ public class SingleSelectScene extends Scene {
 	{
 		switch (which) 
     	{	
-		case R.id.finger_single_but:
-			Log.i("SingleSelectScene", "Finger button handler called");
-			break;
-		case R.id.ball_single_but:
-			Log.i("SingleSelectScene", "Ball button handler called");
-			break;
-		case R.id.joystick_single_but:
-			Log.i("SingleSelectScene", "Joystick button handler called");
-			break;
     	case R.id.ok_single_but:
 			Log.i("SingleSelectScene", "Ok button handler called");
 			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
     				SceneType.PLAY_SCENE.ordinal(), 0));
+    		break;
+    	case R.id.back_single_but:
+			Log.i("SingleSelectScene", "Back button handler called");
+			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
+    				SceneType.MENU_SCENE.ordinal(), 0));
     		break;
     	default:
 			Log.e("SingleSelectScene", "No handler options for that message!!");
@@ -127,6 +123,9 @@ public class SingleSelectScene extends Scene {
 			break;
 		case R.id.op_single_spin:
 			Log.i("SingleSelectScene", "Opponents spinner handler called");
+			break;
+		case R.id.control_single_spin:
+			Log.i("SingleSelectScene", "Control spinner handler called");
 			break;
 		default:
 			Log.e("SingleSelectScene", "No handler options for that message!!");

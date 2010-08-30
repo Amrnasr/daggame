@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Gallery;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.game.MsgType;
@@ -39,37 +40,11 @@ public class SingleViewData extends ViewData {
 		LayoutInflater li = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View xmlLayout = (View) li.inflate(R.layout.single, null);
         
-        // Callback for the buttons
-        Button fingerButton = (Button) xmlLayout.findViewById(R.id.finger_single_but);
-        fingerButton.setOnClickListener(new OnClickListener() 
-        {
-          @Override
-          public void onClick(View v) {
-            Log.i("SingleViewData", "Clicked finger button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.finger_single_but, 0));
-          }
-        });
+        // Center in screen at 80% width
+        LinearLayout centerLinerarLayout = (LinearLayout)xmlLayout.findViewById(R.id.single_layout_inner_scroll);
+        this.Set80PercentWidth(activity, centerLinerarLayout);
         
-        Button ballButton = (Button) xmlLayout.findViewById(R.id.ball_single_but);
-        ballButton.setOnClickListener(new OnClickListener() 
-        {
-          @Override
-          public void onClick(View v) {
-            Log.i("SingleViewData", "Clicked ball button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.ball_single_but, 0));
-          }
-        });
-        
-        Button joystickButton = (Button) xmlLayout.findViewById(R.id.joystick_single_but);
-        joystickButton.setOnClickListener(new OnClickListener() 
-        {
-          @Override
-          public void onClick(View v) {
-            Log.i("SingleViewData", "Clicked joystick button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.joystick_single_but, 0));
-          }
-        });
-        
+        // Callback for the buttons 
         Button okButton = (Button) xmlLayout.findViewById(R.id.ok_single_but);
         okButton.setOnClickListener(new OnClickListener() 
         {
@@ -77,6 +52,16 @@ public class SingleViewData extends ViewData {
           public void onClick(View v) {
             Log.i("SingleViewData", "Clicked OK button");
             handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.ok_single_but, 0));
+          }
+        });
+        
+        Button backButton = (Button) xmlLayout.findViewById(R.id.back_single_but);
+        backButton.setOnClickListener(new OnClickListener() 
+        {
+          @Override
+          public void onClick(View v) {
+            Log.i("SingleViewData", "Clicked Back button");
+            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.back_single_but, 0));
           }
         });
         
@@ -145,6 +130,24 @@ public class SingleViewData extends ViewData {
 
         	public void onNothingSelected(AdapterView parent) {
         		Log.i("SingleViewData", "No opponents spinner item has been selected");
+        	}
+
+        });
+        
+        Spinner controlSpinner = (Spinner) xmlLayout.findViewById(R.id.control_single_spin);
+        ArrayAdapter<CharSequence> controlAdapter = ArrayAdapter.createFromResource(
+        		activity, R.array.control_mode_array, android.R.layout.simple_spinner_item);
+        controlAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        controlSpinner.setAdapter(controlAdapter);
+        controlSpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+        	public void onItemSelected(AdapterView<?> parent,
+        			View view, int position, long id) {
+        		Log.i("SingleViewData", "Selected control spinner item");
+        		handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.SPINNER_ITEM_CLICK.ordinal(), R.id.control_single_spin, position));
+        	}
+
+        	public void onNothingSelected(AdapterView parent) {
+        		Log.i("SingleViewData", "No control spinner item has been selected");
         	}
 
         });
