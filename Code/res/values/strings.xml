@@ -2,4 +2,6 @@
 <resources>
     <string name="hello">Hello World, DagActivity!</string>
     <string name="app_name">Dag</string>
+    <string name="about_title"> <b><u>CREDITS</u></b> </string>
+    <string name="how_title"> <b><u>HOW TO PLAY</u></b> </string>
 </resources>

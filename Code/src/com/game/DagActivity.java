@@ -76,9 +76,10 @@ public class DagActivity extends Activity
     {
     	// Create a relative layout
     	gameView = new RelativeLayout(this); 	
-    	gameView.setBackgroundResource(R.drawable.background1);
+    	gameView.setBackgroundResource(R.drawable.background4);
     	
     	// Create xml view and callbacks
+    	
     	ViewData xmlLayoutData = null;
 		try 
 		{
