@@ -1,6 +1,7 @@
 package com.game.Scenes;
 
 import com.game.MsgType;
+import com.game.Preferences;
 import com.game.R;
 import com.game.DagActivity.SceneType;
 
@@ -31,7 +32,7 @@ public class SingleSelectScene extends Scene {
 	        	}
 	        	// If a checkbox is clicked, find out which and do something about it.
 	        	else if(msg.what == MsgType.CHECKBOX_CLICK.ordinal()){
-	        		handleCheckBoxClick(msg.arg1);
+	        		handleCheckBoxClick(msg.arg1,msg.arg2);
 	        	}
 	        	// If a gallery item is clicked, find out which gallery and gallery item and do something about it.
 	        	else if(msg.what == MsgType.GALLERY_ITEM_CLICK.ordinal()){
@@ -78,14 +79,17 @@ public class SingleSelectScene extends Scene {
 	 * Given which checkbox has been pressed, do something
 	 * @param which checkbox to react to
 	 */
-	private void handleCheckBoxClick(int which){
+	private void handleCheckBoxClick(int which, int checked)
+	{
 		switch (which) 
     	{	
 		case R.id.minimap_single_check:
 			Log.i("SingleSelectScene", "Minimap checkbox handler called");
+			Preferences.Get().singleShowMinmap = (checked != 0);
 			break;
 		case R.id.powerups_single_check:
 			Log.i("SingleSelectScene", "Power-ups checkbox handler called");
+			Preferences.Get().singlePowerups = (checked != 0);
 			break;
     	default:
 			Log.e("SingleSelectScene", "No handler options for that message!!");
@@ -103,6 +107,7 @@ public class SingleSelectScene extends Scene {
     	{	
 		case R.id.maps_single_gal:
 			Log.i("SingleSelectScene", "Maps gallery handler called");
+			Preferences.Get().singleCurrentMap = position;
 			break;
     	default:
 			Log.e("SingleSelectScene", "No handler options for that message!!");
@@ -120,12 +125,15 @@ public class SingleSelectScene extends Scene {
     	{	
 		case R.id.color_single_spin:
 			Log.i("SingleSelectScene", "Color spinner handler called");
+			Preferences.Get().singlePlayer1Color = position;
 			break;
 		case R.id.op_single_spin:
 			Log.i("SingleSelectScene", "Opponents spinner handler called");
+			Preferences.Get().singleNumberOpponents = position;
 			break;
 		case R.id.control_single_spin:
 			Log.i("SingleSelectScene", "Control spinner handler called");
+			Preferences.Get().singleControlMode = position;
 			break;
 		default:
 			Log.e("SingleSelectScene", "No handler options for that message!!");
@@ -149,8 +157,9 @@ public class SingleSelectScene extends Scene {
 	}
 	
 	@Override
-	public void End() {
-		// TODO Auto-generated method stub
-
+	public void End() 
+	{
+		// Notify the activity to save the preferences, in case they have changed.
+		actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_SAVE_PREFERENCES.ordinal()));
 	}
 }
