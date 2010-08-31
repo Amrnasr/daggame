@@ -32,24 +32,21 @@ public enum MsgType
 	/**
 	 * Sent when a checkbox in a view is clicked. 
 	 * arg1: the R.id of the checkbox clicked
-	 */
-	
+	 */	
 	CHECKBOX_CLICK,
 	
 	/**
 	 * Sent when a gallery item in a view is clicked. 
 	 * arg1: the R.id of the gallery clicked
 	 * arg2: the position of the gallery item clicked
-	 */
-	
+	 */	
 	GALLERY_ITEM_CLICK,
 	
 	/**
 	 * Sent when a spinner item in a view is clicked. 
 	 * arg1: the R.id of the spinner clicked
 	 * arg2: the position of the spinner item clicked
-	 */
-	
+	 */	
 	SPINNER_ITEM_CLICK,
 	
 	/**
@@ -84,5 +81,11 @@ public enum MsgType
 	 * Sent from the renderer to the logic thread to give the logic thread
 	 * a handler to send messages to the renderer.
 	 */
-	RENDERER_LOGIC_HANDLER_LINK
+	RENDERER_LOGIC_HANDLER_LINK,
+	
+	/**
+	 * Tells the activity to save the Preferences object to main
+	 * storage.
+	 */
+	ACTIVITY_SAVE_PREFERENCES
 }
