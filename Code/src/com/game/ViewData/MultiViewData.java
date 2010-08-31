@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.game.MsgType;
+import com.game.Preferences;
 import com.game.R;
 
 /**
@@ -28,6 +29,8 @@ import com.game.R;
 
 public class MultiViewData extends ViewData {
 
+	private View auxView;
+	
 	/**
 	 * @see ViewData createXMLView(Activity activity) 
 	 */
@@ -67,30 +70,56 @@ public class MultiViewData extends ViewData {
         
         // Callback for the checkboxes
         CheckBox minimapCheckBox = (CheckBox) xmlLayout.findViewById(R.id.minimap_multi_check);
-        minimapCheckBox.setOnClickListener(new OnClickListener() {
-			
+        minimapCheckBox.setChecked(Preferences.Get().multiShowMinimap);
+        this.auxView = minimapCheckBox;
+        minimapCheckBox.setOnClickListener(new OnClickListener() 
+        {			
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v) 
+			{
+				int checked = 0;
+				if(((CheckBox) MultiViewData.this.auxView).isChecked() == true)
+				{
+					checked = 1;
+				}
+				else
+				{
+					checked = 0;
+				}
+				
 				Log.i("MultiViewData", "Clicked minimap checkbox");
-				handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.CHECKBOX_CLICK.ordinal(), R.id.minimap_multi_check, 0));	
+				handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.CHECKBOX_CLICK.ordinal(), R.id.minimap_multi_check, checked));	
 			}
 		});
         
         CheckBox powerupsCheckBox = (CheckBox) xmlLayout.findViewById(R.id.powerups_multi_check);
-        powerupsCheckBox.setOnClickListener(new OnClickListener() {
-			
+        powerupsCheckBox.setChecked(Preferences.Get().multiPowerups);
+        this.auxView = powerupsCheckBox;
+        powerupsCheckBox.setOnClickListener(new OnClickListener() 
+        {			
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v) 
+			{
+				int checked = 0;
+				if(((CheckBox) MultiViewData.this.auxView).isChecked() == true)
+				{
+					checked = 1;
+				}
+				else
+				{
+					checked = 0;
+				}
 				Log.i("MultiViewData", "Clicked power-ups checkbox");
-				handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.CHECKBOX_CLICK.ordinal(), R.id.powerups_multi_check, 0));	
+				handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.CHECKBOX_CLICK.ordinal(), R.id.powerups_multi_check, checked));	
 			}
 		});
         
         // Callback for the galleries
         Gallery mapsGallery = (Gallery) xmlLayout.findViewById(R.id.maps_multi_gal);
-        mapsGallery.setAdapter(new MapsImageAdapter(activity));//mirar como pasar contexto como parametro
-
-        mapsGallery.setOnItemClickListener(new OnItemClickListener() {
+        mapsGallery.setAdapter(new MapsImageAdapter(activity));
+        mapsGallery.setSelection(Preferences.Get().multiCurrentMap);
+        mapsGallery.setOnItemClickListener(new OnItemClickListener() 
+        {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
             	Log.i("MultiViewData", "Clicked maps gallery item");
             	handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.GALLERY_ITEM_CLICK.ordinal(), R.id.maps_multi_gal, position));
@@ -115,6 +144,7 @@ public class MultiViewData extends ViewData {
         	}
 
         });
+        color1Spinner.setSelection(Preferences.Get().multiPlayer1Color);
         
         Spinner color2Spinner = (Spinner) xmlLayout.findViewById(R.id.color2_multi_spin);
         ArrayAdapter<CharSequence> color2Adapter = ArrayAdapter.createFromResource(
@@ -131,8 +161,8 @@ public class MultiViewData extends ViewData {
         	public void onNothingSelected(AdapterView parent) {
         		Log.i("MultiViewData", "No color 2 spinner item has been selected");
         	}
-
         });
+        color2Spinner.setSelection(Preferences.Get().multiPlayer2Color);
         
         Spinner opponentsSpinner = (Spinner) xmlLayout.findViewById(R.id.op_multi_spin);
         ArrayAdapter<CharSequence> opponentsAdapter = ArrayAdapter.createFromResource(
@@ -149,8 +179,8 @@ public class MultiViewData extends ViewData {
         	public void onNothingSelected(AdapterView parent) {
         		Log.i("MultiViewData", "No opponents spinner item has been selected");
         	}
-
         });
+        opponentsSpinner.setSelection(Preferences.Get().multiNumberOpponents);
         
         Spinner controlSpinner = (Spinner) xmlLayout.findViewById(R.id.control_multi_spin);
         ArrayAdapter<CharSequence> controlAdapter = ArrayAdapter.createFromResource(
@@ -167,8 +197,8 @@ public class MultiViewData extends ViewData {
         	public void onNothingSelected(AdapterView parent) {
         		Log.i("MultiViewData", "No control spinner item has been selected");
         	}
-
         });
+        controlSpinner.setSelection(Preferences.Get().multiControlMode);
 
 
         

@@ -5,6 +5,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.game.MsgType;
+import com.game.Preferences;
 import com.game.R;
 import com.game.DagActivity.SceneType;
 
@@ -31,7 +32,7 @@ public class MultiSelectScene extends Scene {
 	        	}
 	        	// If a checkbox is clicked, find out which and do something about it.
 	        	else if(msg.what == MsgType.CHECKBOX_CLICK.ordinal()){
-	        		handleCheckBoxClick(msg.arg1);
+	        		handleCheckBoxClick(msg.arg1,msg.arg2);
 	        	}
 	        	// If a gallery item is clicked, find out which gallery and gallery item and do something about it.
 	        	else if(msg.what == MsgType.GALLERY_ITEM_CLICK.ordinal()){
@@ -74,14 +75,16 @@ public class MultiSelectScene extends Scene {
 	 * Given which checkbox has been pressed, do something
 	 * @param which checkbox to react to
 	 */
-	private void handleCheckBoxClick(int which){
+	private void handleCheckBoxClick(int which, int checked){
 		switch (which) 
     	{	
 		case R.id.minimap_multi_check:
 			Log.i("MultiSelectScene", "Minimap checkbox handler called");
+			Preferences.Get().multiShowMinimap = (checked != 0);
 			break;
 		case R.id.powerups_multi_check:
 			Log.i("MultiSelectScene", "Power-ups checkbox handler called");
+			Preferences.Get().multiPowerups = (checked != 0);
 			break;
     	default:
 			Log.e("MultiSelectScene", "No handler options for that message!!");
@@ -99,6 +102,7 @@ public class MultiSelectScene extends Scene {
     	{	
 		case R.id.maps_multi_gal:
 			Log.i("MultiSelectScene", "Maps gallery handler called");
+			Preferences.Get().multiCurrentMap = position;
 			break;
     	default:
 			Log.e("MultiSelectScene", "No handler options for that message!!");
@@ -116,15 +120,19 @@ public class MultiSelectScene extends Scene {
     	{	
 		case R.id.color1_multi_spin:
 			Log.i("MultiSelectScene", "Color 1 spinner handler called");
+			Preferences.Get().multiPlayer1Color = position;
 			break;
 		case R.id.color2_multi_spin:
 			Log.i("MultiSelectScene", "Color 2 spinner handler called");
+			Preferences.Get().multiPlayer2Color = position;
 			break;
 		case R.id.op_multi_spin:
 			Log.i("MultiSelectScene", "Opponents spinner handler called");
+			Preferences.Get().multiNumberOpponents = position;
 			break;
 		case R.id.control_multi_spin:
 			Log.i("MultiSelectScene", "Control spinner handler called");
+			Preferences.Get().multiControlMode = position;
 			break;
 		default:
 			Log.e("MultiSelectScene", "No handler options for that message!!");
@@ -144,9 +152,10 @@ public class MultiSelectScene extends Scene {
 	}
 
 	@Override
-	public void End() {
-		// TODO Auto-generated method stub
-
+	public void End() 
+	{
+		// Notify the activity to save the preferences, in case they have changed.
+		actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_SAVE_PREFERENCES.ordinal()));
 	}
 
 }
