@@ -54,19 +54,15 @@ public class MultiSelectScene extends Scene {
 	{
 		switch (which) 
     	{	
-		case R.id.finger_multi_but:
-			Log.i("MultiSelectScene", "Finger button handler called");
-			break;
-		case R.id.ball_multi_but:
-			Log.i("MultiSelectScene", "Ball button handler called");
-			break;
-		case R.id.joystick_multi_but:
-			Log.i("MultiSelectScene", "Joystick button handler called");
-			break;
     	case R.id.ok_multi_but:
 			Log.i("MultiSelectScene", "Ok button handler called");
 			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
     				SceneType.PLAY_SCENE.ordinal(), 0));
+    		break;
+    	case R.id.back_multi_but:
+			Log.i("MultiSelectScene", "Back button handler called");
+			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
+    				SceneType.MENU_SCENE.ordinal(), 0));
     		break;
     	default:
 			Log.e("MultiSelectScene", "No handler options for that message!!");
@@ -126,6 +122,9 @@ public class MultiSelectScene extends Scene {
 			break;
 		case R.id.op_multi_spin:
 			Log.i("MultiSelectScene", "Opponents spinner handler called");
+			break;
+		case R.id.control_multi_spin:
+			Log.i("MultiSelectScene", "Control spinner handler called");
 			break;
 		default:
 			Log.e("MultiSelectScene", "No handler options for that message!!");
