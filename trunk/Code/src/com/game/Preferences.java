@@ -51,6 +51,13 @@ public class Preferences
 		singlePowerups = settings.getBoolean("singlePowerups", true);
 		
 		// Multi preferences
+		multiCurrentMap = settings.getInt("multiCurrentMap", 0);
+		multiPlayer1Color = settings.getInt("multiPlayer1Color", 0);
+		multiPlayer2Color = settings.getInt("multiPlayer2Color", 0);
+		multiNumberOpponents = settings.getInt("multiNumberOpponents", 1);
+		multiControlMode = settings.getInt("multiControlMode", 0);
+		multiShowMinimap = settings.getBoolean("multiShowMinimap", true);
+		multiPowerups = settings.getBoolean("multiPowerups", true);
 	}
 	
 	public void Save(Activity activity)
@@ -73,7 +80,13 @@ public class Preferences
 	    editor.putBoolean("singlePowerups", singlePowerups);
 	    
 	    // Multiplayer preferences
-	    
+	    editor.putInt("multiCurrentMap", multiCurrentMap);
+	    editor.putInt("multiPlayer1Color", multiPlayer1Color);
+	    editor.putInt("multiPlayer2Color", multiPlayer2Color);
+	    editor.putInt("multiNumberOpponents", multiNumberOpponents);
+	    editor.putInt("multiControlMode", multiControlMode);
+	    editor.putBoolean("multiShowMinimap", multiShowMinimap);
+	    editor.putBoolean("multiPowerups", multiPowerups);
 	    
 	    // Commit the edits!
 	    editor.commit();
@@ -96,5 +109,12 @@ public class Preferences
 	public boolean singlePowerups;
 	
 	// Multiplayer data
+	public int multiCurrentMap;
+	public int multiPlayer1Color;
+	public int multiPlayer2Color;
+	public int multiNumberOpponents;
+	public int multiControlMode;
+	public boolean multiShowMinimap;
+	public boolean multiPowerups;
 
 }
