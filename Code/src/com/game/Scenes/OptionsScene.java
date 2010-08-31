@@ -2,8 +2,9 @@ package com.game.Scenes;
 
 import android.os.Handler;
 import android.os.Message;
-
 import com.game.MsgType;
+import com.game.Preferences;
+import com.game.R;
 import com.game.DagActivity.SceneType;
 
 
@@ -32,8 +33,27 @@ public class OptionsScene extends Scene
 	        		actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
 	        				SceneType.MENU_SCENE.ordinal(), 0));
 	        	}
+	        	if(msg.what == MsgType.CHECKBOX_CLICK.ordinal())
+	        	{
+	        		// Some operator magic to turn a int into a boolean
+	        		Preferences.Get().optionsSoundMute = (msg.arg2 != 0);
+	        	}
+	        	if(msg.what == MsgType.SPINNER_ITEM_CLICK.ordinal())
+	        	{
+	        		if(msg.arg1 == R.id.eat_speed_spin)
+	        		{
+	        			Preferences.Get().optionsUnitEatSpeed = msg.arg2;
+	        		}
+	        		if(msg.arg1 == R.id.move_speed_spin)
+	        		{
+	        			Preferences.Get().optionsUnitMoveSpeed = msg.arg2;
+	        		}
+	        		if(msg.arg1 == R.id.num_units_spin)
+	        		{
+	        			Preferences.Get().optionsUnitCuantity = msg.arg2;
+	        		}
+	        	}
 	        	// If the activity tells us to stop, we stop.
-	        	else 
 	        	if(msg.what == MsgType.STOP_SCENE.ordinal())
 	        	{
 	        		runScene = false;
@@ -44,9 +64,10 @@ public class OptionsScene extends Scene
 	}
 
 	@Override
-	public void End() {
-		// TODO Auto-generated method stub
-
+	public void End() 
+	{
+		// Notify the activity to save the preferences, in case they have changed.
+		actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_SAVE_PREFERENCES.ordinal()));
 	}
 
 	@Override

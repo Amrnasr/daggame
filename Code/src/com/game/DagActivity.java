@@ -54,6 +54,9 @@ public class DagActivity extends Activity
         // I don't like it, but ORDER IS IMPORTANT! So don't change the order.
         // (Because the view uses the logic handler objects.)
         
+        // Load stored game preferences
+        LoadPreferences();
+        
         // Create handler
         createHandler();
         
@@ -168,9 +171,23 @@ public class DagActivity extends Activity
 	        	{
 	        		profiler.Update();
 	        	}
+	        	else if (msg.what == MsgType.ACTIVITY_SAVE_PREFERENCES.ordinal())
+	        	{
+	        		SavePreferences();
+	        	}
 	        	
 	        }
 	    };
+    }
+    
+    private void LoadPreferences()
+    {
+    	Preferences.Get().Load(this);
+    }
+    
+    private void SavePreferences()
+    {
+    	Preferences.Get().Save(this);
     }
     
     /**
