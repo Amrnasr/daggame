@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.game.MsgType;
+import com.game.Preferences;
 import com.game.R;
 
 /**
@@ -26,7 +27,9 @@ import com.game.R;
  *
  */
 
-public class SingleViewData extends ViewData {
+public class SingleViewData extends ViewData 
+{
+	private View auxView;
 
 	/**
 	 * @see ViewData createXMLView(Activity activity) 
@@ -67,31 +70,56 @@ public class SingleViewData extends ViewData {
         
         // Callback for the checkboxes
         CheckBox minimapCheckBox = (CheckBox) xmlLayout.findViewById(R.id.minimap_single_check);
+        minimapCheckBox.setChecked(Preferences.Get().singleShowMinmap);
+        this.auxView = minimapCheckBox;
         minimapCheckBox.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v) 
+			{
 				Log.i("SingleViewData", "Clicked minimap checkbox");
-				handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.CHECKBOX_CLICK.ordinal(), R.id.minimap_single_check, 0));	
+				int checked = 0;
+				if(((CheckBox) SingleViewData.this.auxView).isChecked() == true)
+				{
+					checked = 1;
+				}
+				else
+				{
+					checked = 0;
+				}
+				handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.CHECKBOX_CLICK.ordinal(), R.id.minimap_single_check, checked));	
 			}
 		});
         
         CheckBox powerupsCheckBox = (CheckBox) xmlLayout.findViewById(R.id.powerups_single_check);
-        powerupsCheckBox.setOnClickListener(new OnClickListener() {
-			
+        powerupsCheckBox.setChecked(Preferences.Get().singlePowerups);
+        this.auxView = powerupsCheckBox;
+        powerupsCheckBox.setOnClickListener(new OnClickListener() 
+        {			
 			@Override
 			public void onClick(View v) {
 				Log.i("SingleViewData", "Clicked power-ups checkbox");
-				handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.CHECKBOX_CLICK.ordinal(), R.id.powerups_single_check, 0));	
+				int checked = 0;
+				if(((CheckBox) SingleViewData.this.auxView).isChecked() == true)
+				{
+					checked = 1;
+				}
+				else
+				{
+					checked = 0;
+				}
+				handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.CHECKBOX_CLICK.ordinal(), R.id.powerups_single_check, checked));	
 			}
 		});
         
         // Callback for the galleries
         Gallery mapsGallery = (Gallery) xmlLayout.findViewById(R.id.maps_single_gal);
-        mapsGallery.setAdapter(new MapsImageAdapter(activity));//mirar como pasar contexto como parametro
-
-        mapsGallery.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView parent, View v, int position, long id) {
+        mapsGallery.setAdapter(new MapsImageAdapter(activity));
+        mapsGallery.setSelection(Preferences.Get().singleCurrentMap);
+        mapsGallery.setOnItemClickListener(new OnItemClickListener() 
+        {
+            public void onItemClick(AdapterView parent, View v, int position, long id) 
+            {
             	Log.i("SingleViewData", "Clicked maps gallery item");
             	handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.GALLERY_ITEM_CLICK.ordinal(), R.id.maps_single_gal, position));
             }
@@ -103,7 +131,8 @@ public class SingleViewData extends ViewData {
         		activity, R.array.color_array, android.R.layout.simple_spinner_item);
         colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colorSpinner.setAdapter(colorAdapter);
-        colorSpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+        colorSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
+        {
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
         		Log.i("SingleViewData", "Selected color spinner item");
@@ -115,6 +144,7 @@ public class SingleViewData extends ViewData {
         	}
 
         });
+        colorSpinner.setSelection(Preferences.Get().singlePlayer1Color);
         
         Spinner opponentsSpinner = (Spinner) xmlLayout.findViewById(R.id.op_single_spin);
         ArrayAdapter<CharSequence> opponentsAdapter = ArrayAdapter.createFromResource(
@@ -133,6 +163,7 @@ public class SingleViewData extends ViewData {
         	}
 
         });
+        opponentsSpinner.setSelection(Preferences.Get().singleNumberOpponents);
         
         Spinner controlSpinner = (Spinner) xmlLayout.findViewById(R.id.control_single_spin);
         ArrayAdapter<CharSequence> controlAdapter = ArrayAdapter.createFromResource(
@@ -151,8 +182,7 @@ public class SingleViewData extends ViewData {
         	}
 
         });
-
-
+        controlSpinner.setSelection(Preferences.Get().singleControlMode);
         
         return xmlLayout;
 	}
