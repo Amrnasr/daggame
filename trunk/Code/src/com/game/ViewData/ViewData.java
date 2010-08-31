@@ -1,7 +1,5 @@
 package com.game.ViewData;
 
-import com.game.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -46,15 +44,19 @@ public abstract class ViewData
 		 this.handlerRef = handler;
 	 }
 	 
-	 // NOTES: 
-     // - It crashes if LinearLayout.LayoutParams is used, instead of FrameLayout.LayoutParams
-     // no idea why it thinks the about_layout_inner_scroll is a FrameLayout.
-     // - Setting a LayoutParams object seems to override the default params. ALL of them, not
-     // just w & h, so gravity must be re-specified here, even tough it's ok in the xml
-     // - Had to change the AndroidManifest/Uses SDK /Target SDK & Min SDK cause it was emulating
-     // HVGA in all AVD  devices. This seems to be the default behavior if no Target & Min SDK
-     // are configured.
-     // - Confirmed it works ok in QVGA, HVGA and WVGA
+	 /**
+	  * Sets the centerLinearLayout to 80% the screen width and centers it.
+	  * 
+	  * NOTES:
+	  * - It crashes if LinearLayout.LayoutParams is used, instead of FrameLayout.LayoutParams
+	  * no idea why it thinks the about_layout_inner_scroll is a FrameLayout.
+	  * - Setting a LayoutParams object seems to override the default params. ALL of them, not
+	  * just w & h, so gravity must be re-specified here, even tough it's ok in the xml
+	  * - Had to change the AndroidManifest/Uses SDK /Target SDK & Min SDK cause it was emulating
+	  * HVGA in all AVD  devices. This seems to be the default behavior if no Target & Min SDK
+	  * are configured.
+	  * - Confirmed it works ok in QVGA, HVGA and WVGA
+	  */
 	 public void Set80PercentWidth(Activity activity, LinearLayout centerLinerarLayout)
 	 {
 		 	Display display = ((WindowManager) activity.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay(); 

@@ -1,157 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-android:id="@+id/multi_layout"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-android:gravity="center"
-xmlns:android="http://schemas.android.com/apk/res/android"
->
-
-<ScrollView
-android:id="@+id/multi_scroll"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-xmlns:android="http://schemas.android.com/apk/res/android"
->
-<LinearLayout
-android:id="@+id/multi_layout_inner"
-android:layout_width="wrap_content"
-android:layout_height="fill_parent"
-android:orientation="vertical"
-android:gravity="left"
-android:layout_gravity="center"
-xmlns:android="http://schemas.android.com/apk/res/android"
->
-<Gallery
-android:id="@+id/maps_multi_gal"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_gravity="center_horizontal"
->
-</Gallery>
-<LinearLayout
-android:id="@+id/color1_multi_layout"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
->
-<TextView
-android:id="@+id/color1_multi_text"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Color 1"
->
-</TextView>
-<Spinner
-android:id="@+id/color1_multi_spin"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_gravity="right"
-android:prompt="@string/color_prompt"
->
-</Spinner>
-</LinearLayout>
-<LinearLayout
-android:id="@+id/color2_multi_layout"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
->
-<TextView
-android:id="@+id/color2_multi_text"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Color 2"
-android:prompt="@string/color_prompt"
->
-</TextView>
-<Spinner
-android:id="@+id/color2_multi_spin"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_gravity="right"
->
-</Spinner>
-</LinearLayout>
-<LinearLayout
-android:id="@+id/op_multi_layout"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
->
-<TextView
-android:id="@+id/op_multi_text"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Number of opponents"
->
-</TextView>
-<Spinner
-android:id="@+id/op_multi_spin"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_gravity="right"
-android:prompt="@string/op_multi_prompt"
->
-</Spinner>
-</LinearLayout>
-<CheckBox
-android:id="@+id/minimap_multi_check"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Show Minimap"
->
-</CheckBox>
-<CheckBox
-android:id="@+id/powerups_multi_check"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Power-Ups"
->
-</CheckBox>
-<TextView
-android:id="@+id/control_multi_text"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Control P1"
-android:layout_gravity="center_horizontal"
->
-</TextView>
-<LinearLayout
-android:id="@+id/input_multi_layout"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:layout_gravity="center_horizontal"
->
-<Button
-android:id="@+id/finger_multi_but"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="F"
->
-</Button>
-<Button
-android:id="@+id/ball_multi_but"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="B"
-android:layout_gravity="center_horizontal"
->
-</Button>
-<Button
-android:id="@+id/joystick_multi_but"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="J"
-android:layout_gravity="right"
->
-</Button>
-</LinearLayout>
-<Button
-android:id="@+id/ok_multi_but"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="OK"
-android:layout_gravity="center_horizontal"
->
-</Button>
-</LinearLayout>
-</ScrollView>
+	android:id="@+id/multi_layout"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	android:gravity="center_horizontal"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	>
+	<TextView
+		android:id="@+id/multi_title"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20px"
+		android:text="@string/multi_title"
+		android:textSize="18sp"
+		android:layout_centerHorizontal="true"		
+		android:layout_alignParentTop="true"		
+		>
+	</TextView>
+	<ScrollView
+		android:id="@+id/multi_layout_scroll"
+		android:layout_marginTop="10px"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@+id/multi_title"	
+		android:gravity="center_horizontal"
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		>
+		<LinearLayout
+			android:id="@+id/multi_layout_inner_scroll"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:orientation="vertical"
+			android:gravity="left"
+			android:layout_gravity="center_horizontal"
+			xmlns:android="http://schemas.android.com/apk/res/android"
+			>			
+			<TextView
+				android:id="@+id/gallery_single_text"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Choose a map:"
+				>
+			</TextView>
+			<Gallery
+				android:id="@+id/maps_multi_gal"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_horizontal"
+				>
+			</Gallery>
+			<TextView
+				android:id="@+id/color1_multi_text"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Color for player 1:"
+				>
+			</TextView>
+			<Spinner
+				android:id="@+id/color1_multi_spin"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:prompt="@string/color_prompt"
+				>
+			</Spinner>
+			<TextView
+				android:id="@+id/color2_multi_text"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Color for player 2:"
+				>
+			</TextView>
+			<Spinner
+				android:id="@+id/color2_multi_spin"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:prompt="@string/color_prompt"
+				>
+			</Spinner>
+			<TextView
+				android:id="@+id/op_multi_layout"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Number of bots:"
+				>
+			</TextView>
+			<Spinner
+				android:id="@+id/op_multi_spin"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:prompt="@string/op_multi_prompt"
+				>
+			</Spinner>
+			<TextView
+				android:id="@+id/control_multi_layout"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Player 1 control mode:"
+				>
+			</TextView>
+			<Spinner
+				android:id="@+id/control_multi_spin"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:prompt="@string/control_prompt"
+				>
+			</Spinner>
+			<TextView
+				android:id="@+id/control2_multi_layout"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Player 2 control mode is the track ball."
+				>
+			</TextView>
+			<CheckBox
+				android:id="@+id/minimap_multi_check"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Show Minimap"
+				>
+			</CheckBox>
+			<CheckBox
+				android:id="@+id/powerups_multi_check"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Power-Ups"
+				>
+			</CheckBox>
+			<TextView
+				android:id="@+id/multi_bottom_filler_text_do_not_remove"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="10px"
+				android:lines="3"
+				android:text=""
+				>
+			</TextView>
+		</LinearLayout>
+	</ScrollView>
+	<LinearLayout
+		android:id="@+id/bottom_buttons_multi_layout"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:orientation="horizontal"
+		android:layout_alignParentBottom="true"	
+		android:weightSum="2"
+		>
+		<Button
+			android:id="@+id/back_multi_but"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="Back"
+			android:gravity="center_horizontal"
+			android:layout_weight="1"
+			>
+		</Button>
+		<Button
+			android:id="@+id/ok_multi_but"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="Play!"
+			android:gravity="center_horizontal"	
+			android:layout_weight="1"
+			>
+		</Button>
+	</LinearLayout>
 </RelativeLayout>
+
+
+
+

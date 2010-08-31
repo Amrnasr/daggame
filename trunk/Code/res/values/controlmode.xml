@@ -7,4 +7,9 @@
         <item>Joystick</item>
         <item>Acelerometer</item>
     </string-array>
+<string-array name="control_multi_mode_array">
+        <item>Finger</item>
+        <item>Joystick</item>
+        <item>Acelerometer</item>
+    </string-array>
 </resources>

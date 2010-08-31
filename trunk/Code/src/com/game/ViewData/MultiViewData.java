@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Gallery;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.game.MsgType;
@@ -39,37 +40,11 @@ public class MultiViewData extends ViewData {
 		LayoutInflater li = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View xmlLayout = (View) li.inflate(R.layout.multi, null);
         
+        // Center in screen at 80% width
+        LinearLayout centerLinerarLayout = (LinearLayout)xmlLayout.findViewById(R.id.multi_layout_inner_scroll);
+        this.Set80PercentWidth(activity, centerLinerarLayout);
+        
         // Callback for the buttons
-        Button fingerButton = (Button) xmlLayout.findViewById(R.id.finger_multi_but);
-        fingerButton.setOnClickListener(new OnClickListener() 
-        {
-          @Override
-          public void onClick(View v) {
-            Log.i("MultiViewData", "Clicked finger button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.finger_multi_but, 0));
-          }
-        });
-        
-        Button ballButton = (Button) xmlLayout.findViewById(R.id.ball_multi_but);
-        ballButton.setOnClickListener(new OnClickListener() 
-        {
-          @Override
-          public void onClick(View v) {
-            Log.i("MultiViewData", "Clicked ball button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.ball_multi_but, 0));
-          }
-        });
-        
-        Button joystickButton = (Button) xmlLayout.findViewById(R.id.joystick_multi_but);
-        joystickButton.setOnClickListener(new OnClickListener() 
-        {
-          @Override
-          public void onClick(View v) {
-            Log.i("MultiViewData", "Clicked joystick button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.joystick_multi_but, 0));
-          }
-        });
-        
         Button okButton = (Button) xmlLayout.findViewById(R.id.ok_multi_but);
         okButton.setOnClickListener(new OnClickListener() 
         {
@@ -77,6 +52,16 @@ public class MultiViewData extends ViewData {
           public void onClick(View v) {
             Log.i("MultiViewData", "Clicked OK button");
             handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.ok_multi_but, 0));
+          }
+        });
+        
+        Button backButton = (Button) xmlLayout.findViewById(R.id.back_multi_but);
+        backButton.setOnClickListener(new OnClickListener() 
+        {
+          @Override
+          public void onClick(View v) {
+            Log.i("MultiViewData", "Clicked Back button");
+            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.back_multi_but, 0));
           }
         });
         
@@ -163,6 +148,24 @@ public class MultiViewData extends ViewData {
 
         	public void onNothingSelected(AdapterView parent) {
         		Log.i("MultiViewData", "No opponents spinner item has been selected");
+        	}
+
+        });
+        
+        Spinner controlSpinner = (Spinner) xmlLayout.findViewById(R.id.control_multi_spin);
+        ArrayAdapter<CharSequence> controlAdapter = ArrayAdapter.createFromResource(
+        		activity, R.array.control_multi_mode_array, android.R.layout.simple_spinner_item);
+        controlAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        controlSpinner.setAdapter(controlAdapter);
+        controlSpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+        	public void onItemSelected(AdapterView<?> parent,
+        			View view, int position, long id) {
+        		Log.i("MultiViewData", "Selected control spinner item");
+        		handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.SPINNER_ITEM_CLICK.ordinal(), R.id.control_multi_spin, position));
+        	}
+
+        	public void onNothingSelected(AdapterView parent) {
+        		Log.i("MultiViewData", "No control spinner item has been selected");
         	}
 
         });

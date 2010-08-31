@@ -6,4 +6,5 @@
     <string name="how_title"> <b><u>HOW TO PLAY</u></b> </string>
     <string name="options_title"> <b><u>OPTIONS</u></b> </string>
     <string name="single_title"> <b><u>SINGLE PLAYER</u></b> </string>
+    <string name="multi_title"> <b><u>MULTIPLAYER</u></b> </string>
 </resources>
