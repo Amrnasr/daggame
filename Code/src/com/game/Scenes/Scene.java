@@ -2,6 +2,7 @@ package com.game.Scenes;
 
 import com.game.MsgType;
 
+import android.app.Activity;
 import android.os.Handler;
 
 /**
@@ -22,6 +23,9 @@ public abstract class Scene
 	/// Variables to ensure thread safety on scene shutdown
 	protected boolean 	runScene;
 	private boolean 	stopScene;
+	
+	// Reference to the activity to load resources.
+	protected Activity refActivity = null;
 	
 	/**
 	 * Initializes variables
@@ -82,5 +86,10 @@ public abstract class Scene
 				actHandlerRef.sendEmptyMessage(MsgType.SCENE_STOPED_READY_FOR_CHANGE.ordinal());
 			}
 		}
+	}
+
+	public void setRefActivity(Activity refActivity) 
+	{
+		this.refActivity = refActivity;
 	}
 }

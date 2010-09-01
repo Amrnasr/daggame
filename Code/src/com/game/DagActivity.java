@@ -114,7 +114,7 @@ public class DagActivity extends Activity
     {
     	try 
     	{
-			gameLogic.setScene(scene);
+			gameLogic.setScene(scene, this);
 		} 
     	catch (Exception e) 
     	{
