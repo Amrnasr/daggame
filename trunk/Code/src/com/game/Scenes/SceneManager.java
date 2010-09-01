@@ -1,5 +1,6 @@
 package com.game.Scenes;
 
+import android.app.Activity;
 import android.util.Log;
 
 import com.game.DagActivity.SceneType;
@@ -31,7 +32,7 @@ public class SceneManager
 	 * of scenes.
 	 * @param newScene Scene to change to.
 	 */
-	private void ChangeScene(Scene newScene)
+	private void ChangeScene(Scene newScene, Activity refActivity)
     {
         if (currentScene!=null) 
         {
@@ -39,6 +40,7 @@ public class SceneManager
         }
 
         currentScene = newScene;
+        currentScene.setRefActivity(refActivity);
         currentScene.Start();
     }
 	
@@ -47,7 +49,7 @@ public class SceneManager
 	 * @param scene To change to.
 	 * @throws Exception If the new scene is not specified in the creation factory.
 	 */
-	public void ChangeScene(SceneType scene) throws Exception
+	public void ChangeScene(SceneType scene,  Activity refActivity) throws Exception
 	{
 		Scene newScene = null;
 		
@@ -81,7 +83,7 @@ public class SceneManager
 			throw new Exception("Scene to change to is not defined!");
 		}
 		
-		ChangeScene(newScene);		
+		ChangeScene(newScene, refActivity);		
 	}
 	
 	/**

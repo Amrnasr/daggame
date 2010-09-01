@@ -92,8 +92,12 @@ public class PlayScene extends Scene
 	}
 
 	@Override
-	public void Start() {
-		// TODO Auto-generated method stub
+	public void Start() 
+	{
+		if(refActivity == null )
+		{
+			Log.e("PlayScene","Reference pointer to activity broken!");
+		}
 
 	}
 

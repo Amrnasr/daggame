@@ -4,6 +4,7 @@ import com.game.DagActivity.SceneType;
 import com.game.Scenes.Scene;
 import com.game.Scenes.SceneManager;
 
+import android.app.Activity;
 import android.util.Log;
 
 
@@ -64,9 +65,9 @@ public class DagLogicThread extends Thread
 	 * @param scene To change to.
 	 * @throws Exception If the scene required is not available yet.  
 	 */
-	public void setScene(SceneType scene) throws Exception
+	public void setScene(SceneType scene, Activity refActivity) throws Exception
 	{
-		sceneManager.ChangeScene(scene);
+		sceneManager.ChangeScene(scene, refActivity);
 	}
 	
 	/**
