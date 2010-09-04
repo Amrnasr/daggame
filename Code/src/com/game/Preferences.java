@@ -14,9 +14,12 @@ public class Preferences
 	private static Preferences instance;
 	
 	/**
-	 * Defeats instanciation
+	 * Defeats instantiation
 	 */
-	protected Preferences() {}
+	protected Preferences() 
+	{
+		this.multiplayerGame = false;
+	}
 	
 	/**
 	 * Returns the singleton instance
@@ -116,5 +119,8 @@ public class Preferences
 	public int multiControlMode;
 	public boolean multiShowMinimap;
 	public boolean multiPowerups;
+	
+	// Other global data
+	public boolean multiplayerGame;
 
 }

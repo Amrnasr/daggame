@@ -140,8 +140,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		// Draw debug square
 		gl.glColor4f(1, 0, 0, 0.5f);
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, floatBuff);		
-		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		//gl.glVertexPointer(3, GL10.GL_FLOAT, 0, floatBuff);		
+		//gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 				
     }
 	

@@ -1,14 +1,17 @@
 package com.game.Scenes;
 
+import java.util.Vector;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
-
-import com.game.Constants;
 import com.game.Map;
 import com.game.MsgType;
+import com.game.Player;
+import com.game.Preferences;
 import com.game.R;
+import com.game.InputDevice.AIInputDevice;
+import com.game.InputDevice.BallInputDevice;
 
 /**
  * A specific scene for the "Play" screen.
@@ -45,11 +48,24 @@ public class PlayScene extends Scene
 	 */
 	private GameState gameState;
 	
+	/**
+	 * Communicates with the renderer.
+	 */
 	private Handler sendRenderer;
 	
 	private Map map;
 	
 	private boolean mShowTileMap;
+	
+	/**
+	 * List of all the players in the game
+	 */
+	private Vector<Player> players;
+	
+	/**
+	 * Sends a message when a trackball message arrives via the handler
+	 */
+	public Handler trackballEvent;
 	
 	/**
 	 * Initializes and sets the handler callback.
@@ -58,12 +74,16 @@ public class PlayScene extends Scene
 	{
 		super();
 		
-		gameState = GameState.UNINITIALIZED;
-		
+		this.gameState = GameState.UNINITIALIZED;
+		this.players = new Vector<Player>();
+		this.trackballEvent = null;
+
+		CreatePlayers();
+
 		mShowTileMap = true;
 		
 		map = null;
-		
+
 		this.handler = new Handler() 
 		{
 	        public void handleMessage(Message msg) 
@@ -75,6 +95,17 @@ public class PlayScene extends Scene
 	        		// TODO: Do something relevant with the event
 	        		Log.i("PlayScene Handler: ", "Motion event: " + event.getX() + ", " + event.getY());
 	        	}
+	        	else if(msg.what == MsgType.TRACKBALL_EVENT.ordinal())
+				{
+	        		
+	        		if( trackballEvent != null )
+	        		{
+	        			Log.i("PlayScene", "Trackball used!");
+	        			// If there is some input event registered to the trackball events
+	        			// send him the message. Otherwise we ignore it.
+	        			trackballEvent.sendMessage(trackballEvent.obtainMessage(MsgType.TRACKBALL_EVENT.ordinal(), msg.obj));
+	        		}
+				}
 	        	else if(msg.what == MsgType.STOP_SCENE.ordinal())
 	        	{
 	        		runScene = false;
@@ -112,11 +143,9 @@ public class PlayScene extends Scene
 		if(refActivity == null )
 		{
 			Log.e("PlayScene","Reference pointer to activity broken!");
-			
-			
 		}
 		
-		//map = new Map(refActivity,R.drawable.map_size480_1);
+		map = new Map(refActivity,R.drawable.map_size480_1);
 	}
 
 	/**
@@ -127,7 +156,10 @@ public class PlayScene extends Scene
 	public void Update() 
 	{
 		// Logic not dependent on game state
-		actHandlerRef.sendEmptyMessage(MsgType.UPDATE_PROFILER.ordinal());
+		if(actHandlerRef != null)
+		{
+			actHandlerRef.sendEmptyMessage(MsgType.UPDATE_PROFILER.ordinal());
+		}
 		
 		// Logic only to run in playing (un-paused) mode
 		if(gameState == GameState.PLAYING)
@@ -143,7 +175,36 @@ public class PlayScene extends Scene
 	 */
 	private void Gameplay()
 	{
-		
+		for(int i = 0; i < this.players.size(); i++)
+		{
+			this.players.elementAt(i).Update();
+		}
+	}
+	
+	private void CreatePlayers()
+	{
+		if(Preferences.Get().multiplayerGame)
+		{
+			// Multiplayer game
+			
+		}
+		else
+		{
+			// Single player game
+			Player newPlayer;
+			
+			// Add player 1
+			newPlayer = new Player(0, new BallInputDevice(this));
+			this.players.add(newPlayer);
+			
+			// Add all the opponents
+			for(int i = 0; i < Preferences.Get().singleNumberOpponents; i++ )
+			{
+				newPlayer = new Player(i+1, new AIInputDevice(this));
+			}
+			
+			
+		}
 	}
 
 }

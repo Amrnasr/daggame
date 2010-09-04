@@ -1,5 +1,6 @@
 package com.game.Scenes;
 
+import com.game.DagLogicThread;
 import com.game.MsgType;
 
 import android.app.Activity;
@@ -92,4 +93,5 @@ public abstract class Scene
 	{
 		this.refActivity = refActivity;
 	}
+	
 }
