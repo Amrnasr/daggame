@@ -34,16 +34,13 @@ public class Map {
 		Log.i("Map", "Started constructor");
 		mBitmap=BitmapFactory.decodeResource(activity.getResources(), mapRef);
 		//mBitmap=BitmapFactory.decodeFile("res/drawable/map_size480_1.png");
-		Log.i("Map", "a");
 		int tilesPerRow = mBitmap.getWidth() / Constants.TileWidth;
 		int tilesPerColumn = mBitmap.getHeight() / Constants.TileWidth;
-		Log.i("Map", "b");
 		//Initialize the matrix
 		mTileMap = new Vector<Vector<Tile>>();
 		for(int i = 0; i < tilesPerRow; i++){
 			mTileMap.addElement(new Vector<Tile>());
 		}
-		Log.i("Map", "c");
 		
 		//Calculate the maximum capacity of each tile and initialize them
 		Iterator<Vector<Tile>> it = mTileMap.listIterator();
@@ -62,7 +59,6 @@ public class Map {
 				tileVector.addElement(new Tile(i,j,whitePixels));
 			}
 		}
-		Log.i("Map", "d");
 	}
 	
 	public Bitmap getBitmap()
