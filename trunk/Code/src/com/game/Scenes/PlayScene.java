@@ -68,6 +68,16 @@ public class PlayScene extends Scene
 	public Handler trackballEvent;
 	
 	/**
+	 * Flag used to check if we are ready to play (checks renderer handle)
+	 */
+	private boolean renderHandleSet = false;
+	
+	/**
+	 * Glag used to check if we are ready to play (checks map loaded)
+	 */
+	private boolean mapLoaded = false;
+	
+	/**
 	 * Initializes and sets the handler callback.
 	 */
 	public PlayScene()
@@ -106,6 +116,10 @@ public class PlayScene extends Scene
 	        			trackballEvent.sendMessage(trackballEvent.obtainMessage(MsgType.TRACKBALL_EVENT.ordinal(), msg.obj));
 	        		}
 				}
+	        	else if (msg.what == MsgType.SCENE_CALL_START.ordinal())
+	        	{
+	        		Start();
+	        	}
 	        	else if(msg.what == MsgType.STOP_SCENE.ordinal())
 	        	{
 	        		runScene = false;
@@ -115,9 +129,8 @@ public class PlayScene extends Scene
 	        		sendRenderer = (Handler)msg.obj;
 	        		Log.i("PlayScene", "Received renderer handle!");
 	        		
-	        		// Only restraining condition for the game to start right now, 
-	        		// if there are others additional logic will be needed.
-	        		gameState = GameState.PLAYING;
+	        		// Notifies that the renderer handle is ready
+	        		renderHandleSet = true;	        		
 	        		
 	        		/*if(mShowTileMap){
 	        			sendRenderer.sendMessage(sendRenderer.obtainMessage(MsgType.NEW_TILEMAP.ordinal(),map.getBitmap().getWidth()/Constants.TileWidth,map.getBitmap().getHeight()/Constants.TileWidth, map.getTileMap()));	
@@ -129,12 +142,14 @@ public class PlayScene extends Scene
 	        	
 	        }
 	    };
+	    
+	    gameState = GameState.PLAYING;
 	}
 
 	@Override
-	public void End() {
+	public void End() 
+	{
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -145,7 +160,17 @@ public class PlayScene extends Scene
 			Log.e("PlayScene","Reference pointer to activity broken!");
 		}
 		
-		map = new Map(refActivity,R.drawable.map_size480_1);
+		// A thread for background loading of the map
+		Thread t = new Thread() 
+		{
+            public void run() {
+            	map = new Map(refActivity,R.drawable.map_size480_1);
+            	actHandlerRef.sendEmptyMessage(MsgType.ACTIVITY_DISMISS_LOAD_DIALOG.ordinal());
+            	mapLoaded = true;
+            }
+        };
+        t.start();
+		
 	}
 
 	/**
@@ -162,7 +187,7 @@ public class PlayScene extends Scene
 		}
 		
 		// Logic only to run in playing (un-paused) mode
-		if(gameState == GameState.PLAYING)
+		if(SceneReady())
 		{
 			Gameplay();
 		}
@@ -181,6 +206,10 @@ public class PlayScene extends Scene
 		}
 	}
 	
+	/**
+	 * Creates the list of players and their InputDevices
+	 * TODO
+	 */
 	private void CreatePlayers()
 	{
 		if(Preferences.Get().multiplayerGame)
@@ -201,10 +230,17 @@ public class PlayScene extends Scene
 			for(int i = 0; i < Preferences.Get().singleNumberOpponents; i++ )
 			{
 				newPlayer = new Player(i+1, new AIInputDevice(this));
-			}
-			
-			
+			}			
 		}
+	}
+	
+	/**
+	 * Checks if the scene is ready to execute gameplay
+	 * @return True if it is, false if it isn't
+	 */
+	private boolean SceneReady()
+	{
+		return (gameState == GameState.PLAYING) && renderHandleSet && mapLoaded; 
 	}
 
 }

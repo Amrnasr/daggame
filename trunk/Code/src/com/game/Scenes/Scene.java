@@ -1,8 +1,6 @@
 package com.game.Scenes;
 
-import com.game.DagLogicThread;
 import com.game.MsgType;
-
 import android.app.Activity;
 import android.os.Handler;
 
