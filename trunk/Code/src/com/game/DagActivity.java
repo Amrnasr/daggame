@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -118,6 +119,7 @@ public class DagActivity extends Activity
 		} 
     	catch (Exception e) 
     	{
+    		Log.e("DagActivity", "Could not complete gamelogic.SetScene");
 			e.printStackTrace();
 			this.finish();
 		}

@@ -19,8 +19,11 @@ public class SingleSelectScene extends Scene {
 	/**
 	 * Initializes and sets the handler callback.
 	 */
-	public SingleSelectScene(){
+	public SingleSelectScene()
+	{		
 		super();
+	
+		Preferences.Get().multiplayerGame = false;
 		
 		this.handler = new Handler()
 		{

@@ -22,6 +22,8 @@ public class MultiSelectScene extends Scene {
 	public MultiSelectScene(){
 		super();
 		
+		Preferences.Get().multiplayerGame = true;
+		
 		this.handler = new Handler()
 		{
 			public void handleMessage (Message msg){

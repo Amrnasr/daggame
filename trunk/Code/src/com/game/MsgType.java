@@ -90,6 +90,11 @@ public enum MsgType
 	ACTIVITY_SAVE_PREFERENCES,
 	
 	/**
+	 * Sent when the track ball receives input.
+	 */
+	TRACKBALL_EVENT,
+	
+	/**
 	 * Sent by the PlayScene to the renderer to give the renderer the new tilemap (Debug mode)
 	 */
 	NEW_TILEMAP,
@@ -98,4 +103,5 @@ public enum MsgType
 	 * Sent by the PlayScene to the renderer to give the renderer the new Bitmap (Release mode)
 	 */
 	NEW_BITMAP
+
 }
