@@ -87,5 +87,15 @@ public enum MsgType
 	 * Tells the activity to save the Preferences object to main
 	 * storage.
 	 */
-	ACTIVITY_SAVE_PREFERENCES
+	ACTIVITY_SAVE_PREFERENCES,
+	
+	/**
+	 * Sent by the PlayScene to the renderer to give the renderer the new tilemap (Debug mode)
+	 */
+	NEW_TILEMAP,
+	
+	/**
+	 * Sent by the PlayScene to the renderer to give the renderer the new Bitmap (Release mode)
+	 */
+	NEW_BITMAP
 }

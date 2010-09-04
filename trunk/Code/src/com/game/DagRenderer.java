@@ -1,9 +1,14 @@
 package com.game;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.Iterator;
+import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.os.Handler;
@@ -36,20 +41,65 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	
 	private int height;
 	private int width;
+	
+	//The tilemap rendered in the debug mode
+	private Vector<Vector<Tile>> tileMap;	
+	
 	public DagRenderer()
 	{
 		super();
 		
 		// Link square to a float buffer
-		floatBuff = FloatBuffer.wrap(debSquare);
+		floatBuff = makeFloatBuffer(debSquare);
+		
+		tileMap = null;
 		
 		// Initialize handler
 		this.receiveFromLogic = new Handler() 
 		{
 	        public void handleMessage(Message msg) 
 	        {
-	        	//TODO: Handle the messages that arrive from the logic thread here.
-	        	
+	        	/*if(msg.what == MsgType.NEW_TILEMAP.ordinal()){
+	        		tileMap = (Vector<Vector<Tile>>) msg.obj;
+	        		int rowTiles = msg.arg1;
+	        		int columnTiles = msg.arg2;
+	        		
+	        		float[] floatArray= new float[rowTiles*columnTiles*4*3];
+	        		
+	        		Iterator<Vector<Tile>> itRow = tileMap.listIterator();
+	        		Vector<Tile> tileVector = null;
+	        		for(int i = 0; i < rowTiles; i++){	
+	        			tileVector = itRow.next();
+	        			Tile tile = null;
+	        			for(int j = 0; j < columnTiles; j++){
+	        				Iterator<Tile> itColumn = tileVector.listIterator();
+	        				tile = itColumn.next();
+	        				
+	        				if(tile.maxCapacity > 0){
+	        					floatArray[i*rowTiles+j] = i*rowTiles*Constants.TileWidth; 
+	        					floatArray[i*rowTiles+j+1] = j*columnTiles*Constants.TileWidth;
+	        					floatArray[i*rowTiles+j+2] = 0.0f; 
+	        					
+	        					floatArray[i*rowTiles+j+3] = i*rowTiles*Constants.TileWidth+Constants.TileWidth; 
+	        					floatArray[i*rowTiles+j+4] = j*columnTiles*Constants.TileWidth;
+	        					floatArray[i*rowTiles+j+5] = 0.0f; 
+	        					
+	        					floatArray[i*rowTiles+j+6] = i*rowTiles*Constants.TileWidth+Constants.TileWidth; 
+	        					floatArray[i*rowTiles+j+7] = j*columnTiles*Constants.TileWidth+Constants.TileWidth;
+	        					floatArray[i*rowTiles+j+8] = 0.0f; 
+	        					
+	        					floatArray[i*rowTiles+j+9] = i*rowTiles*Constants.TileWidth; 
+	        					floatArray[i*rowTiles+j+10] = j*columnTiles*Constants.TileWidth+Constants.TileWidth;
+	        					floatArray[i*rowTiles+j+11] = 0.0f; 
+	        				}
+	        			}			
+	        		}
+	        		
+	        		floatBuff = makeFloatBuffer(floatArray);
+	        	}
+	        	else if(msg.what == MsgType.NEW_BITMAP.ordinal()){
+	        		
+	        	}*/
 	        }
 	    };
 	    
@@ -94,6 +144,16 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 				
     }
+	
+	protected static FloatBuffer makeFloatBuffer(float[] arr)
+	{
+	ByteBuffer bb = ByteBuffer.allocateDirect(arr.length*4);
+	bb.order(ByteOrder.nativeOrder());
+	FloatBuffer fb = bb.asFloatBuffer();
+	fb.put(arr);
+	fb.position(0);
+	return fb;
+	}
 
 	public void setLogicHandler(Handler refHandler)
 	{
