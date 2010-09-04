@@ -102,6 +102,21 @@ public enum MsgType
 	/**
 	 * Sent by the PlayScene to the renderer to give the renderer the new Bitmap (Release mode)
 	 */
-	NEW_BITMAP
-
+	NEW_BITMAP,
+	
+	/**
+	 * Sent to the activity to request the current contentView to be replaced by the load one.
+	 */
+	ACTIVITY_REQUEST_LOAD_SCREEN,
+	
+	/**
+	 * Tells a scene to call the Start() function.
+	 * This is my attempt on having the PlayScene load async.
+	 */
+	SCENE_CALL_START,
+	
+	/**
+	 * Tells the activity loading has finished
+	 */
+	ACTIVITY_DISMISS_LOAD_DIALOG
 }

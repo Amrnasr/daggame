@@ -3,7 +3,6 @@ package com.game;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MotionEvent;
 
 /**

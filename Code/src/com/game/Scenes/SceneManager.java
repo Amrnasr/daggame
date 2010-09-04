@@ -2,8 +2,6 @@ package com.game.Scenes;
 
 import android.app.Activity;
 import android.util.Log;
-
-import com.game.DagLogicThread;
 import com.game.DagActivity.SceneType;
 
 
@@ -42,7 +40,7 @@ public class SceneManager
 
         currentScene = newScene;
         currentScene.setRefActivity(refActivity);
-        currentScene.Start();
+        //TODO: Remove or un-comment: currentScene.Start();
     }
 	
 	/**

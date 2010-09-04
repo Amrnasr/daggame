@@ -4,6 +4,7 @@ package com.game;
 import com.game.ViewData.*;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.widget.RelativeLayout;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,6 +44,9 @@ public class DagActivity extends Activity
 	/// Aux value for changing to a new scene/view
 	private SceneType nextScene;
 	
+	// Dialog used for long loading times
+	private ProgressDialog dialog = null;
+	
     /** 
      * Called when the activity is first created. 
      * Creates the initial view of the game
@@ -65,7 +69,7 @@ public class DagActivity extends Activity
         gameLogic = new DagLogicThread();        
         createLogicScene(SceneType.MENU_SCENE);
         createView(SceneType.MENU_SCENE);
-        
+
         // Start logic and set view
         gameLogic.start();
     	setContentView(gameView);
@@ -112,7 +116,8 @@ public class DagActivity extends Activity
      * created via a handler.
      */
     private void createLogicScene(SceneType scene)
-    {
+    {    	
+   	
     	try 
     	{
 			gameLogic.setScene(scene, this);
@@ -125,6 +130,9 @@ public class DagActivity extends Activity
 		}
     	
     	gameLogic.getCurrentScene().setActivityHandlerRef(this.handler);
+    	
+    	Handler auxH = gameLogic.getCurrentScene().getHandler();
+		auxH.sendEmptyMessage(MsgType.SCENE_CALL_START.ordinal());
     }
     
     /**
@@ -146,6 +154,12 @@ public class DagActivity extends Activity
      *  
      *  - SCENE_STOPED_READY_FOR_CHANGE: ... when it's ready to change. We then create a
      *  new logic scene and a new view, and everyone is happy to go.
+     *  
+     *  - ACTIVITY_SAVE_PREFERENCES: Sent by the gameLogic when any scene warns us that
+     *  changes in the default preferences have been made and we want to save them
+     *  
+     *  - ACTIVITY_DISMISS_LOAD_DIALOG: Sent by the PlayScene so we get rid of the 
+     *  loading dialog shown when loading of the PlayScene is taking place
      */
     private void createHandler()
     {
@@ -163,11 +177,7 @@ public class DagActivity extends Activity
 	        	}
 	        	else if(msg.what == MsgType.SCENE_STOPED_READY_FOR_CHANGE.ordinal())
 	        	{
-	        		// Do not change the order!!
-	        		createLogicScene(nextScene);
-	                createView(nextScene);
-
-	            	setContentView(gameView);
+	        		ChangeScene(nextScene);
 	        	}
 	        	else if(msg.what == MsgType.UPDATE_PROFILER.ordinal())
 	        	{
@@ -177,19 +187,52 @@ public class DagActivity extends Activity
 	        	{
 	        		SavePreferences();
 	        	}
+	        	else if (msg.what == MsgType.ACTIVITY_DISMISS_LOAD_DIALOG.ordinal())
+	        	{
+	        		dialog.dismiss();
+	        		dialog = null;
+	        	}
 	        	
 	        }
 	    };
     }
     
+    /**
+     * Loads game preferences from main memory
+     */
     private void LoadPreferences()
     {
     	Preferences.Get().Load(this);
     }
     
+    /**
+     * Saves the game preferences to main memory
+     */
     private void SavePreferences()
     {
     	Preferences.Get().Save(this);
+    }
+    
+    /**
+     * Changes the scene and view to the one provided
+     * @param nextScene is the scene we want to change to.
+     */
+    private void ChangeScene(SceneType nextScene)
+    {
+    	// Special case, PlayScene being loaded, so we ad a "Loading" dialog.
+    	// It will be deactivated by the PlayScene when it's done loading
+    	if(nextScene == SceneType.PLAY_SCENE)
+    	{
+    		dialog = new ProgressDialog(this);
+    		dialog.setCancelable(false);
+    		dialog.show();
+    	}
+    	
+    	// Do not change the order!!
+    	createLogicScene(nextScene);
+        createView(nextScene);
+
+    	setContentView(gameView);
     }
     
     /**
