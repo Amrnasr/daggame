@@ -1,14 +1,14 @@
 package com.game.Scenes;
 
-import java.security.spec.MGF1ParameterSpec;
-
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.game.Constants;
+import com.game.Map;
 import com.game.MsgType;
-import com.game.DagActivity.SceneType;
+import com.game.R;
 
 /**
  * A specific scene for the "Play" screen.
@@ -47,6 +47,10 @@ public class PlayScene extends Scene
 	
 	private Handler sendRenderer;
 	
+	private Map map;
+	
+	private boolean mShowTileMap;
+	
 	/**
 	 * Initializes and sets the handler callback.
 	 */
@@ -55,6 +59,10 @@ public class PlayScene extends Scene
 		super();
 		
 		gameState = GameState.UNINITIALIZED;
+		
+		mShowTileMap = true;
+		
+		map = null;
 		
 		this.handler = new Handler() 
 		{
@@ -79,6 +87,13 @@ public class PlayScene extends Scene
 	        		// Only restraining condition for the game to start right now, 
 	        		// if there are others additional logic will be needed.
 	        		gameState = GameState.PLAYING;
+	        		
+	        		/*if(mShowTileMap){
+	        			sendRenderer.sendMessage(sendRenderer.obtainMessage(MsgType.NEW_TILEMAP.ordinal(),map.getBitmap().getWidth()/Constants.TileWidth,map.getBitmap().getHeight()/Constants.TileWidth, map.getTileMap()));	
+	        		}
+	        		else{
+	        			sendRenderer.sendMessage(sendRenderer.obtainMessage(MsgType.NEW_BITMAP.ordinal(), map.getBitmap().getWidth(), map.getBitmap().getHeight(), map.getBitmap()));
+	        		}*/
 	        	}
 	        	
 	        }
@@ -97,8 +112,11 @@ public class PlayScene extends Scene
 		if(refActivity == null )
 		{
 			Log.e("PlayScene","Reference pointer to activity broken!");
+			
+			
 		}
-
+		
+		//map = new Map(refActivity,R.drawable.map_size480_1);
 	}
 
 	/**
