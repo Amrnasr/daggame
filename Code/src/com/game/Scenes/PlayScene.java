@@ -12,6 +12,7 @@ import com.game.Preferences;
 import com.game.R;
 import com.game.InputDevice.AIInputDevice;
 import com.game.InputDevice.BallInputDevice;
+import com.game.InputDevice.TouchInputDevice;
 
 /**
  * A specific scene for the "Play" screen.
@@ -68,6 +69,11 @@ public class PlayScene extends Scene
 	public Handler trackballEvent;
 	
 	/**
+	 * Sends a message when a touch message arrives via the handler
+	 */
+	public Handler touchEvent;
+	
+	/**
 	 * Flag used to check if we are ready to play (checks renderer handle)
 	 */
 	private boolean renderHandleSet = false;
@@ -87,6 +93,7 @@ public class PlayScene extends Scene
 		this.gameState = GameState.UNINITIALIZED;
 		this.players = new Vector<Player>();
 		this.trackballEvent = null;
+		this.touchEvent = null;
 
 		CreatePlayers();
 
@@ -99,18 +106,21 @@ public class PlayScene extends Scene
 	        public void handleMessage(Message msg) 
 	        {
 	        	if(msg.what == MsgType.TOUCH_EVENT.ordinal())
-	        	{
-	        		MotionEvent event = (MotionEvent)msg.obj;
+	        	{       		
+	        		if( touchEvent != null )
+	        		{
+	        			// If there is some input event registered to the touch events
+	        			// send him the message. Otherwise we ignore it.
+	        			touchEvent.sendMessage(touchEvent.obtainMessage(MsgType.TOUCH_EVENT.ordinal(), msg.obj));
+	        		}
 	        		
-	        		// TODO: Do something relevant with the event
-	        		Log.i("PlayScene Handler: ", "Motion event: " + event.getX() + ", " + event.getY());
+	        		//Log.i("PlayScene Handler: ", "Motion event: " + event.getX() + ", " + event.getY());
 	        	}
 	        	else if(msg.what == MsgType.TRACKBALL_EVENT.ordinal())
 				{
 	        		
 	        		if( trackballEvent != null )
 	        		{
-	        			Log.i("PlayScene", "Trackball used!");
 	        			// If there is some input event registered to the trackball events
 	        			// send him the message. Otherwise we ignore it.
 	        			trackballEvent.sendMessage(trackballEvent.obtainMessage(MsgType.TRACKBALL_EVENT.ordinal(), msg.obj));
@@ -223,7 +233,7 @@ public class PlayScene extends Scene
 			Player newPlayer;
 			
 			// Add player 1
-			newPlayer = new Player(0, new BallInputDevice(this));
+			newPlayer = new Player(0, new TouchInputDevice(this));
 			this.players.add(newPlayer);
 			
 			// Add all the opponents
