@@ -134,6 +134,6 @@ public class Cursor
 		this.pos.Offset(this.direction.X()*increment, this.direction.Y()*increment);
 		this.distance -= increment;
 		
-		Log.i("Cursor", "New position: " + this.pos.X() + ", " + this.pos.Y());
+		//Log.i("Cursor", "New position: " + this.pos.X() + ", " + this.pos.Y());
 	}
 }
