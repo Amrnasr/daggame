@@ -1,6 +1,8 @@
 package com.game.Scenes;
 
 import java.util.Vector;
+
+import android.hardware.Camera.Parameters;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -12,6 +14,7 @@ import com.game.Preferences;
 import com.game.R;
 import com.game.InputDevice.AIInputDevice;
 import com.game.InputDevice.BallInputDevice;
+import com.game.InputDevice.InputDevice;
 import com.game.InputDevice.TouchInputDevice;
 
 /**
@@ -232,8 +235,26 @@ public class PlayScene extends Scene
 			// Single player game
 			Player newPlayer;
 			
-			// Add player 1
-			newPlayer = new Player(0, new TouchInputDevice(this));
+			// Add player 1, input device checked from Preferences
+			InputDevice inputDevice = null;
+			
+			switch (Preferences.Get().singleControlMode) 
+			{
+				case 0:
+					// Touch mode
+					inputDevice = new TouchInputDevice(this);
+					break;
+				
+				case 1:
+					// Trackball
+					inputDevice = new BallInputDevice(this);
+					break;
+	
+				default:
+					Log.e("PlayScene", "Input device requested for player not implemented yet!");				
+					break;
+			}
+			newPlayer = new Player(0, inputDevice);
 			this.players.add(newPlayer);
 			
 			// Add all the opponents

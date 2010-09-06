@@ -1,6 +1,7 @@
 package com.game.InputDevice;
 
 import com.game.MsgType;
+import com.game.Vec2;
 import com.game.Scenes.PlayScene;
 
 import android.os.Handler;
@@ -16,9 +17,13 @@ import android.view.MotionEvent;
  */
 public class BallInputDevice extends InputDevice 
 {
+	/**
+	 * Modifies the ball input to give it a little more force.
+	 */
+	private static final int SCALE_FACTOR = 5;
 
 	/**
-	 * Creates the Handler and asigns it.
+	 * Creates the Handler and assigns it.
 	 * @param playScene
 	 */
 	public BallInputDevice(PlayScene playScene)
@@ -34,7 +39,7 @@ public class BallInputDevice extends InputDevice
 					MotionEvent event = (MotionEvent)msg.obj;
 					Log.i("BallInputDevice", "Trackball event: " + event.getX() + ", " + event.getY());
 					
-					// TODO: Transform trackball input into cursor movement
+					parent.GetCursor().MoveInDirection(new Vec2(event.getX() * SCALE_FACTOR, event.getY() * SCALE_FACTOR));
 				}
 			}
 		};

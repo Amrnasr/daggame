@@ -19,6 +19,10 @@ public class Preferences
 	protected Preferences() 
 	{
 		this.multiplayerGame = false;
+		
+		// Made up default map size
+		this.mapHeight = 100;
+		this.mapWidth = 100;
 	}
 	
 	/**
@@ -122,5 +126,7 @@ public class Preferences
 	
 	// Other global data
 	public boolean multiplayerGame;
+	public int mapWidth;
+	public int mapHeight;
 
 }
