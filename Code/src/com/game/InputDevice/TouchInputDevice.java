@@ -5,6 +5,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import com.game.MsgType;
+import com.game.Vec2;
 import com.game.Scenes.PlayScene;
 
 /**
@@ -15,7 +16,7 @@ import com.game.Scenes.PlayScene;
 public class TouchInputDevice extends InputDevice 
 {
 	/**
-	 * Creates the handler and links it to the appropiate one in PlayScene
+	 * Creates the handler and links it to the appropriate one in PlayScene
 	 * @param playScene to listen in
 	 */
 	public TouchInputDevice(PlayScene playScene) 
@@ -29,9 +30,9 @@ public class TouchInputDevice extends InputDevice
 				if(msg.what == MsgType.TOUCH_EVENT.ordinal())
 				{
 					MotionEvent event = (MotionEvent)msg.obj;
-					Log.i("TouchInputDevice", "Touch event: " + event.getX() + ", " + event.getY());
-					
-					// TODO: Transform touch input into cursor movement
+
+					// TODO: Translate to world coordinates, not screen ones!
+					parent.GetCursor().MoveTo(new Vec2(event.getX(),event.getY()));
 				}
 			}
 		};
