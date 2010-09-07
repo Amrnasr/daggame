@@ -5,12 +5,15 @@ import com.game.ViewData.*;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.widget.RelativeLayout;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 
 /**
  * Activity class of the game. Creates and maintains the needed views.
@@ -61,6 +64,9 @@ public class DagActivity extends Activity
         
         // Load stored game preferences
         LoadPreferences();
+        
+        // Set initial camera params
+        InitializeCamera();
         
         // Create handler
         createHandler();
@@ -233,6 +239,16 @@ public class DagActivity extends Activity
         createView(nextScene);
 
     	setContentView(gameView);
+    }
+    
+    /**
+     * Sets the camera initial parameters, like the screen size.
+     */
+    private void InitializeCamera()
+    {
+    	Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay(); 
+        
+        Camera.Get().SetScreenSize(display.getWidth(), display.getHeight());
     }
     
     /**

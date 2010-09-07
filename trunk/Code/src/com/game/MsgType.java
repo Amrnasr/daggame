@@ -118,5 +118,10 @@ public enum MsgType
 	/**
 	 * Tells the activity loading has finished
 	 */
-	ACTIVITY_DISMISS_LOAD_DIALOG
+	ACTIVITY_DISMISS_LOAD_DIALOG,
+	
+	/**
+	 * Updates the camera position
+	 */
+	RENDERER_UPDATE_CAM
 }
