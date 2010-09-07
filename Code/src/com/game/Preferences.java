@@ -21,8 +21,12 @@ public class Preferences
 		this.multiplayerGame = false;
 		
 		// Made up default map size
-		this.mapHeight = 100;
-		this.mapWidth = 100;
+		this.mapHeight = -1;
+		this.mapWidth = -1;
+		
+		// HACKHACK to test the camera. REMOVE THIS ONCE NEOM UPDATES MAP
+		this.mapHeight = 480;
+		this.mapWidth = 960;
 	}
 	
 	/**
