@@ -89,6 +89,11 @@ public class Camera
 	 * Given a point in the screen coordinates, it returns the point in
 	 * map coordinates, taking in account the camera position.
 	 * 
+	 * The logic here is:
+	 * (screenPoint + cam(x,y))* cam.z/InitialZ
+	 * The first sum is to displace, the multiplication is the ratio that results from 
+	 * zooming the camera in/ out.
+	 * 
 	 * @param touchPos is the point touched on the screen
 	 * @return map coordinates for touchPoint
 	 */

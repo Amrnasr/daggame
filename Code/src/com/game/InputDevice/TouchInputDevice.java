@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
+
+import com.game.Camera;
 import com.game.MsgType;
 import com.game.Vec2;
 import com.game.Scenes.PlayScene;
@@ -31,8 +33,8 @@ public class TouchInputDevice extends InputDevice
 				{
 					MotionEvent event = (MotionEvent)msg.obj;
 
-					// TODO: Translate to world coordinates, not screen ones!
-					parent.GetCursor().MoveTo(new Vec2(event.getX(),event.getY()));
+					Vec2 newPos = Camera.Get().ScreenToWorld(new Vec2(event.getX(),event.getY()));					
+					parent.GetCursor().MoveTo(newPos);
 				}
 			}
 		};
