@@ -1,5 +1,6 @@
 package com.game;
 
+import android.hardware.Camera.Parameters;
 import android.util.Log;
 
 
@@ -51,6 +52,8 @@ public class Cursor
 	public void SetPosition(double x, double y)
 	{
 		this.pos = new Vec2(x, y);
+		
+		Log.i("Cursor", "Initial position: " + x + ", " + y);
 	}
 	
 	/**
@@ -126,6 +129,8 @@ public class Cursor
 	/**
 	 * If it needs to move, this function updates it's position one 
 	 * speed step, or the remaining of the distance, whichever is shorter.
+	 * 
+	 * TODO: Take into consideration the w & h of the cursor.
 	 */
 	private void Move()
 	{
@@ -133,6 +138,25 @@ public class Cursor
 		
 		this.pos.Offset(this.direction.X()*increment, this.direction.Y()*increment);
 		this.distance -= increment;
+		
+		// Check if we have to truncate because we are outside the map
+		if(pos.X() < 0)
+		{
+			pos.SetX(0);			
+		}
+		else if(pos.X() > Preferences.Get().mapWidth)
+		{
+			pos.SetX(Preferences.Get().mapWidth);
+		}
+		
+		if(pos.Y() < 0)
+		{
+			pos.SetY(0);
+		}
+		else if(pos.Y() > Preferences.Get().mapHeight)
+		{
+			pos.SetY(Preferences.Get().mapHeight);
+		}
 		
 		//Log.i("Cursor", "New position: " + this.pos.X() + ", " + this.pos.Y());
 	}

@@ -1,5 +1,9 @@
 package com.game;
 
+import java.util.Random;
+
+import android.util.Log;
+
 import com.game.InputDevice.InputDevice;
 
 /**
@@ -27,9 +31,18 @@ public class Player
 	{
 		this.playerNumber = playerNumber;
 		
+		// Cursor
+		// TODO: This will have to change to wait for map load.
+		int wMargin = Preferences.Get().mapWidth/10;
+		int wArea = Preferences.Get().mapWidth*8/10;
+		
+		int hMargin = Preferences.Get().mapHeight /10;
+		int hArea = Preferences.Get().mapHeight *8/10;
+		
 		this.cursor = new Cursor(this);
-		// TODO: Set a real position for the cursor;
-		this.cursor.SetPosition(20, 20);
+		Random gen = new Random();
+		this.cursor.SetPosition(gen.nextInt(wArea) + wMargin, gen.nextInt(hArea) + hMargin);
+		
 		this.inputDevice = inputDevice;
 		this.inputDevice.SetParent(this);		
 	}
