@@ -1,13 +1,11 @@
 package com.game;
 
-import java.util.Iterator;
 import java.util.Vector;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Handler;
 import android.util.Log;
 
 /**
@@ -20,7 +18,7 @@ import android.util.Log;
 public class Map {
 	
 	private Bitmap mBitmap;
-	private Vector<Vector<Tile>> mTileMap;
+	private Vector<Tile> mTileMap;
 	
 	
 	/**
@@ -33,30 +31,30 @@ public class Map {
 		//Load the image
 		Log.i("Map", "Started constructor");
 		mBitmap=BitmapFactory.decodeResource(activity.getResources(), mapRef);
-		//mBitmap=BitmapFactory.decodeFile("res/drawable/map_size480_1.png");
+
 		int tilesPerRow = mBitmap.getWidth() / Constants.TileWidth;
 		int tilesPerColumn = mBitmap.getHeight() / Constants.TileWidth;
+		
+		//Store the width and height of the map
+		Preferences.Get().mapWidth=mBitmap.getWidth();
+		Preferences.Get().mapHeight=mBitmap.getHeight();
+		
 		//Initialize the matrix
-		mTileMap = new Vector<Vector<Tile>>();
-		for(int i = 0; i < tilesPerRow; i++){
-			mTileMap.addElement(new Vector<Tile>());
-		}
+		mTileMap = new Vector<Tile>();
 		
 		//Calculate the maximum capacity of each tile and initialize them
-		Iterator<Vector<Tile>> it = mTileMap.listIterator();
-		Vector<Tile> tileVector=null;
-		for(int i = 0; i < tilesPerRow; i++){
-			tileVector= it.next();
-			for( int j = 0; j < tilesPerColumn; j++){
+		for( int j = tilesPerColumn-1; j >= 0; j--){
+			for(int i = 0; i < tilesPerRow; i++){
 				int whitePixels = 0;
 				for(int k = 0; k < Constants.TileWidth; k++){
 					for(int l = 0; l < Constants.TileWidth; l++){
-						if(mBitmap.getPixel(i*Constants.TileWidth+k, j*Constants.TileWidth+l) == Color.WHITE){
+						if(mBitmap.getPixel(i*Constants.TileWidth+k, j*Constants.TileWidth+l) != Color.BLACK){
 							whitePixels++;
 						}
 					}
 				}
-				tileVector.addElement(new Tile(i,j,whitePixels));
+				mTileMap.addElement(new Tile(i,tilesPerColumn-j,whitePixels));
+				//Log.i("Map",new String().valueOf(whitePixels));
 			}
 		}
 	}
@@ -66,7 +64,7 @@ public class Map {
 		return mBitmap;
 	}
 	
-	public Vector<Vector<Tile>> getTileMap(){
+	public Vector<Tile> getTileMap(){
 		return mTileMap;
 	}
 	

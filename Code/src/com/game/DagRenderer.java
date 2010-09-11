@@ -3,6 +3,7 @@ package com.game;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -42,54 +43,68 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private int width;
 	
 	//The tilemap rendered in the debug mode
-	private Vector<Vector<Tile>> tileMap;	
+	private Vector<Tile> tileMap;	
+	
+	private int bufferLength;
 	
 	public DagRenderer()
 	{
 		super();
 		
+		tileMap = null;
+		
 		// Link square to a float buffer
 		floatBuff = makeFloatBuffer(debSquare);
 		
-		tileMap = null;
+	    height = 0;
+	    width = 0;
 		
 		// Initialize handler
 		this.receiveFromLogic = new Handler() 
 		{
 	        public void handleMessage(Message msg) 
 	        {
-	        	/*if(msg.what == MsgType.NEW_TILEMAP.ordinal()){
-	        		tileMap = (Vector<Vector<Tile>>) msg.obj;
+	        	if(msg.what == MsgType.NEW_TILEMAP.ordinal()){
+	        		tileMap = (Vector<Tile>) msg.obj;
 	        		int rowTiles = msg.arg1;
 	        		int columnTiles = msg.arg2;
+	        		width=rowTiles*Constants.TileWidth;
+	        		height=columnTiles*Constants.TileWidth;
 	        		
-	        		float[] floatArray= new float[rowTiles*columnTiles*4*3];
+	        		float[] floatArray= new float[rowTiles*columnTiles*6*3];
 	        		
-	        		Iterator<Vector<Tile>> itRow = tileMap.listIterator();
-	        		Vector<Tile> tileVector = null;
-	        		for(int i = 0; i < rowTiles; i++){	
-	        			tileVector = itRow.next();
-	        			Tile tile = null;
-	        			for(int j = 0; j < columnTiles; j++){
-	        				Iterator<Tile> itColumn = tileVector.listIterator();
-	        				tile = itColumn.next();
-	        				
+	        		Iterator<Tile> it = tileMap.listIterator();
+	        		Tile tile = null;
+	        		bufferLength = 0;
+	        		for(int j = 0; j < columnTiles; j++){
+	        			for(int i = 0; i < rowTiles; i++){			
+	        				tile = it.next();
 	        				if(tile.maxCapacity > 0){
-	        					floatArray[i*rowTiles+j] = i*rowTiles*Constants.TileWidth; 
-	        					floatArray[i*rowTiles+j+1] = j*columnTiles*Constants.TileWidth;
-	        					floatArray[i*rowTiles+j+2] = 0.0f; 
+	        					floatArray[bufferLength] = i*Constants.TileWidth; 
+	        					floatArray[bufferLength+1] = j*Constants.TileWidth;
+	        					floatArray[bufferLength+2] = 0.0f; 
 	        					
-	        					floatArray[i*rowTiles+j+3] = i*rowTiles*Constants.TileWidth+Constants.TileWidth; 
-	        					floatArray[i*rowTiles+j+4] = j*columnTiles*Constants.TileWidth;
-	        					floatArray[i*rowTiles+j+5] = 0.0f; 
+	        					floatArray[bufferLength+3] = i*Constants.TileWidth+Constants.TileWidth; 
+	        					floatArray[bufferLength+4] = j*Constants.TileWidth;
+	        					floatArray[bufferLength+5] = 0.0f; 
 	        					
-	        					floatArray[i*rowTiles+j+6] = i*rowTiles*Constants.TileWidth+Constants.TileWidth; 
-	        					floatArray[i*rowTiles+j+7] = j*columnTiles*Constants.TileWidth+Constants.TileWidth;
-	        					floatArray[i*rowTiles+j+8] = 0.0f; 
+	        					floatArray[bufferLength+6] = i*Constants.TileWidth; 
+	        					floatArray[bufferLength+7] = j*Constants.TileWidth+Constants.TileWidth;
+	        					floatArray[bufferLength+8] = 0.0f; 
 	        					
-	        					floatArray[i*rowTiles+j+9] = i*rowTiles*Constants.TileWidth; 
-	        					floatArray[i*rowTiles+j+10] = j*columnTiles*Constants.TileWidth+Constants.TileWidth;
-	        					floatArray[i*rowTiles+j+11] = 0.0f; 
+	        					floatArray[bufferLength+9] = i*Constants.TileWidth+Constants.TileWidth; 
+	        					floatArray[bufferLength+10] = j*Constants.TileWidth;
+	        					floatArray[bufferLength+11] = 0.0f; 
+	        					
+	        					floatArray[bufferLength+12] = i*Constants.TileWidth+Constants.TileWidth; 
+	        					floatArray[bufferLength+13] = j*Constants.TileWidth+Constants.TileWidth;
+	        					floatArray[bufferLength+14] = 0.0f; 
+	        					
+	        					floatArray[bufferLength+15] = i*Constants.TileWidth; 
+	        					floatArray[bufferLength+16] = j*Constants.TileWidth+Constants.TileWidth;
+	        					floatArray[bufferLength+17] = 0.0f; 
+	        					
+	        					bufferLength += 18;
 	        				}
 	        			}			
 	        		}
@@ -98,12 +113,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        	}
 	        	else if(msg.what == MsgType.NEW_BITMAP.ordinal()){
 	        		
-	        	}*/
+	        	}
 	        }
 	    };
-	    
-	    height = 0;
-	    width = 0;
 	}
 	
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
@@ -121,7 +133,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glViewport(0,0,w,h);
 		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, 1f, 2000f);
 		
-		gl.glColor4f(1, 0, 0, 0.5f);
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		
 		height = h;
@@ -135,12 +147,15 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		
-		gl.glTranslatef(-width/2,-height/2,-(2*height));
+		gl.glTranslatef(-width/2.0f,-height/2.0f,-(2.0f*width));
 		
 		// Draw debug square
-		gl.glColor4f(1, 0, 0, 0.5f);
-		//gl.glVertexPointer(3, GL10.GL_FLOAT, 0, floatBuff);		
-		//gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, floatBuff);		
+		if(tileMap != null){
+			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, bufferLength/3);
+		}
+		
 				
     }
 	
