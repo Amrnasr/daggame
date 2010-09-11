@@ -2,11 +2,11 @@ package com.game.Scenes;
 
 import java.util.Vector;
 
-import android.hardware.Camera.Parameters;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.MotionEvent;
+
+import com.game.Constants;
 import com.game.Map;
 import com.game.MsgType;
 import com.game.Player;
@@ -180,6 +180,13 @@ public class PlayScene extends Scene
             	map = new Map(refActivity,R.drawable.map_size480_1);
             	actHandlerRef.sendEmptyMessage(MsgType.ACTIVITY_DISMISS_LOAD_DIALOG.ordinal());
             	mapLoaded = true;
+            	
+            	//if(mShowTileMap){
+        			sendRenderer.sendMessage(sendRenderer.obtainMessage(MsgType.NEW_TILEMAP.ordinal(),map.getBitmap().getWidth()/Constants.TileWidth,map.getBitmap().getHeight()/Constants.TileWidth, map.getTileMap()));	
+        		//}
+        		//else{
+        		//	sendRenderer.sendMessage(sendRenderer.obtainMessage(MsgType.NEW_BITMAP.ordinal(), map.getBitmap().getWidth(), map.getBitmap().getHeight(), map.getBitmap()));
+        		//}
             }
         };
         t.start();
