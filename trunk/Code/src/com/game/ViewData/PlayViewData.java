@@ -24,7 +24,6 @@ public class PlayViewData extends ViewData
 		
 		// Create GLSurfaceView
 		DagGLSurfaceView oglLayout = new DagGLSurfaceView(activity);  
-		oglLayout.setLogicHandlerRef(handlerRef);
         
 		return oglLayout;
 	}

@@ -1,8 +1,9 @@
 package com.game;
 
+import com.game.MessageHandler.MsgReceiver;
+
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.os.Handler;
 import android.view.MotionEvent;
 
 /**
@@ -16,13 +17,9 @@ public class DagGLSurfaceView extends GLSurfaceView
 {
 	private DagRenderer mRenderer;
 	
-	private Handler logicHandRef;
-	
 	public DagGLSurfaceView(Context context) 
     {
 		super(context);       
-		
-		logicHandRef = null;
 		
 		setFocusable(true);
 		
@@ -33,35 +30,14 @@ public class DagGLSurfaceView extends GLSurfaceView
     public boolean onTouchEvent(final MotionEvent event) 
     {
     	// Send any touches in this view to the logic thread to be processed.
-    	if(logicHandRef == null)
-    	{
-    		return false;
-    	}
-    	else
-    	{
-    		logicHandRef.sendMessage(logicHandRef.obtainMessage(MsgType.TOUCH_EVENT.ordinal(), event));
-    		return true;
-    	}
-    }
-    
-    public void setLogicHandlerRef( Handler refLogicHandler)
-    {
-    	logicHandRef = refLogicHandler;
-    	mRenderer.setLogicHandler(refLogicHandler);
+    	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.TOUCH_EVENT, event);
+    	return true;
     }
 
     public boolean onTrackballEvent(MotionEvent event)
     {
-    	
-    	if(this.logicHandRef == null)
-    	{
-    		return false;
-    	}
-    	else
-    	{
-    		logicHandRef.sendMessage(logicHandRef.obtainMessage(MsgType.TRACKBALL_EVENT.ordinal(), event));
-    		return true;
-    	}
+    	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.TRACKBALL_EVENT, event);
+    	return true;
     }
     
 }

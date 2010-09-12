@@ -1,9 +1,11 @@
 package com.game.ViewData;
 
 
+import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.Preferences;
 import com.game.R;
+import com.game.MessageHandler.MsgReceiver;
 
 import android.app.Activity;
 import android.content.Context;
@@ -56,7 +58,7 @@ public class OptionsViewData extends ViewData
           @Override
           public void onClick(View v) {
             Log.i("ViewData", " Clicked OK button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.ok_options_but, 0));
+            MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.BUTTON_CLICK, R.id.ok_options_but);
           }
         });
         
@@ -71,7 +73,7 @@ public class OptionsViewData extends ViewData
         			View view, int position, long id) 
         	{
         		Log.i("OptionsViewData", "Selected number units spinner item");
-        		handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.SPINNER_ITEM_CLICK.ordinal(), R.id.num_units_spin, position));
+        		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.num_units_spin, position);
         	}
 
         	public void onNothingSelected(AdapterView parent) {
@@ -91,7 +93,7 @@ public class OptionsViewData extends ViewData
         			View view, int position, long id) 
         	{
         		Log.i("OptionsViewData", "Selected move speed spinner item");
-        		handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.SPINNER_ITEM_CLICK.ordinal(), R.id.move_speed_spin, position));
+        		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.move_speed_spin, position);
         	}
 
         	public void onNothingSelected(AdapterView parent) {
@@ -111,7 +113,7 @@ public class OptionsViewData extends ViewData
         			View view, int position, long id) 
         	{
         		Log.i("OptionsViewData", "Selected eat speed spinner item");
-        		handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.SPINNER_ITEM_CLICK.ordinal(), R.id.eat_speed_spin, position));
+        		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.eat_speed_spin, position);
         	}
 
         	public void onNothingSelected(AdapterView parent) {
@@ -142,7 +144,7 @@ public class OptionsViewData extends ViewData
 					checked = 0;
 				}
 				
-				handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.CHECKBOX_CLICK.ordinal(), R.id.sound_mute, checked));	
+				MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.CHECKBOX_CLICK, R.id.sound_mute, checked);	
 			}
 		});
         

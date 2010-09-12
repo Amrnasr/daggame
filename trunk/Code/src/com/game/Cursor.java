@@ -1,8 +1,6 @@
 package com.game;
 
-import android.hardware.Camera.Parameters;
 import android.util.Log;
-
 
 /**
  * Cursor the player moves around

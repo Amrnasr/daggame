@@ -44,7 +44,6 @@ public class TouchInputDevice extends InputDevice
 			Log.e("TouchInputDevice", "Touch handler is not null! Some other ID has already claimed it");
 		}
 		playScene.touchEvent = this.deviceHandler;
-		Log.i("TouchInputDevice","Called constructor");
 	}
 
 	@Override

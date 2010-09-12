@@ -1,8 +1,10 @@
 package com.game.Scenes;
 
+import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.R;
 import com.game.DagActivity.SceneType;
+import com.game.MessageHandler.MsgReceiver;
 
 import android.os.Handler;
 import android.os.Message;
@@ -51,34 +53,29 @@ public class MenuScene extends Scene
     	{
 		case R.id.single_but:
 			Log.i("MenuScene", "Single button handler called");
-			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(
-					MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
-    				SceneType.SINGLE_SCENE.ordinal(), 0));
+			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.SINGLE_SCENE.ordinal());
 			break;
+			
 		case R.id.multi_but:
 			Log.i("MenuScene", "Multi button handler called");
-			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(
-					MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
-    				SceneType.MULTI_SCENE.ordinal(), 0));
+			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.MULTI_SCENE.ordinal());
 			break;
+			
 		case R.id.options_but:
 			Log.i("MenuScene", "Options button handler called");
-			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(
-					MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
-    				SceneType.OPTIONS_SCENE.ordinal(), 0));
+			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.OPTIONS_SCENE.ordinal());
 			break;
+			
 		case R.id.about_but:
 			Log.i("MenuScene", "About button handler called");
-			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(
-					MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
-    				SceneType.ABOUT_SCENE.ordinal(), 0));
+			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.ABOUT_SCENE.ordinal());
 			break;
+			
 		case R.id.how_but:
 			Log.i("MenuScene", "How button handler called");
-			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(
-					MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
-    				SceneType.HOW_SCENE.ordinal(), 0));
+			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.HOW_SCENE.ordinal());
 			break;
+			
 		default:
 			Log.e("MenuScene", "No handler options for that message!!");
 			break;
@@ -103,7 +100,7 @@ public class MenuScene extends Scene
 	@Override
 	public void Update() 
 	{
-		actHandlerRef.sendEmptyMessage(MsgType.UPDATE_PROFILER.ordinal());
+		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_PROFILER);
 	}
 
 }

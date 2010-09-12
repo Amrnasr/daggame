@@ -16,9 +16,11 @@ import android.widget.Gallery;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.Preferences;
 import com.game.R;
+import com.game.MessageHandler.MsgReceiver;
 
 /**
  * ViewData for the Single Player scene.
@@ -54,7 +56,7 @@ public class SingleViewData extends ViewData
           @Override
           public void onClick(View v) {
             Log.i("SingleViewData", "Clicked OK button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.ok_single_but, 0));
+            MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.BUTTON_CLICK, R.id.ok_single_but);
           }
         });
         
@@ -64,7 +66,7 @@ public class SingleViewData extends ViewData
           @Override
           public void onClick(View v) {
             Log.i("SingleViewData", "Clicked Back button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.back_single_but, 0));
+            MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.BUTTON_CLICK, R.id.back_single_but );
           }
         });
         
@@ -87,7 +89,7 @@ public class SingleViewData extends ViewData
 				{
 					checked = 0;
 				}
-				handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.CHECKBOX_CLICK.ordinal(), R.id.minimap_single_check, checked));	
+				MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.CHECKBOX_CLICK, R.id.minimap_single_check, checked);	
 			}
 		});
         
@@ -108,7 +110,7 @@ public class SingleViewData extends ViewData
 				{
 					checked = 0;
 				}
-				handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.CHECKBOX_CLICK.ordinal(), R.id.powerups_single_check, checked));	
+				MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.CHECKBOX_CLICK, R.id.powerups_single_check, checked);	
 			}
 		});
         
@@ -121,7 +123,7 @@ public class SingleViewData extends ViewData
             public void onItemClick(AdapterView parent, View v, int position, long id) 
             {
             	Log.i("SingleViewData", "Clicked maps gallery item");
-            	handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.GALLERY_ITEM_CLICK.ordinal(), R.id.maps_single_gal, position));
+            	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.GALLERY_ITEM_CLICK, R.id.maps_single_gal, position);
             }
         });
         
@@ -136,7 +138,7 @@ public class SingleViewData extends ViewData
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
         		Log.i("SingleViewData", "Selected color spinner item");
-        		handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.SPINNER_ITEM_CLICK.ordinal(), R.id.color_single_spin, position));
+        		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.color_single_spin, position);
         	}
 
         	public void onNothingSelected(AdapterView parent) {
@@ -155,7 +157,7 @@ public class SingleViewData extends ViewData
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
         		Log.i("SingleViewData", "Selected opponents spinner item");
-        		handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.SPINNER_ITEM_CLICK.ordinal(), R.id.op_single_spin, position));
+        		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.op_single_spin, position);
         	}
 
         	public void onNothingSelected(AdapterView parent) {
@@ -174,7 +176,7 @@ public class SingleViewData extends ViewData
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
         		Log.i("SingleViewData", "Selected control spinner item");
-        		handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.SPINNER_ITEM_CLICK.ordinal(), R.id.control_single_spin, position));
+        		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.control_single_spin, position);
         	}
 
         	public void onNothingSelected(AdapterView parent) {

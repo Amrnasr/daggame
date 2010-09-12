@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.game.Constants;
 import com.game.Map;
+import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.Player;
 import com.game.Preferences;
@@ -16,6 +17,7 @@ import com.game.InputDevice.AIInputDevice;
 import com.game.InputDevice.BallInputDevice;
 import com.game.InputDevice.InputDevice;
 import com.game.InputDevice.TouchInputDevice;
+import com.game.MessageHandler.MsgReceiver;
 
 /**
  * A specific scene for the "Play" screen.
@@ -52,11 +54,6 @@ public class PlayScene extends Scene
 	 */
 	private GameState gameState;
 	
-	/**
-	 * Communicates with the renderer.
-	 */
-	private Handler sendRenderer;
-	
 	private Map map;
 	
 	private boolean mShowTileMap;
@@ -75,11 +72,6 @@ public class PlayScene extends Scene
 	 * Sends a message when a touch message arrives via the handler
 	 */
 	public Handler touchEvent;
-	
-	/**
-	 * Flag used to check if we are ready to play (checks renderer handle)
-	 */
-	private boolean renderHandleSet = false;
 	
 	/**
 	 * Glag used to check if we are ready to play (checks map loaded)
@@ -120,8 +112,7 @@ public class PlayScene extends Scene
 	        		//Log.i("PlayScene Handler: ", "Motion event: " + event.getX() + ", " + event.getY());
 	        	}
 	        	else if(msg.what == MsgType.TRACKBALL_EVENT.ordinal())
-				{
-	        		
+				{	        		
 	        		if( trackballEvent != null )
 	        		{
 	        			// If there is some input event registered to the trackball events
@@ -136,26 +127,9 @@ public class PlayScene extends Scene
 	        	else if(msg.what == MsgType.STOP_SCENE.ordinal())
 	        	{
 	        		runScene = false;
-	        	}
-	        	else if (msg.what == MsgType.RENDERER_LOGIC_HANDLER_LINK.ordinal())
-	        	{	        		        	
-	        		sendRenderer = (Handler)msg.obj;
-	        		Log.i("PlayScene", "Received renderer handle!");
-	        		
-	        		// Notifies that the renderer handle is ready
-	        		renderHandleSet = true;	        		
-	        		
-	        		/*if(mShowTileMap){
-	        			sendRenderer.sendMessage(sendRenderer.obtainMessage(MsgType.NEW_TILEMAP.ordinal(),map.getBitmap().getWidth()/Constants.TileWidth,map.getBitmap().getHeight()/Constants.TileWidth, map.getTileMap()));	
-	        		}
-	        		else{
-	        			sendRenderer.sendMessage(sendRenderer.obtainMessage(MsgType.NEW_BITMAP.ordinal(), map.getBitmap().getWidth(), map.getBitmap().getHeight(), map.getBitmap()));
-	        		}*/
-	        	}
-	        	
+	        	}    	
 	        }
 	    };
-	    
 	    gameState = GameState.PLAYING;
 	}
 
@@ -177,12 +151,18 @@ public class PlayScene extends Scene
 		Thread t = new Thread() 
 		{
             public void run() {
+            	Log.i("Debug", "Calling Playscene new thread run");
             	map = new Map(refActivity,R.drawable.map_size480_1);
-            	actHandlerRef.sendEmptyMessage(MsgType.ACTIVITY_DISMISS_LOAD_DIALOG.ordinal());
+            	MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG);            	
             	mapLoaded = true;
             	
             	//if(mShowTileMap){
-        			sendRenderer.sendMessage(sendRenderer.obtainMessage(MsgType.NEW_TILEMAP.ordinal(),map.getBitmap().getWidth()/Constants.TileWidth,map.getBitmap().getHeight()/Constants.TileWidth, map.getTileMap()));	
+            	MessageHandler.Get().Send(
+            			MsgReceiver.RENDERER, 
+            			MsgType.NEW_TILEMAP, 
+            			map.getBitmap().getWidth()/Constants.TileWidth,
+            			map.getBitmap().getHeight()/Constants.TileWidth,  
+            			map.getTileMap());        			
         		//}
         		//else{
         		//	sendRenderer.sendMessage(sendRenderer.obtainMessage(MsgType.NEW_BITMAP.ordinal(), map.getBitmap().getWidth(), map.getBitmap().getHeight(), map.getBitmap()));
@@ -201,14 +181,12 @@ public class PlayScene extends Scene
 	public void Update() 
 	{
 		// Logic not dependent on game state
-		if(actHandlerRef != null)
-		{
-			actHandlerRef.sendEmptyMessage(MsgType.UPDATE_PROFILER.ordinal());
-		}
+		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_PROFILER);
 		
 		// Logic only to run in playing (un-paused) mode
 		if(SceneReady())
 		{
+			
 			Gameplay();
 		}
 	}
@@ -278,7 +256,7 @@ public class PlayScene extends Scene
 	 */
 	private boolean SceneReady()
 	{
-		return (gameState == GameState.PLAYING) && renderHandleSet && mapLoaded; 
+		return (gameState == GameState.PLAYING) && mapLoaded; 
 	}
 
 }

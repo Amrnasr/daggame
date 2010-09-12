@@ -78,12 +78,6 @@ public enum MsgType
 	SCENE_STOPED_READY_FOR_CHANGE,
 	
 	/**
-	 * Sent from the renderer to the logic thread to give the logic thread
-	 * a handler to send messages to the renderer.
-	 */
-	RENDERER_LOGIC_HANDLER_LINK,
-	
-	/**
 	 * Tells the activity to save the Preferences object to main
 	 * storage.
 	 */
