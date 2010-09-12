@@ -2,6 +2,8 @@ package com.game.Scenes;
 
 import android.app.Activity;
 import android.util.Log;
+
+import com.game.MessageHandler;
 import com.game.DagActivity.SceneType;
 
 
@@ -35,7 +37,7 @@ public class SceneManager
     {
         if (currentScene!=null) 
         {
-        	currentScene.End();
+        	currentScene.End();        	
         }
 
         currentScene = newScene;

@@ -1,7 +1,9 @@
 package com.game.ViewData;
 
+import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.R;
+import com.game.MessageHandler.MsgReceiver;
 
 import android.app.Activity;
 import android.content.Context;
@@ -35,9 +37,10 @@ public class AboutViewData extends ViewData
         okButton.setOnClickListener(new OnClickListener() 
         {
           @Override
-          public void onClick(View v) {
-            Log.i("ViewData", " Clicked OK button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.ok_about_but, 0));
+          public void onClick(View v) 
+          {
+            Log.i("ViewData", " Clicked OK button");            
+            MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.BUTTON_CLICK, R.id.ok_about_but);
           }
         });
         

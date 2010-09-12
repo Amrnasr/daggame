@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.R;
+import com.game.MessageHandler.MsgReceiver;
 
 /**
  * ViewData for the Menu scene.
@@ -38,7 +40,7 @@ public class MenuViewData extends ViewData
           @Override
           public void onClick(View v) {
             Log.i("ViewData", " Clicked Single button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.single_but, 0));
+            MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.single_but);
           }
         });
         
@@ -48,7 +50,7 @@ public class MenuViewData extends ViewData
           @Override
           public void onClick(View v) {
             Log.i("ViewData", " Clicked Multiplayer button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.multi_but, 0));
+            MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.multi_but);
           }
         });
         
@@ -58,7 +60,7 @@ public class MenuViewData extends ViewData
           @Override
           public void onClick(View v) {
             Log.i("ViewData", " Clicked Options button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.options_but, 0));
+            MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.options_but);
           }
         });
         
@@ -68,7 +70,7 @@ public class MenuViewData extends ViewData
           @Override
           public void onClick(View v) {
             Log.i("ViewData", " Clicked How to play button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.how_but, 0));
+            MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.how_but);
           }
         });
         
@@ -78,7 +80,7 @@ public class MenuViewData extends ViewData
           @Override
           public void onClick(View v) {
             Log.i("ViewData", " Clicked About us button");
-            handlerRef.sendMessage(handlerRef.obtainMessage(MsgType.BUTTON_CLICK.ordinal(), R.id.about_but, 0));
+            MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.about_but);
           }
         });
         

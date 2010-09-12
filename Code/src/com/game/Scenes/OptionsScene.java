@@ -2,10 +2,13 @@ package com.game.Scenes;
 
 import android.os.Handler;
 import android.os.Message;
+
+import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.Preferences;
 import com.game.R;
 import com.game.DagActivity.SceneType;
+import com.game.MessageHandler.MsgReceiver;
 
 
 /**
@@ -30,8 +33,7 @@ public class OptionsScene extends Scene
 	        	// If the "ok" button (which is the only button in the scene) is clicked, go back to the menu
 	        	if(msg.what == MsgType.BUTTON_CLICK.ordinal())
 	        	{
-	        		actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
-	        				SceneType.MENU_SCENE.ordinal(), 0));
+	        		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.MENU_SCENE.ordinal());	        		
 	        	}
 	        	if(msg.what == MsgType.CHECKBOX_CLICK.ordinal())
 	        	{
@@ -67,7 +69,7 @@ public class OptionsScene extends Scene
 	public void End() 
 	{
 		// Notify the activity to save the preferences, in case they have changed.
-		actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_SAVE_PREFERENCES.ordinal()));
+		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_SAVE_PREFERENCES);	
 	}
 
 	@Override
@@ -82,7 +84,7 @@ public class OptionsScene extends Scene
 	@Override
 	public void Update() 
 	{
-		actHandlerRef.sendEmptyMessage(MsgType.UPDATE_PROFILER.ordinal());
+		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_PROFILER);
 	}
 
 }

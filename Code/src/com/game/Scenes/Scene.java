@@ -1,6 +1,9 @@
 package com.game.Scenes;
 
+import com.game.MessageHandler;
 import com.game.MsgType;
+import com.game.MessageHandler.MsgReceiver;
+
 import android.app.Activity;
 import android.os.Handler;
 
@@ -15,9 +18,6 @@ public abstract class Scene
 {
 	/// Handler for messages to the scene
 	protected Handler handler = null;
-	
-	/// Reference handle for the Activity (to send messages to the activity)
-	protected Handler actHandlerRef = null;
 	
 	/// Variables to ensure thread safety on scene shutdown
 	protected boolean 	runScene;
@@ -56,14 +56,6 @@ public abstract class Scene
 	 */
 	public Handler getHandler(){return handler;}
 	
-	/**
-	 * Sets the activity handler reference.
-	 * @param handleRef handle to set to
-	 */
-	public void setActivityHandlerRef(Handler handleRef)
-	{ 
-		this.actHandlerRef = handleRef;
-	}
 	
 	/**
 	 * Updates the scene only if the activity has not asked us to stop.
@@ -82,7 +74,7 @@ public abstract class Scene
 			if(!stopScene)
 			{
 				stopScene = true;
-				actHandlerRef.sendEmptyMessage(MsgType.SCENE_STOPED_READY_FOR_CHANGE.ordinal());
+				MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.SCENE_STOPED_READY_FOR_CHANGE);				
 			}
 		}
 	}

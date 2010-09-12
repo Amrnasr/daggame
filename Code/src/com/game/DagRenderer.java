@@ -23,13 +23,9 @@ import android.util.Log;
  *
  */
 public class DagRenderer implements GLSurfaceView.Renderer 
-{
-	// To send messages to the logicThread, mainly status messages,
-	// as practically no decisions are taken in the render thread.
-	private Handler sendToLogic;
-	
+{	
 	// To receive messages from the logic thread.
-	private Handler receiveFromLogic;
+	private Handler handler;
 	
 	//Debug info
 	FloatBuffer floatBuff;
@@ -60,11 +56,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	    width = 0;
 		
 		// Initialize handler
-		this.receiveFromLogic = new Handler() 
+		this.handler = new Handler() 
 		{
 	        public void handleMessage(Message msg) 
 	        {
-	        	if(msg.what == MsgType.NEW_TILEMAP.ordinal()){
+	        	if(msg.what == MsgType.NEW_TILEMAP.ordinal())
+	        	{
 	        		tileMap = (Vector<Tile>) msg.obj;
 	        		int rowTiles = msg.arg1;
 	        		int columnTiles = msg.arg2;
@@ -116,6 +113,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        	}
 	        }
 	    };
+	    
+	    MessageHandler.Get().SetRendererHandler(this.handler);
 	}
 	
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
@@ -167,13 +166,5 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	fb.put(arr);
 	fb.position(0);
 	return fb;
-	}
-
-	public void setLogicHandler(Handler refHandler)
-	{
-		sendToLogic = refHandler;
-		
-    	// Now we've got a sender, lets pass the receiver to the logic thread.		
-		sendToLogic.sendMessage(sendToLogic.obtainMessage(MsgType.RENDERER_LOGIC_HANDLER_LINK.ordinal(), receiveFromLogic));
 	}
 }

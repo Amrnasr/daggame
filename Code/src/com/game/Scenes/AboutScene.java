@@ -3,8 +3,10 @@ package com.game.Scenes;
 import android.os.Handler;
 import android.os.Message;
 
+import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.DagActivity.SceneType;
+import com.game.MessageHandler.MsgReceiver;
 
 /**
  * A specific scene for the "About Us" screen.
@@ -27,8 +29,7 @@ public class AboutScene extends Scene
 	        	// If the "ok" button (which is the only button in the scene) is clicked, go back to the menu
 	        	if(msg.what == MsgType.BUTTON_CLICK.ordinal())
 	        	{
-	        		actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
-	        				SceneType.MENU_SCENE.ordinal(), 0));
+	        		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.MENU_SCENE.ordinal());	        	
 	        	}
 	        	// If the activity tells us to stop, we stop.
 	        	else if(msg.what == MsgType.STOP_SCENE.ordinal())
@@ -58,7 +59,7 @@ public class AboutScene extends Scene
 	@Override
 	public void Update() 
 	{
-		actHandlerRef.sendEmptyMessage(MsgType.UPDATE_PROFILER.ordinal());
+		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_PROFILER);
 	}
 
 }

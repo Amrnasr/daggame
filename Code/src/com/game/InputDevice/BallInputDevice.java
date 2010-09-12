@@ -49,7 +49,6 @@ public class BallInputDevice extends InputDevice
 			Log.e("BallInputDevice", "Trackball handler is not null! Some other ID ahs already claimed it");
 		}
 		playScene.trackballEvent = this.deviceHandler;
-		Log.i("BallInputDevice","Called constructor");
 	}
 	
 	@Override

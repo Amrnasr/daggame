@@ -1,9 +1,11 @@
 package com.game.Scenes;
 
+import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.Preferences;
 import com.game.R;
 import com.game.DagActivity.SceneType;
+import com.game.MessageHandler.MsgReceiver;
 
 import android.os.Handler;
 import android.os.Message;
@@ -64,13 +66,11 @@ public class SingleSelectScene extends Scene {
     	{	
     	case R.id.ok_single_but:
 			Log.i("SingleSelectScene", "Ok button handler called");
-			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
-    				SceneType.PLAY_SCENE.ordinal(), 0));
+			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.PLAY_SCENE.ordinal());			
     		break;
     	case R.id.back_single_but:
 			Log.i("SingleSelectScene", "Back button handler called");
-			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
-    				SceneType.MENU_SCENE.ordinal(), 0));
+			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.MENU_SCENE.ordinal());
     		break;
     	default:
 			Log.e("SingleSelectScene", "No handler options for that message!!");
@@ -156,13 +156,13 @@ public class SingleSelectScene extends Scene {
 	@Override
 	public void Update() 
 	{
-		actHandlerRef.sendEmptyMessage(MsgType.UPDATE_PROFILER.ordinal());
+		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_PROFILER);
 	}
 	
 	@Override
 	public void End() 
 	{
 		// Notify the activity to save the preferences, in case they have changed.
-		actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_SAVE_PREFERENCES.ordinal()));
+		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_SAVE_PREFERENCES);		
 	}
 }

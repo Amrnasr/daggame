@@ -1,6 +1,7 @@
 package com.game;
 
 
+import com.game.MessageHandler.MsgReceiver;
 import com.game.ViewData.*;
 
 import android.app.Activity;
@@ -97,8 +98,7 @@ public class DagActivity extends Activity
     	ViewData xmlLayoutData = null;
 		try 
 		{
-			xmlLayoutData = ViewDataFactory.GetView(view);
-			xmlLayoutData.setHandlerReference(gameLogic.getCurrentScene().getHandler());
+			xmlLayoutData = ViewDataFactory.GetView(view);			
 		} 
 		catch (Exception e) 
 		{
@@ -123,7 +123,8 @@ public class DagActivity extends Activity
      */
     private void createLogicScene(SceneType scene)
     {    	
-   	
+    	MessageHandler.Get().SetLogicHandler(null);
+    	
     	try 
     	{
 			gameLogic.setScene(scene, this);
@@ -135,10 +136,8 @@ public class DagActivity extends Activity
 			this.finish();
 		}
     	
-    	gameLogic.getCurrentScene().setActivityHandlerRef(this.handler);
-    	
-    	Handler auxH = gameLogic.getCurrentScene().getHandler();
-		auxH.sendEmptyMessage(MsgType.SCENE_CALL_START.ordinal());
+    	MessageHandler.Get().SetLogicHandler(gameLogic.getCurrentScene().getHandler());
+    	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SCENE_CALL_START);
     }
     
     /**
@@ -178,8 +177,7 @@ public class DagActivity extends Activity
 	        	{
 	        		nextScene = SceneType.values()[msg.arg1];
 	        		
-	        		Handler auxH = gameLogic.getCurrentScene().getHandler();
-	        		auxH.sendEmptyMessage(MsgType.STOP_SCENE.ordinal());
+	        		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.STOP_SCENE);
 	        	}
 	        	else if(msg.what == MsgType.SCENE_STOPED_READY_FOR_CHANGE.ordinal())
 	        	{
@@ -201,6 +199,8 @@ public class DagActivity extends Activity
 	        	
 	        }
 	    };
+	    
+	    MessageHandler.Get().SetActivityHandler(this.handler);
     }
     
     /**
@@ -246,8 +246,7 @@ public class DagActivity extends Activity
      */
     private void InitializeCamera()
     {
-    	Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay(); 
-        
+    	Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();         
         Camera.Get().SetScreenSize(display.getWidth(), display.getHeight());
     }
     

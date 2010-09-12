@@ -4,10 +4,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.Preferences;
 import com.game.R;
 import com.game.DagActivity.SceneType;
+import com.game.MessageHandler.MsgReceiver;
 
 /**
  * Specific scene for the "Multiplayer" screen.
@@ -59,13 +61,11 @@ public class MultiSelectScene extends Scene {
     	{	
     	case R.id.ok_multi_but:
 			Log.i("MultiSelectScene", "Ok button handler called");
-			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
-    				SceneType.PLAY_SCENE.ordinal(), 0));
+			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.PLAY_SCENE.ordinal());
     		break;
     	case R.id.back_multi_but:
 			Log.i("MultiSelectScene", "Back button handler called");
-			actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_CHANGE_SCENE.ordinal(), 
-    				SceneType.MENU_SCENE.ordinal(), 0));
+			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.MENU_SCENE.ordinal());
     		break;
     	default:
 			Log.e("MultiSelectScene", "No handler options for that message!!");
@@ -150,14 +150,14 @@ public class MultiSelectScene extends Scene {
 
 	@Override
 	public void Update() {
-		actHandlerRef.sendEmptyMessage(MsgType.UPDATE_PROFILER.ordinal());
+		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_PROFILER);
 	}
 
 	@Override
 	public void End() 
 	{
 		// Notify the activity to save the preferences, in case they have changed.
-		actHandlerRef.sendMessage(actHandlerRef.obtainMessage(MsgType.ACTIVITY_SAVE_PREFERENCES.ordinal()));
+		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_SAVE_PREFERENCES);		
 	}
 
 }
