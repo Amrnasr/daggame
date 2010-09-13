@@ -34,6 +34,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 									-25f, 30f, 0.0f,
 									30f, -25f, 0.0f,
 									-25f, -25f, 0.0f };
+	FloatBuffer squareBuff;
 	
 	private int height;
 	private int width;
@@ -51,6 +52,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		// Link square to a float buffer
 		floatBuff = makeFloatBuffer(debSquare);
+		squareBuff = makeFloatBuffer(debSquare);
 		
 	    height = 0;
 	    width = 0;
@@ -153,6 +155,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, floatBuff);		
 		if(tileMap != null){
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, bufferLength/3);
+			DrawCursors(gl);
 		}
 		
 				
@@ -166,5 +169,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	fb.put(arr);
 	fb.position(0);
 	return fb;
+	}
+	
+	private void DrawCursors(GL10 gl)
+	{
+		gl.glColor4f(1, 0, 0, 0.5f);
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, squareBuff);
+		gl.glDrawArrays(GL10.GL_TRIANGLES, 0, 4);
+
 	}
 }
