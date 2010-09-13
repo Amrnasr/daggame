@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="control_prompt">Choose a control mode</string>
+<string-array name="control_mode_array">
+        <item>Finger</item>
+        <item>Track Ball</item>
+        <item>Joystick</item>
+        <item>Acelerometer</item>
+    </string-array>
+<string-array name="control_multi_mode_array">
+        <item>Finger</item>
+        <item>Joystick</item>
+        <item>Acelerometer</item>
+    </string-array>
+</resources>
