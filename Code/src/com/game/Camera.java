@@ -83,6 +83,9 @@ public class Camera
 	{
 		this.screenH = h;
 		this.screenW = w;
+		
+		// Set initial z then:
+		this.z = 2*h;
 	}
 	
 	/**
@@ -106,6 +109,9 @@ public class Camera
 		mapH = Preferences.Get().mapHeight;
 		mapW = Preferences.Get().mapWidth;
 		
+		Log.i("Camera", "Map: " + mapW + ", " + mapH);
+		Log.i("Camera", "Screen: " + screenW + ", " + screenH);
+		
 		// Safety checks
 		if(screenH == 0 || screenW == 0)
 		{
@@ -118,11 +124,20 @@ public class Camera
 		
 		// Multiply the coordinates by this ratio to apply the camera perspective transform.
 		// And add the displacement.
-		double ratio = this.z / InitialZ();
-		aux.Set((touchPos.X() + x)*ratio, (touchPos.Y() + y)*ratio);		
+		double ratio = (double)((double)this.z / (double)InitialZ());
+		Log.i("Camera", "Ratio: " + ratio);
+		
+		double xx = (touchPos.X() + x)*ratio;
+		double yy = (touchPos.Y() + y)*ratio;
+		aux.Set(xx, yy);		
+		Log.i("Camera", "New pos: " + xx + ", " + yy);
 		
 		return aux;
 	}
+	
+	
+	public int GetScreenWidth() { return this.screenW; }
+	public int GetScreenHeight() { return this.screenH; }
 	
 	/**
 	 * The initial Z of the camera, which is the distance from the camera 
