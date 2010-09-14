@@ -56,8 +56,6 @@ public class PlayScene extends Scene
 	
 	private Map map;
 	
-	private boolean mShowTileMap;
-	
 	/**
 	 * List of all the players in the game
 	 */
@@ -91,8 +89,6 @@ public class PlayScene extends Scene
 		this.touchEvent = null;
 
 		CreatePlayers();
-
-		mShowTileMap = true;
 		
 		map = null;
 
@@ -156,17 +152,22 @@ public class PlayScene extends Scene
             	MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG);            	
             	mapLoaded = true;
             	
-            	//if(mShowTileMap){
-            	MessageHandler.Get().Send(
-            			MsgReceiver.RENDERER, 
-            			MsgType.NEW_TILEMAP, 
-            			map.getBitmap().getWidth()/Constants.TileWidth,
-            			map.getBitmap().getHeight()/Constants.TileWidth,  
-            			map.getTileMap());        			
-        		//}
-        		//else{
-        		//	sendRenderer.sendMessage(sendRenderer.obtainMessage(MsgType.NEW_BITMAP.ordinal(), map.getBitmap().getWidth(), map.getBitmap().getHeight(), map.getBitmap()));
-        		//}
+            	if(Constants.DebugMode){
+	            	MessageHandler.Get().Send(
+	            			MsgReceiver.RENDERER, 
+	            			MsgType.NEW_TILEMAP, 
+	            			map.getBitmap().getWidth()/Constants.TileWidth,
+	            			map.getBitmap().getHeight()/Constants.TileWidth,  
+	            			map.getTileMap());        			
+        		}
+        		else{
+        			MessageHandler.Get().Send(
+        					MsgReceiver.RENDERER,
+        					MsgType.NEW_BITMAP, 
+        					R.drawable.map_size480_1, 
+        					0, 
+        					map.getBitmap());
+        		}
             }
         };
         t.start();
