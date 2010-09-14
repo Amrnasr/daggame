@@ -1,5 +1,7 @@
 package com.game;
 
+import com.game.MessageHandler.MsgReceiver;
+
 import android.util.Log;
 
 /**
@@ -107,7 +109,6 @@ public class Cursor
 	/**
 	 * Checks if the Cursor has to move
 	 * 
-	 * TODO: Check map bounds.
 	 * @return True if it has to move, false if it doesn't.
 	 */
 	private boolean HasToMove()
@@ -156,6 +157,16 @@ public class Cursor
 			pos.SetY(Preferences.Get().mapHeight);
 		}
 		
-		//Log.i("Cursor", "New position: " + this.pos.X() + ", " + this.pos.Y());
+		UpdateGfxPosition();
+		Log.i("Cursor", "New position: " + this.pos.X() + ", " + this.pos.Y());
+	}
+	
+	public void UpdateGfxPosition()
+	{
+		float[] pos = new float[3];
+		pos[0] = (float)this.pos.X();
+		pos[1] = (float)this.pos.Y();
+		pos[2] = 1;
+		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.UPDATE_CURSOR_POS, parent.GetID(), 0, pos);
 	}
 }

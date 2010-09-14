@@ -2,6 +2,7 @@ package com.game;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 /**
  * Simple singleton for storing game options
@@ -21,12 +22,8 @@ public class Preferences
 		this.multiplayerGame = false;
 		
 		// Made up default map size
-		this.mapHeight = -1;
-		this.mapWidth = -1;
-		
-		// HACKHACK to test the camera. REMOVE THIS ONCE NEOM UPDATES MAP
-		this.mapHeight = 480;
-		this.mapWidth = 960;
+		this.mapHeight = 0;
+		this.mapWidth = 0;
 	}
 	
 	/**
@@ -101,6 +98,22 @@ public class Preferences
 	    
 	    // Commit the edits!
 	    editor.commit();
+	}
+	
+	public int GetNumberOfPlayers()
+	{
+		int numb = 0;
+		if(multiplayerGame == true)
+		{
+			// 2 Players and a number of opponents
+			numb = 2 + multiNumberOpponents;
+		}
+		else
+		{
+			// 1 Player and a number of opponents
+			numb = 1 + singleNumberOpponents;
+		}
+		return numb;
 	}
 	
 	public static final String PREFS_NAME = "MyPrefsFile";

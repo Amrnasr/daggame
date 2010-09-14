@@ -32,19 +32,29 @@ public class Player
 		this.playerNumber = playerNumber;
 		
 		// Cursor
-		// TODO: This will have to change to wait for map load.
+		
+		
+		this.cursor = new Cursor(this);
+		
+		
+		this.inputDevice = inputDevice;
+		this.inputDevice.SetParent(this);		
+	}
+	
+	public void SetCursorInitialPos()
+	{
 		int wMargin = Preferences.Get().mapWidth/10;
 		int wArea = Preferences.Get().mapWidth*8/10;
 		
 		int hMargin = Preferences.Get().mapHeight /10;
 		int hArea = Preferences.Get().mapHeight *8/10;
 		
-		this.cursor = new Cursor(this);
 		Random gen = new Random();
-		this.cursor.SetPosition(gen.nextInt(wArea) + wMargin, gen.nextInt(hArea) + hMargin);
+		int x = gen.nextInt(wArea) + wMargin;
+		int y = gen.nextInt(hArea) + hMargin;
 		
-		this.inputDevice = inputDevice;
-		this.inputDevice.SetParent(this);		
+		this.cursor.SetPosition( x, y);		
+		this.cursor.UpdateGfxPosition();
 	}
 	
 	public void Start()
@@ -63,5 +73,7 @@ public class Player
 	 * @return cursor
 	 */
 	public Cursor GetCursor() { return this.cursor; }
+	
+	public int GetID() { return this.playerNumber; }
 
 }

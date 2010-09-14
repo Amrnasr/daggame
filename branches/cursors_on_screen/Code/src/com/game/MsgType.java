@@ -117,5 +117,25 @@ public enum MsgType
 	/**
 	 * Updates the camera position
 	 */
-	RENDERER_UPDATE_CAM
+	RENDERER_UPDATE_CAM,
+	
+	/**
+	 * Sent to logic to warn the renderer is ready
+	 */
+	RENDERER_CONSTRUCTOR_DONE,
+	
+	/**
+	 * Sent to the renderer to set a specific cursor position
+	 * arg1: Which cursor to update
+	 * object: float[] with the coords
+	 */
+	UPDATE_CURSOR_POS,
+	
+	/**
+	 * Sent to the renderer to change a cursor color
+	 * arg1: Which cursor to update
+	 * object: float[] with the rgba values
+	 */
+	UPDATE_CURSOR_COLOR
+	
 }

@@ -128,6 +128,10 @@ public class PlayScene extends Scene
 	        	{
 	        		runScene = false;
 	        	}    	
+	        	else if(msg.what == MsgType.RENDERER_CONSTRUCTOR_DONE.ordinal())
+	        	{
+	        		
+	        	}
 	        }
 	    };
 	    gameState = GameState.PLAYING;
@@ -162,7 +166,14 @@ public class PlayScene extends Scene
             			MsgType.NEW_TILEMAP, 
             			map.getBitmap().getWidth()/Constants.TileWidth,
             			map.getBitmap().getHeight()/Constants.TileWidth,  
-            			map.getTileMap());        			
+            			map.getTileMap());   
+            	
+            	
+            	// Set the initial pos for all the cursors
+        		for(int i= 0; i < players.size(); i++)
+        		{
+        			players.elementAt(i).SetCursorInitialPos();
+        		}
         		//}
         		//else{
         		//	sendRenderer.sendMessage(sendRenderer.obtainMessage(MsgType.NEW_BITMAP.ordinal(), map.getBitmap().getWidth(), map.getBitmap().getHeight(), map.getBitmap()));
@@ -246,6 +257,7 @@ public class PlayScene extends Scene
 			for(int i = 0; i < Preferences.Get().singleNumberOpponents; i++ )
 			{
 				newPlayer = new Player(i+1, new AIInputDevice(this));
+				this.players.add(newPlayer);
 			}			
 		}
 	}
