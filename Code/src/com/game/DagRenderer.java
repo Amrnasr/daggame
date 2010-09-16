@@ -154,7 +154,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glLoadIdentity();
 		
 		gl.glViewport(0,0,w,h);
-		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, 1f, 2000f);
+		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, 1f, 3000f);
 		
 		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);

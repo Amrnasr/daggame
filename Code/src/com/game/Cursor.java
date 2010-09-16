@@ -158,7 +158,7 @@ public class Cursor
 		}
 		
 		UpdateGfxPosition();
-		Log.i("Cursor", "New position: " + this.pos.X() + ", " + this.pos.Y());
+		//Log.i("Cursor", "New position: " + this.pos.X() + ", " + this.pos.Y());
 	}
 	
 	public void UpdateGfxPosition()
