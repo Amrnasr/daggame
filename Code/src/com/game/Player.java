@@ -22,20 +22,21 @@ public class Player
 	// Unique identifier for the player. It will come handy eventually, I can assure you.
 	private int playerNumber;
 	
+	private boolean humanPlayer;
+	
 	/**
 	 * Creates a new instance of the Player class.
 	 * @param playerNumber Unique player identifier. If it's not unique you'll regret it later.
 	 * @param inputDevice Input device used by this player.
+	 * @param humanPlayer true if it's a human player, false if it's IA
 	 */
-	public Player(int playerNumber, InputDevice inputDevice)
+	public Player(int playerNumber, InputDevice inputDevice, boolean humanPlayer)
 	{
 		this.playerNumber = playerNumber;
+		this.humanPlayer = humanPlayer;
 		
-		// Cursor
-		
-		
-		this.cursor = new Cursor(this);
-		
+		// Cursor	
+		this.cursor = new Cursor(this);		
 		
 		this.inputDevice = inputDevice;
 		this.inputDevice.SetParent(this);		
@@ -76,4 +77,5 @@ public class Player
 	
 	public int GetID() { return this.playerNumber; }
 
+	public boolean IsHuman() { return this.humanPlayer; }
 }

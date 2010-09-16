@@ -169,4 +169,6 @@ public class Cursor
 		pos[2] = 1;
 		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.UPDATE_CURSOR_POS, parent.GetID(), 0, pos);
 	}
+	
+	public Vec2 GetPosition()	{ return this.pos; }
 }
