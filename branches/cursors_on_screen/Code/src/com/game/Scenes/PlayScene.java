@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.game.Camera;
 import com.game.Constants;
 import com.game.Map;
 import com.game.MessageHandler;
@@ -212,6 +213,7 @@ public class PlayScene extends Scene
 		for(int i = 0; i < this.players.size(); i++)
 		{
 			this.players.elementAt(i).Update();
+			Camera.Get().ZoomOnPlayers(players);
 		}
 	}
 	
@@ -250,13 +252,13 @@ public class PlayScene extends Scene
 					Log.e("PlayScene", "Input device requested for player not implemented yet!");				
 					break;
 			}
-			newPlayer = new Player(0, inputDevice);
+			newPlayer = new Player(0, inputDevice, true);
 			this.players.add(newPlayer);
 			
 			// Add all the opponents
 			for(int i = 0; i < Preferences.Get().singleNumberOpponents; i++ )
 			{
-				newPlayer = new Player(i+1, new AIInputDevice(this));
+				newPlayer = new Player(i+1, new AIInputDevice(this), false);
 				this.players.add(newPlayer);
 			}			
 		}

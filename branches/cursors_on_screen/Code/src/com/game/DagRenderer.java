@@ -170,8 +170,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		
-		gl.glTranslatef(-Camera.Get().GetScreenWidth()/2.0f,-Camera.Get().GetScreenHeight()/2.0f,-(2.0f*Camera.Get().GetScreenWidth()));
+		//gl.glTranslatef(-Camera.Get().GetScreenWidth()/2.0f,-Camera.Get().GetScreenHeight()/2.0f,-(2.0f*Camera.Get().GetScreenWidth()));
 		//gl.glTranslatef(-width/2.0f,-height/2.0f,-(2.0f*width));
+		gl.glTranslatef(-Camera.Get().X(),-Camera.Get().Y(),-Camera.Get().Z());
 		
 		// Draw debug square
 		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);

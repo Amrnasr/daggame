@@ -1,6 +1,8 @@
 package com.game;
 
 
+import java.util.Vector;
+
 import android.util.Log;
 
 /**
@@ -23,6 +25,9 @@ import android.util.Log;
  * This also allows us to keep things consistent by doing logic calculations (where and when to move)
  * in the logic thread, while the render thread only get's told where to draw.
  * 
+ * TODO: Camera is only gonna work correctly for maps where width > height. Fix this by using max/min(w,h)
+ * where appropriate.
+ * 
  * @author Ying
  *
  */
@@ -36,17 +41,29 @@ public class Camera
 	private int screenH;
 	private int screenW;
 	
+	private int minZ;
+	private int maxZ;
+	private float minRatio;
+	private float maxRatio;
+	
 	/**
 	 * Prevents the instantiation of an object of the Camera class
 	 */
 	protected Camera() 
 	{
+		// TODO: Change to default values, this is just debug
 		x = 0;
 		y = 0;
 		z = 0;
 		
 		screenH = 0;
 		screenW = 0;
+		
+		minZ = 0;
+		maxZ = 0;
+		
+		minRatio = 1;
+		maxRatio = 0;
 	}
 	
 	/**
@@ -85,7 +102,8 @@ public class Camera
 		this.screenW = w;
 		
 		// Set initial z then:
-		this.z = 2*h;
+		this.minZ = 2* this.screenH;
+		
 	}
 	
 	/**
@@ -109,8 +127,13 @@ public class Camera
 		mapH = Preferences.Get().mapHeight;
 		mapW = Preferences.Get().mapWidth;
 		
+		this.maxZ = 2*mapW;
+		this.maxRatio = mapW / screenW;
+		
 		Log.i("Camera", "Map: " + mapW + ", " + mapH);
 		Log.i("Camera", "Screen: " + screenW + ", " + screenH);
+		Log.i("Camera", "Touch pos: " + touchPos.X() + ", " + touchPos.Y());
+		Log.i("Camera", "X: " + x + " Y: " + y + " Z: " + z);
 		
 		// Safety checks
 		if(screenH == 0 || screenW == 0)
@@ -122,10 +145,13 @@ public class Camera
 			Log.e("Camera", "Map not initalized");
 		}
 		
+		
+		// The touch cc system is top left, instead of bottom left,only god knows why
+		touchPos.SetY(screenH - touchPos.Y());;
+		
 		// Multiply the coordinates by this ratio to apply the camera perspective transform.
 		// And add the displacement.
-		double ratio = (double)((double)this.z / (double)InitialZ());
-		Log.i("Camera", "Ratio: " + ratio);
+		float ratio = GetRatioFromZ();		
 		
 		double xx = (touchPos.X() + x)*ratio;
 		double yy = (touchPos.Y() + y)*ratio;
@@ -135,22 +161,102 @@ public class Camera
 		return aux;
 	}
 	
+	private float GetRatioFromZ()
+	{
+		float zDisplazament = this.z - this.minZ;
+		float zRange = this.maxZ - this.minZ;
+		
+		float percentajeOfDisplazament = zDisplazament / zRange;
+		
+		float ratioRange = this.maxRatio - this.minRatio;
+		float ratioDispl = ratioRange * percentajeOfDisplazament;
+		
+		float ratio = this.minRatio + ratioDispl;
+		return ratio;
+	}
+	
+	public void ZoomOnPlayers(Vector<Player> players)
+	{
+		if(players == null)
+		{
+			Log.e("Camera", "Zoom on all players: Players null");
+			return;
+		}
+		// To make sure all player cursors are on screen
+		float maxX, maxY, minX, minY;
+		maxX = maxY = 0;
+		minX = minY = Preferences.Get().mapWidth;
+		
+		// To calculate the center point
+		float centerX = 0, centerY = 0;
+		int cursorCount = 0;
+		
+		for(int i = 0; i < players.size(); i++)
+		{
+			Player player = players.elementAt(i);
+			if(player.IsHuman())
+			{
+				Cursor cursor = player.GetCursor();
+				if(cursor == null)
+				{
+					Log.e("Camera", "Cursor in Zoom == null");
+					return;
+				}
+					
+				maxX = (float) Math.max(maxX, cursor.GetPosition().X());
+				maxY = (float) Math.max(maxY, cursor.GetPosition().Y());
+				minX = (float) Math.min(minX, cursor.GetPosition().X());
+				minY = (float) Math.min(minY, cursor.GetPosition().Y());
+				
+				centerX += cursor.GetPosition().X();
+				centerY += cursor.GetPosition().Y();
+				cursorCount += 1;
+			}
+		}
+		
+		if(cursorCount == 0)
+		{
+			// No human players, just watch the whole damm thing
+			this.x = 0;
+			this.y = 0;
+			this.z = this.maxZ;
+		}
+		else
+		{
+			// Center position of all the cursors that must be shown on screen
+			centerX /= cursorCount;
+			centerY /= cursorCount;
+			
+			// Make it so the camera viewport is at least as big as the screen
+			int xWidth = (int) (maxX - minX);
+			int xHeight = (int) (maxY - minY);
+			xWidth = Math.max(xWidth, this.screenW);
+			xHeight = Math.max(xHeight, this.screenH);
+			
+			// Set X and y
+			this.x = (int) (centerX - xWidth/2);
+			this.y = (int) (centerY - xHeight/2);
+			
+			// Set Z  (xDDD)
+			xWidth = Math.max(1, xWidth); // To avoid /0 errors while loading
+			float ratio = Preferences.Get().mapWidth / xWidth;
+			ratio = this.minRatio - ratio;
+			float ratioRange = this.maxRatio - this.minRatio;
+			
+			ratio = ratio / ratioRange; // % of the total ratio range
+			
+			float zRange = this.maxZ - this.minZ;
+			
+			this.z = (int) (this.minZ + (zRange * ratio));
+		}
+		
+	}
 	
 	public int GetScreenWidth() { return this.screenW; }
 	public int GetScreenHeight() { return this.screenH; }
+	public int X() { return this.x; }
+	public int Y() { return this.y; }
+	public int Z() { return this.z; }
 	
-	/**
-	 * The initial Z of the camera, which is the distance from the camera 
-	 * to the map at witch there is a 1:1 ratio of screen:map pixels.
-	 * 
-	 * The value 2*screen height is empirically obtained and true, even tough
-	 * my trigonometry says it should be screen height / 2;
-	 * 
-	 * @return the initial Z of the camera.
-	 */
-	private int InitialZ()
-	{
-		return 2*screenH;
-	}
 
 }

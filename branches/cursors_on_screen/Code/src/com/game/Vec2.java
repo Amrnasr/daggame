@@ -2,6 +2,7 @@ package com.game;
 
 /**
  * Two dimensional vector class.
+ * TODO: Change to float or int even, to ease calculations
  * @author Ying
  *
  */
