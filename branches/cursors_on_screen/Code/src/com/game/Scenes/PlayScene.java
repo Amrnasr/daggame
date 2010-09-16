@@ -14,6 +14,7 @@ import com.game.MsgType;
 import com.game.Player;
 import com.game.Preferences;
 import com.game.R;
+import com.game.Regulator;
 import com.game.InputDevice.AIInputDevice;
 import com.game.InputDevice.BallInputDevice;
 import com.game.InputDevice.InputDevice;
@@ -80,6 +81,16 @@ public class PlayScene extends Scene
 	private boolean mapLoaded = false;
 	
 	/**
+	 * Keeps the gameplay fps stable.
+	 */
+	private Regulator gameplayRegulator;
+	
+	/**
+	 * Keeps the update of the zoom funcion much lower than gameplay.
+	 */
+	private Regulator cameraZoomRegulator;
+	
+	/**
 	 * Initializes and sets the handler callback.
 	 */
 	public PlayScene()
@@ -90,7 +101,8 @@ public class PlayScene extends Scene
 		this.players = new Vector<Player>();
 		this.trackballEvent = null;
 		this.touchEvent = null;
-
+		this.gameplayRegulator = new Regulator(60);
+		this.cameraZoomRegulator = new Regulator(1);
 		CreatePlayers();
 
 		mShowTileMap = true;
@@ -210,9 +222,18 @@ public class PlayScene extends Scene
 	 */
 	private void Gameplay()
 	{
+		if(!gameplayRegulator.IsReady())
+		{
+			return;
+		}
+		
 		for(int i = 0; i < this.players.size(); i++)
 		{
-			this.players.elementAt(i).Update();
+			this.players.elementAt(i).Update();			
+		}
+		
+		if(cameraZoomRegulator.IsReady())
+		{
 			Camera.Get().ZoomOnPlayers(players);
 		}
 	}

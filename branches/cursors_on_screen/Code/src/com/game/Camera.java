@@ -129,7 +129,7 @@ public class Camera
 		
 		this.maxZ = 2*mapW;
 		this.maxRatio = mapW / screenW;
-		
+		Log.i("Camera", "--------------------------------------");
 		Log.i("Camera", "Map: " + mapW + ", " + mapH);
 		Log.i("Camera", "Screen: " + screenW + ", " + screenH);
 		Log.i("Camera", "Touch pos: " + touchPos.X() + ", " + touchPos.Y());
@@ -237,14 +237,16 @@ public class Camera
 			this.x = (int) (centerX - xWidth/2);
 			this.y = (int) (centerY - xHeight/2);
 			
-			// Set Z  (xDDD)
+			// Set Z  (xDDD)			
 			xWidth = Math.max(1, xWidth); // To avoid /0 errors while loading
-			float ratio = Preferences.Get().mapWidth / xWidth;
-			ratio = this.minRatio - ratio;
+			float ratio = xWidth / this.screenW;
+			
+			this.maxRatio = Preferences.Get().mapWidth / screenW;
+			ratio = ratio - this.minRatio;
 			float ratioRange = this.maxRatio - this.minRatio;
 			
-			ratio = ratio / ratioRange; // % of the total ratio range
-			
+			ratio = ratio / ratioRange; // % of the total ratio range			
+			this.maxZ = 2*Preferences.Get().mapWidth;			
 			float zRange = this.maxZ - this.minZ;
 			
 			this.z = (int) (this.minZ + (zRange * ratio));
