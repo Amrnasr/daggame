@@ -64,6 +64,7 @@ public class Camera
 		
 		minRatio = 1;
 		maxRatio = 0;
+
 	}
 	
 	/**
@@ -120,6 +121,7 @@ public class Camera
 	 */
 	public Vec2 ScreenToWorld(Vec2 touchPos)
 	{
+
 		Vec2 aux = new Vec2();
 		int mapH = -1; 
 		int mapW = -1;
@@ -151,10 +153,13 @@ public class Camera
 		
 		// Multiply the coordinates by this ratio to apply the camera perspective transform.
 		// And add the displacement.
-		float ratio = GetRatioFromZ();		
+		float ratio = GetRatioFromZ();	
+		Log.i("Camera", "Ratio: " + ratio);
 		
-		double xx = (touchPos.X() + x)*ratio;
-		double yy = (touchPos.Y() + y)*ratio;
+		Log.i("Camera", " -- touchPos.X:" + touchPos.X() + ", x:" + x + ", ratio:" + ratio + ", screenW/2:" + (this.screenW/2));
+		double xx = (touchPos.X() + x)*ratio -(this.screenW/2) ;
+		double yy = (touchPos.Y() + y)*ratio - (this.screenH/2) ;		
+		
 		aux.Set(xx, yy);		
 		Log.i("Camera", "New pos: " + xx + ", " + yy);
 		
@@ -234,8 +239,8 @@ public class Camera
 			xHeight = Math.max(xHeight, this.screenH);
 			
 			// Set X and y
-			this.x = (int) (centerX - xWidth/2);
-			this.y = (int) (centerY - xHeight/2);
+			this.x = (int) (centerX - xWidth/2) + this.screenW/2;
+			this.y = (int) (centerY - xHeight/2) + this.screenH/2;
 			
 			// Set Z  (xDDD)			
 			xWidth = Math.max(1, xWidth); // To avoid /0 errors while loading
@@ -258,7 +263,6 @@ public class Camera
 	public int GetScreenHeight() { return this.screenH; }
 	public int X() { return this.x; }
 	public int Y() { return this.y; }
-	public int Z() { return this.z; }
-	
+	public int Z() { return this.z; }	
 
 }

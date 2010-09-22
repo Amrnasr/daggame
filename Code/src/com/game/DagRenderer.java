@@ -16,6 +16,7 @@ import android.opengl.GLU;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.Preference;
+import android.text.GetChars;
 import android.util.Log;
 
 /**
@@ -25,10 +26,27 @@ import android.util.Log;
  * @author Ying
  *
  */
+/**
+ * @author Ying
+ *
+ */
+/**
+ * @author Ying
+ *
+ */
+/**
+ * @author Ying
+ *
+ */
+/**
+ * @author Ying
+ *
+ */
 public class DagRenderer implements GLSurfaceView.Renderer 
 {	
 	// To receive messages from the logic thread.
 	private Handler handler;
+	GL10 gl = null;
 	
 	//Debug info
 	FloatBuffer floatBuff;
@@ -149,13 +167,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	public void onSurfaceChanged(GL10 gl, int w, int h) 
 	{        
 		Log.i("DagRenderer","Surface changed: " + w + " / " + h );
-		
+		this.gl = gl;
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
 		
 		gl.glViewport(0,0,w,h);
-		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, 1f, 3000f);
+		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, 900f, 3000f); // TODO: Make them dependant on map size
 		
+		//GLU.gluUnProject(winX, winY, winZ, model, modelOffset, project, projectOffset, view, viewOffset, obj, objOffset)
 		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		
@@ -256,4 +275,85 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		cursorColor.elementAt(cursor)[2] = color[2];
 		cursorColor.elementAt(cursor)[3] = color[3];
 	}
+	
+	
 }
+
+/*
+ * private static final float[] _tempGluUnProjectData = new float[40]; 
+	private static final int     _temp_m   = 0; 
+	private static final int     _temp_A   = 16; 
+	private static final int     _temp_in  = 32; 
+	private static final int     _temp_out = 36; 
+	
+	public float[] GetWorldCoords(float winx, float winy, float winz, int viewport[]) 
+	{ 
+		if(this.gl == null)
+		{
+			Log.e("DagRenderer", "Gl not initialized yet");
+			return null;
+		}
+		float[] model = getCurrentModelView(gl);
+		float[] proj = getCurrentProjection(gl);
+		float[] xyz = new float[3];
+		
+	   /* Transformation matrices */
+		//   float[] m = new float[16], A = new float[16]; 
+		//   float[] in = new float[4], out = new float[4]; 
+	   /* Normalize between -1 and 1 * 
+	   _tempGluUnProjectData[_temp_in]   = (winx - viewport[0]) * 2f / viewport[2] - 1.0f; 
+	   _tempGluUnProjectData[_temp_in+1] = (winy - viewport[1]) * 2f / viewport[3] - 1.0f; 
+	   _tempGluUnProjectData[_temp_in+2] = 2f * winz - 1.0f; 
+	   _tempGluUnProjectData[_temp_in+3] = 1.0f; 
+	   
+	   /* Get the inverse * 
+	   android.opengl.Matrix.multiplyMM(_tempGluUnProjectData, _temp_A, proj, 0, model, 0); 
+	   android.opengl.Matrix.invertM(_tempGluUnProjectData, _temp_m, _tempGluUnProjectData, _temp_A); 
+	   android.opengl.Matrix.multiplyMV(_tempGluUnProjectData, _temp_out, 
+	        _tempGluUnProjectData, _temp_m, 
+	        _tempGluUnProjectData, _temp_in); 
+	   if (_tempGluUnProjectData[_temp_out+3] == 0.0) 
+	   {
+		   Log.e("DagRenderer", "Generic ninja error message when trying to use gluUnProject");
+		   return null; 
+	   }
+	   
+	   xyz[0]  =  _tempGluUnProjectData[_temp_out  ] / _tempGluUnProjectData[_temp_out+3]; 
+	   xyz[1] = _tempGluUnProjectData[_temp_out+1] / _tempGluUnProjectData[_temp_out+3]; 
+	   xyz[2] = _tempGluUnProjectData[_temp_out+2] / _tempGluUnProjectData[_temp_out+3]; 
+	   
+	   return xyz;
+	} 
+	
+	**
+     * Record the current modelView matrix state. Has the side effect of
+     * setting the current matrix state to GL_MODELVIEW
+     * @param gl
+     *
+    public float[] getCurrentModelView(GL10 gl) 
+    {
+    	float[] mModelView = new float[16];
+        getMatrix(gl, GL10.GL_MODELVIEW, mModelView);
+        return mModelView;
+    }
+
+    **
+     * Record the current projection matrix state. Has the side effect of
+     * setting the current matrix state to GL_PROJECTION
+     * @param gl
+     *
+    public float[] getCurrentProjection(GL10 gl) 
+    {
+    	float[] mProjection = new float[16];
+        getMatrix(gl, GL10.GL_PROJECTION, mProjection);
+        return mProjection;
+    }
+
+    
+    private void getMatrix(GL10 gl, int mode, float[] mat) 
+    {
+        MatrixTrackingGL gl2 = (MatrixTrackingGL) gl;
+        gl2.glMatrixMode(mode);
+        gl2.getMatrix(mat, 0);
+    }
+    */
