@@ -6,9 +6,9 @@ public class Regulator
 	private long updateSpeed;
 	private static final int MILSECS = 1000;
 	
-	public Regulator(int framesPerSecond)
+	public Regulator(float framesPerSecond)
 	{
-		this.updateSpeed = MILSECS / framesPerSecond;
+		this.updateSpeed = (long) (MILSECS / framesPerSecond);
 		this.lastUpdateTime = System.currentTimeMillis();
 	}
 	

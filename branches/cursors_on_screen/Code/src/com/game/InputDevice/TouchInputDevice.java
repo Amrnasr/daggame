@@ -33,7 +33,8 @@ public class TouchInputDevice extends InputDevice
 				{
 					MotionEvent event = (MotionEvent)msg.obj;
 
-					Vec2 newPos = Camera.Get().ScreenToWorld(new Vec2(event.getX(),event.getY()));					
+					Vec2 newPos = Camera.Get().ScreenToWorld(new Vec2(event.getX(),event.getY()));	
+					
 					parent.GetCursor().MoveTo(newPos);
 				}
 			}

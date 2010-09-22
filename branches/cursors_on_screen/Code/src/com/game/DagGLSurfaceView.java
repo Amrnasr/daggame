@@ -1,5 +1,7 @@
 package com.game;
 
+import javax.microedition.khronos.opengles.GL;
+
 import com.game.MessageHandler.MsgReceiver;
 
 import android.content.Context;
@@ -22,6 +24,7 @@ public class DagGLSurfaceView extends GLSurfaceView
 		super(context);       
 		
 		setFocusable(true);
+		
 		
         mRenderer = new DagRenderer();
         setRenderer(mRenderer);
