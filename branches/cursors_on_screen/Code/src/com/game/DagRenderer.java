@@ -13,6 +13,7 @@ import com.game.MessageHandler.MsgReceiver;
 
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
+import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.Preference;
@@ -157,6 +158,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	    
 	    MessageHandler.Get().SetRendererHandler(this.handler);
 	    MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.RENDERER_CONSTRUCTOR_DONE);
+	    
+	    Camera.Get().SetRenderRef(this);
 	}
 	
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
@@ -184,6 +187,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 
 	public void onDrawFrame(GL10 gl) 
     {
+		this.gl = gl;
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
@@ -275,6 +279,79 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		cursorColor.elementAt(cursor)[2] = color[2];
 		cursorColor.elementAt(cursor)[3] = color[3];
 	}
+	
+	
+	/**
+    * Record the current modelView matrix state. Has the side effect of
+    * setting the current matrix state to GL_MODELVIEW
+    * @param gl
+    */
+   public float[] getCurrentModelView(GL10 gl) 
+   {
+   	float[] mModelView = new float[16];
+       getMatrix(gl, GL10.GL_MODELVIEW, mModelView);
+       return mModelView;
+   }
+
+   /**
+    * Record the current projection matrix state. Has the side effect of
+    * setting the current matrix state to GL_PROJECTION
+    * @param gl
+    */
+   public float[] getCurrentProjection(GL10 gl) 
+   {
+   	float[] mProjection = new float[16];
+       getMatrix(gl, GL10.GL_PROJECTION, mProjection);
+       return mProjection;
+   }
+
+   
+   private void getMatrix(GL10 gl, int mode, float[] mat) 
+   {
+       MatrixTrackingGL gl2 = (MatrixTrackingGL) gl;
+       gl2.glMatrixMode(mode);
+       gl2.getMatrix(mat, 0);
+   }
+   
+   public Vec2 GetWorldCoords( Vec2 touch, float screenW, float screenH, float camZ)
+   {
+	   Vec2 worldPos = new Vec2();
+	   
+	   float[] viewProjMatrix = getCurrentProjection(gl);
+	   
+	   float[] nearPoint = new float[4];
+	   float[] farPoint = new float[4];
+	   
+	   nearPoint[0] = (float) (2*touch.X()/screenW -1);
+	   nearPoint[1] = (float) (-2*touch.Y()/screenH +1);
+	   nearPoint[2] = 0.0f;
+	   nearPoint[3] = 1.0f;
+	   
+	   farPoint[0] = (float) (2*touch.X()/screenW -1);
+	   farPoint[1] = (float) (-2*touch.Y()/screenH +1);
+	   farPoint[2] = 1.0f;
+	   farPoint[3] = 0.0f;
+	   
+	   float[] nearWorldPoint = new float[4];
+	   float[] farWorldPoint = new float[4];
+	   float[] invProjMatrix = new float[16];
+	   
+	   Matrix.invertM(invProjMatrix, 0, viewProjMatrix, 0);
+	   
+	   Matrix.multiplyMV(nearWorldPoint, 0, invProjMatrix, 0, nearPoint, 0);
+	   Matrix.multiplyMV(farWorldPoint, 0, invProjMatrix, 0, farPoint, 0);
+	   
+	   Vec2 ray = new Vec2();
+	   ray.SetX(farWorldPoint[0] - nearWorldPoint[0]);
+	   ray.SetY(farWorldPoint[1] - nearWorldPoint[1]);
+	   ray.Normalize();
+	   
+	   worldPos.SetX(ray.X() * camZ);
+	   worldPos.SetY(ray.Y() * camZ);
+	   
+	   return worldPos;
+	   
+   }
 	
 	
 }

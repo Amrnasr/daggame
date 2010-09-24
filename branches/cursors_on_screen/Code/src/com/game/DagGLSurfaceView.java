@@ -25,6 +25,12 @@ public class DagGLSurfaceView extends GLSurfaceView
 		
 		setFocusable(true);
 		
+		setGLWrapper(
+				new GLSurfaceView.GLWrapper() 
+				{
+					@Override
+					public GL wrap(GL gl) { return new MatrixTrackingGL(gl); }
+				});  
 		
         mRenderer = new DagRenderer();
         setRenderer(mRenderer);
