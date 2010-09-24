@@ -46,6 +46,8 @@ public class Camera
 	private float minRatio;
 	private float maxRatio;
 	
+	private DagRenderer renderRef;
+	
 	/**
 	 * Prevents the instantiation of an object of the Camera class
 	 */
@@ -122,6 +124,8 @@ public class Camera
 	public Vec2 ScreenToWorld(Vec2 touchPos)
 	{
 
+		return this.renderRef.GetWorldCoords(touchPos, screenW, screenH, this.z);
+		/*
 		Vec2 aux = new Vec2();
 		int mapH = -1; 
 		int mapW = -1;
@@ -164,6 +168,7 @@ public class Camera
 		Log.i("Camera", "New pos: " + xx + ", " + yy);
 		
 		return aux;
+		*/
 	}
 	
 	private float GetRatioFromZ()
@@ -264,5 +269,5 @@ public class Camera
 	public int X() { return this.x; }
 	public int Y() { return this.y; }
 	public int Z() { return this.z; }	
-
+	public void SetRenderRef(DagRenderer ref) { this.renderRef = ref; }
 }
