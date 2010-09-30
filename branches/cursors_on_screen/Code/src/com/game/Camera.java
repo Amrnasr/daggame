@@ -124,7 +124,7 @@ public class Camera
 	public Vec2 ScreenToWorld(Vec2 touchPos)
 	{
 
-		return this.renderRef.GetWorldCoords(touchPos, screenW, screenH, this.z);
+		return this.renderRef.GetWorldCoords(touchPos, screenW, screenH, this);
 		/*
 		Vec2 aux = new Vec2();
 		int mapH = -1; 
