@@ -11,6 +11,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import com.game.MessageHandler.MsgReceiver;
 
+import android.R.string;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.Matrix;
@@ -31,18 +32,7 @@ import android.util.Log;
  * @author Ying
  *
  */
-/**
- * @author Ying
- *
- */
-/**
- * @author Ying
- *
- */
-/**
- * @author Ying
- *
- */
+
 public class DagRenderer implements GLSurfaceView.Renderer 
 {	
 	// To receive messages from the logic thread.
@@ -173,7 +163,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.gl = gl;
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
-		
 		gl.glViewport(0,0,w,h);
 		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, 900f, 3000f); // TODO: Make them dependant on map size
 		
@@ -313,24 +302,94 @@ public class DagRenderer implements GLSurfaceView.Renderer
        gl2.getMatrix(mat, 0);
    }
    
-   public Vec2 GetWorldCoords( Vec2 touch, float screenW, float screenH, float camZ)
+   private void Print(String name, float[] vec)
    {
+	   String text = "";
+	   for(int i = 0; i < vec.length; i+=1)
+	   {
+		   text = text + vec[i] + ", ";
+	   }
+	   Log.i(name, text);
+   }
+   private void Print(String name, int[] vec)
+   {
+	   String text = "";
+	   for(int i = 0; i < vec.length; i+=1)
+	   {
+		   text = text + vec[i] + ", " ;
+	   }
+	   Log.i(name, text);
+   }
+   
+   public Vec2 GetWorldCoords( Vec2 touch, float screenW, float screenH, Camera cam)
+   {
+	   Log.i("World Coords", "-------------- ");
 	   Vec2 worldPos = new Vec2();
 	   
+	   /* matrice de transformation */
+	   float[] m, A, in, out;
+	   m = new float[16];
+	   A = new float[16];
+	   in = new float[4];
+	   out = new float[4];
+
+	   int oglCoordSysY = (int) (screenH - cam.Y());
+	   
+	   int oglTouchY = (int) (screenH - touch.Y());
+	   
+	   /* transformation coordonnees normalisees entre -1 et 1 */
+	   //in[0] = (float) ((touch.X() - cam.X()) * 2.0f / screenW - 1.0);
+	   //in[1] = (float) ((touch.Y() - oglCoordSysY) * 2.0f / screenH - 1.0);
+	   
+	   in[0] = (float) ((touch.X()) * 2.0f / screenW - 1.0);
+	   in[1] = (float) ((oglTouchY) * 2.0f / screenH - 1.0);
+	   in[2] = - 1.0f;
+	   in[3] = 1.0f;
+	   
+	   Print("In:", in);
+
+	   /* calcul transformation inverse */
+	   Matrix.multiplyMM(A, 0, getCurrentProjection(gl), 0, getCurrentModelView(gl), 0);
+	   Matrix.invertM(m, 0, A, 0);	   
+
+	   /* d'ou les coordonnees objets */
+	   Matrix.multiplyMV(out, 0, m, 0, in, 0);
+	   Print("Out: ", out);
+	   
+	   if (out[3] == 0.0)
+	   {
+		   Log.e("World coords", "Could not calculate world coordinates");
+		   return worldPos;
+	   }
+	   
+	   worldPos.Set(out[0] / out[3], out[1] / out[3]);
+	   float worldZ = out[2] / out[3];
+	   
+	   Log.i("World Coords", "World x: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);
+		
+	   /*
 	   float[] viewProjMatrix = getCurrentProjection(gl);
+	   Log.i("World Coords", " Proj Matrix:");
+	   Log.i("World Coords", "" + viewProjMatrix[0] + ", " + viewProjMatrix[1] + "," + viewProjMatrix[2] + ", " + viewProjMatrix[3]);
+	   Log.i("World Coords", "" + viewProjMatrix[4] + ", " + viewProjMatrix[5] + "," + viewProjMatrix[6] + ", " + viewProjMatrix[7]);
+	   Log.i("World Coords", "" + viewProjMatrix[8] + ", " + viewProjMatrix[9] + "," + viewProjMatrix[10] + ", " + viewProjMatrix[11]);
+	   Log.i("World Coords", "" + viewProjMatrix[12] + ", " + viewProjMatrix[13] + "," + viewProjMatrix[14] + ", " + viewProjMatrix[15]);
 	   
 	   float[] nearPoint = new float[4];
 	   float[] farPoint = new float[4];
 	   
-	   nearPoint[0] = (float) (2*touch.X()/screenW -1);
-	   nearPoint[1] = (float) (-2*touch.Y()/screenH +1);
+	   nearPoint[0] = (float) (2.0f*touch.X()/screenW -1.0f);
+	   nearPoint[1] = (float) (-2.0f*touch.Y()/screenH +1.0f);
 	   nearPoint[2] = 0.0f;
 	   nearPoint[3] = 1.0f;
 	   
-	   farPoint[0] = (float) (2*touch.X()/screenW -1);
-	   farPoint[1] = (float) (-2*touch.Y()/screenH +1);
+	   farPoint[0] = (float) (2.0f*touch.X()/screenW -1.0f);
+	   farPoint[1] = (float) (-2.0f*touch.Y()/screenH +1.0f);
 	   farPoint[2] = 1.0f;
-	   farPoint[3] = 0.0f;
+	   farPoint[3] = 1.0f;
+	   
+	   Log.i("World Coords", "Clip coords p1: " + nearPoint[0] +", " + nearPoint[1] +", " + nearPoint[2] +", " + nearPoint[3] +", ");
+	   Log.i("World Coords", "Clip coords p2: " + farPoint[0] +", " + farPoint[1] +", " + farPoint[2] +", " + farPoint[3] +", ");
 	   
 	   float[] nearWorldPoint = new float[4];
 	   float[] farWorldPoint = new float[4];
@@ -338,20 +397,37 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   
 	   Matrix.invertM(invProjMatrix, 0, viewProjMatrix, 0);
 	   
+	   Log.i("World Coords", " Proj Matrix:");
+	   Log.i("World Coords", "" + invProjMatrix[0] + ", " + invProjMatrix[1] + "," + invProjMatrix[2] + ", " + invProjMatrix[3]);
+	   Log.i("World Coords", "" + invProjMatrix[4] + ", " + invProjMatrix[5] + "," + invProjMatrix[6] + ", " + invProjMatrix[7]);
+	   Log.i("World Coords", "" + invProjMatrix[8] + ", " + invProjMatrix[9] + "," + invProjMatrix[10] + ", " + invProjMatrix[11]);
+	   Log.i("World Coords", "" + invProjMatrix[12] + ", " + invProjMatrix[13] + "," + invProjMatrix[14] + ", " + invProjMatrix[15]);
+	   
+	   
 	   Matrix.multiplyMV(nearWorldPoint, 0, invProjMatrix, 0, nearPoint, 0);
 	   Matrix.multiplyMV(farWorldPoint, 0, invProjMatrix, 0, farPoint, 0);
+	   
+	   Log.i("World Coords", "Proj coords p1: " + nearWorldPoint[0] +", " + nearWorldPoint[1] +", " + nearWorldPoint[2] +", " + nearWorldPoint[3] +", ");
+	   Log.i("World Coords", "Proj coords p2: " + farWorldPoint[0] +", " + farWorldPoint[1] +", " + farWorldPoint[2] +", " + farWorldPoint[3] +", ");
 	   
 	   Vec2 ray = new Vec2();
 	   ray.SetX(farWorldPoint[0] - nearWorldPoint[0]);
 	   ray.SetY(farWorldPoint[1] - nearWorldPoint[1]);
 	   ray.Normalize();
 	   
+	   Log.i("World Coords", "Normalized ray: " + ray.X() + "," + ray.Y());
+	   
 	   worldPos.SetX(ray.X() * camZ);
 	   worldPos.SetY(ray.Y() * camZ);
+	   
+	   Log.i("World Coords", "Picked point: " + worldPos.X() + "," + worldPos.Y());
+	   */
 	   
 	   return worldPos;
 	   
    }
+   
+
 	
 	
 }
@@ -434,3 +510,25 @@ public class DagRenderer implements GLSurfaceView.Renderer
         gl2.getMatrix(mat, 0);
     }
     */
+
+/*
+ * int[] view= new int[4];
+	   view[0] = cam.X(); view[1] = cam.Y();
+	   view[2] = (int) screenW; view[3] = (int) screenH;
+	   
+	   float[] obj = new float[3];
+	   
+	   Print("View", view);
+	   Print("Obj", obj);
+	   Print("Model",getCurrentModelView(gl) );
+	   Print("Proj", getCurrentProjection(gl));
+	   
+	   GLU.gluUnProject(
+			   (float)touch.X(), (float)touch.Y(), 0.1f, 
+			   getCurrentModelView(gl), 0, 
+			   getCurrentProjection(gl), 0, 
+			   view, 0, 
+			   obj, 0);
+	   
+	   Log.i("World Coords", "x: " + obj[0] + ", " + obj[1] + ", " + obj[2]);
+	   */
