@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.game.Camera;
 import com.game.Constants;
+import com.game.Cursor;
 import com.game.Map;
 import com.game.MessageHandler;
 import com.game.MsgType;
@@ -143,7 +144,14 @@ public class PlayScene extends Scene
 	        	}    	
 	        	else if(msg.what == MsgType.RENDERER_CONSTRUCTOR_DONE.ordinal())
 	        	{
+	        		// Send all the cursors
+	        		Vector<Cursor> cursors = new Vector<Cursor>();
+	        		for(int i = 0; i < players.size(); i++)
+	        		{
+	        			cursors.add(players.elementAt(i).GetCursor());
+	        		}
 	        		
+	        		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.GET_CURSOR_VECTOR, cursors);
 	        	}
 	        }
 	    };
