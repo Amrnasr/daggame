@@ -50,6 +50,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	// A square to be drawn as the cursor, at each position we have a cursor
 	FloatBuffer cursorBuff;
 	
+	// Reference to the cursors
+	private Vector<Cursor> cursorsRef;
+	
 	// Position for each player cursor
 	private Vector<float[]> cursorPos;
 	
@@ -76,6 +79,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		cursorPos = new Vector<float[]>();
 		cursorColor = new Vector<float[]>();
+		cursorsRef = new Vector<Cursor>();
 		
 		// Create one cursor per player
 		CreateCursors(Preferences.Get().GetNumberOfPlayers());
@@ -143,6 +147,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        	{
 	        		ChangeCursorPosition(msg.arg1, (float[]) msg.obj);
 	        	}
+	        	else if(msg.what == MsgType.GET_CURSOR_VECTOR.ordinal())
+	        	{
+	        		Vector<Cursor> curs = (Vector<Cursor>) msg.obj;
+	        		for(int i = 0; i < curs.size(); i++)
+	        		{
+	        			cursorsRef.add(curs.elementAt(i));
+	        		}
+	        	}
 	        }
 	    };
 	    
@@ -208,7 +220,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	}
 	
 	private void DrawCursors(GL10 gl)
-	{		
+	{	
+		/*
 		for(int i = 0; i < cursorPos.size(); i++)
 		{		
 			float[] cp = cursorPos.elementAt(i);
@@ -223,12 +236,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			
 			gl.glPopMatrix();
 		}
+		*/
 		
-		/*
-		gl.glColor4f(1, 0, 0, 1);
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursorBuff);
-		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);*/
-
+		for(int i = 0; i < cursorsRef.size(); i++ )
+		{
+			cursorsRef.elementAt(i).DrawCursors(gl);
+		}
 	}
 	
 	private void CreateCursors(int numbCursors)
@@ -367,61 +380,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   
 	   Log.i("World Coords", "World x: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);
 		
-	   /*
-	   float[] viewProjMatrix = getCurrentProjection(gl);
-	   Log.i("World Coords", " Proj Matrix:");
-	   Log.i("World Coords", "" + viewProjMatrix[0] + ", " + viewProjMatrix[1] + "," + viewProjMatrix[2] + ", " + viewProjMatrix[3]);
-	   Log.i("World Coords", "" + viewProjMatrix[4] + ", " + viewProjMatrix[5] + "," + viewProjMatrix[6] + ", " + viewProjMatrix[7]);
-	   Log.i("World Coords", "" + viewProjMatrix[8] + ", " + viewProjMatrix[9] + "," + viewProjMatrix[10] + ", " + viewProjMatrix[11]);
-	   Log.i("World Coords", "" + viewProjMatrix[12] + ", " + viewProjMatrix[13] + "," + viewProjMatrix[14] + ", " + viewProjMatrix[15]);
 	   
-	   float[] nearPoint = new float[4];
-	   float[] farPoint = new float[4];
-	   
-	   nearPoint[0] = (float) (2.0f*touch.X()/screenW -1.0f);
-	   nearPoint[1] = (float) (-2.0f*touch.Y()/screenH +1.0f);
-	   nearPoint[2] = 0.0f;
-	   nearPoint[3] = 1.0f;
-	   
-	   farPoint[0] = (float) (2.0f*touch.X()/screenW -1.0f);
-	   farPoint[1] = (float) (-2.0f*touch.Y()/screenH +1.0f);
-	   farPoint[2] = 1.0f;
-	   farPoint[3] = 1.0f;
-	   
-	   Log.i("World Coords", "Clip coords p1: " + nearPoint[0] +", " + nearPoint[1] +", " + nearPoint[2] +", " + nearPoint[3] +", ");
-	   Log.i("World Coords", "Clip coords p2: " + farPoint[0] +", " + farPoint[1] +", " + farPoint[2] +", " + farPoint[3] +", ");
-	   
-	   float[] nearWorldPoint = new float[4];
-	   float[] farWorldPoint = new float[4];
-	   float[] invProjMatrix = new float[16];
-	   
-	   Matrix.invertM(invProjMatrix, 0, viewProjMatrix, 0);
-	   
-	   Log.i("World Coords", " Proj Matrix:");
-	   Log.i("World Coords", "" + invProjMatrix[0] + ", " + invProjMatrix[1] + "," + invProjMatrix[2] + ", " + invProjMatrix[3]);
-	   Log.i("World Coords", "" + invProjMatrix[4] + ", " + invProjMatrix[5] + "," + invProjMatrix[6] + ", " + invProjMatrix[7]);
-	   Log.i("World Coords", "" + invProjMatrix[8] + ", " + invProjMatrix[9] + "," + invProjMatrix[10] + ", " + invProjMatrix[11]);
-	   Log.i("World Coords", "" + invProjMatrix[12] + ", " + invProjMatrix[13] + "," + invProjMatrix[14] + ", " + invProjMatrix[15]);
-	   
-	   
-	   Matrix.multiplyMV(nearWorldPoint, 0, invProjMatrix, 0, nearPoint, 0);
-	   Matrix.multiplyMV(farWorldPoint, 0, invProjMatrix, 0, farPoint, 0);
-	   
-	   Log.i("World Coords", "Proj coords p1: " + nearWorldPoint[0] +", " + nearWorldPoint[1] +", " + nearWorldPoint[2] +", " + nearWorldPoint[3] +", ");
-	   Log.i("World Coords", "Proj coords p2: " + farWorldPoint[0] +", " + farWorldPoint[1] +", " + farWorldPoint[2] +", " + farWorldPoint[3] +", ");
-	   
-	   Vec2 ray = new Vec2();
-	   ray.SetX(farWorldPoint[0] - nearWorldPoint[0]);
-	   ray.SetY(farWorldPoint[1] - nearWorldPoint[1]);
-	   ray.Normalize();
-	   
-	   Log.i("World Coords", "Normalized ray: " + ray.X() + "," + ray.Y());
-	   
-	   worldPos.SetX(ray.X() * camZ);
-	   worldPos.SetY(ray.Y() * camZ);
-	   
-	   Log.i("World Coords", "Picked point: " + worldPos.X() + "," + worldPos.Y());
-	   */
 	   
 	   return worldPos;
 	   

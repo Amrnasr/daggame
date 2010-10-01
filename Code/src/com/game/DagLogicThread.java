@@ -16,7 +16,8 @@ import android.util.Log;
 public class DagLogicThread extends Thread 
 {
 	/// Keeps the hearth beating! Jokes aside, it's the while() condition for the run function.
-	private boolean gameRuning;
+	/// volatile so it's aware that this value might be modified by another thread, so don't cache it
+	private volatile boolean gameRuning;
 	
 	/// Controls all scenes in general, the current one in particular.
 	private SceneManager sceneManager;
