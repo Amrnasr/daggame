@@ -55,7 +55,6 @@ public class Player
 		int y = gen.nextInt(hArea) + hMargin;
 		
 		this.cursor.SetPosition( x, y);		
-		this.cursor.UpdateGfxPosition();
 	}
 	
 	public void Start()

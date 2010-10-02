@@ -155,6 +155,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        			cursorsRef.add(curs.elementAt(i));
 	        		}
 	        	}
+	        	else if(msg.what == MsgType.REQUEST_WCS_TRANSFORM.ordinal())
+	        	{
+	        		// TODO: Camera syncronization check 
+	        		Vec2 reply = GetWorldCoords((Vec2)msg.obj, Camera.Get().GetScreenWidth(), Camera.Get().GetScreenHeight(), Camera.Get());
+	        		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.REPLY_WCS_TRANSFORM_REQUEST, reply);
+	        	}
 	        }
 	    };
 	    
@@ -220,24 +226,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	}
 	
 	private void DrawCursors(GL10 gl)
-	{	
-		/*
-		for(int i = 0; i < cursorPos.size(); i++)
-		{		
-			float[] cp = cursorPos.elementAt(i);
-			float[] cc = cursorColor.elementAt(i);
-			
-			gl.glPushMatrix();
-			
-			gl.glTranslatef(cp[0],cp[1],cp[2]);		
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursorBuff);
-			gl.glColor4f(cc[0], cc[1], cc[2], cc[3]);		
-			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-			
-			gl.glPopMatrix();
-		}
-		*/
-		
+	{			
 		for(int i = 0; i < cursorsRef.size(); i++ )
 		{
 			cursorsRef.elementAt(i).DrawCursors(gl);
