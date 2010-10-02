@@ -33,7 +33,7 @@ import android.util.Log;
  */
 public class Camera 
 {
-	private static Camera instance = null;
+	private static Camera instance = new Camera();;
 	private int x;
 	private int y;
 	private int z;
@@ -73,14 +73,16 @@ public class Camera
 	 * Gets the singleton instance of the camera. Creates the camera if it's
 	 * the first time it's called.
 	 * 
+	 * TODO: Check speed hit for having a sync
+	 * 
 	 * @return the instance of the camera
 	 */
-	public static Camera Get()
+	public static synchronized Camera Get()
 	{
-		if(instance == null)
+		/*if(instance == null)
 		{
 			instance = new Camera();
-		}
+		}*/
 		return instance;
 	}
 	

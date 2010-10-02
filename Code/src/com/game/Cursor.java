@@ -190,23 +190,9 @@ public class Cursor
 		{
 			pos.SetY(Preferences.Get().mapHeight);
 		}
-		
-		//UpdateGfxPosition();
 		//Log.i("Cursor", "New position: " + this.pos.X() + ", " + this.pos.Y());
 	}
 	
-	/**
-	 * Deprecated
-	 * TODO: Remove
-	 */
-	public void UpdateGfxPosition()
-	{
-		float[] pos = new float[3];
-		pos[0] = (float)this.pos.X();
-		pos[1] = (float)this.pos.Y();
-		pos[2] = 1;
-		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.UPDATE_CURSOR_POS, parent.GetID(), 0, pos);
-	}
 	
 	/**
 	 * TODO

@@ -125,6 +125,13 @@ public class PlayScene extends Scene
 	        		
 	        		//Log.i("PlayScene Handler: ", "Motion event: " + event.getX() + ", " + event.getY());
 	        	}
+	        	else if(msg.what == MsgType.REPLY_WCS_TRANSFORM_REQUEST.ordinal())
+				{
+	        		if( touchEvent != null )
+	        		{
+	        			touchEvent.sendMessage(touchEvent.obtainMessage(MsgType.REPLY_WCS_TRANSFORM_REQUEST.ordinal(), msg.obj));
+	        		}
+				}	        	
 	        	else if(msg.what == MsgType.TRACKBALL_EVENT.ordinal())
 				{	        		
 	        		if( trackballEvent != null )
