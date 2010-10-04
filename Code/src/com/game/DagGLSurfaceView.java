@@ -11,20 +11,26 @@ import android.view.MotionEvent;
 /**
  * Surface view class for the PlayScene. 
  * 
- * TODO: This is a stub class so I din't forget how it was done. Lots of work still.
- * 
  * @author Ying
  */
 public class DagGLSurfaceView extends GLSurfaceView 
 {
+	/**
+	 * OGL renderer object
+	 */
 	private DagRenderer mRenderer;
 	
+	/**
+	 * Instantiates a new DagGLSurfaceView object. The new object creates it's own DagRenderer.
+	 * @param context
+	 */
 	public DagGLSurfaceView(Context context) 
     {
 		super(context);       
 		
 		setFocusable(true);
 		
+		// Wrapper set so the renderer can access the gl transformation matrixes.
 		setGLWrapper(
 				new GLSurfaceView.GLWrapper() 
 				{
@@ -36,6 +42,10 @@ public class DagGLSurfaceView extends GLSurfaceView
         setRenderer(mRenderer);
     }
 
+	/**
+	 * Called when the user touches the screen.
+	 * It notifies the logic of the touch and the position.
+	 */
     public boolean onTouchEvent(final MotionEvent event) 
     {
     	// Send any touches in this view to the logic thread to be processed.
@@ -43,10 +53,13 @@ public class DagGLSurfaceView extends GLSurfaceView
     	return true;
     }
 
+    /**
+     * Called when the user uses the trackball.
+     * It notifies the logic of the trackball event.
+     */
     public boolean onTrackballEvent(MotionEvent event)
     {
     	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.TRACKBALL_EVENT, event);
     	return true;
-    }
-    
+    }    
 }

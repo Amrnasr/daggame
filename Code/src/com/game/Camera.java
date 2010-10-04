@@ -33,20 +33,66 @@ import android.util.Log;
  */
 public class Camera 
 {
+	/**
+	 * Static singleton instance
+	 */
 	private static Camera instance = new Camera();
+	
+	/**
+	 * Position in ogl coords of the camera
+	 */
 	private Vec3 pos;
 	
+	/**
+	 * Screen viewport height
+	 */
 	private int screenH;
+	
+	/**
+	 * Screen viewport width
+	 */
 	private int screenW;
 	
+	/**
+	 * Minimum camera z
+	 */
 	private int minZ;
+	
+	/**
+	 * Maximum camera z
+	 */
 	private int maxZ;
+	
+	/**
+	 * Minimum ratio for map/screen
+	 */
 	private float minRatio;
+	
+	/**
+	 * Maximum ratio for map/screen
+	 */
 	private float maxRatio;
 	
+	/**
+	 * Distance the camera must translate through if asked to move.
+	 * Used for interpolation
+	 */
 	private double distance;
+	
+	/**
+	 * Unitary direction vector for the camera if asked to move.
+	 * Used for interpolation
+	 */
 	private Vec3 direction;
+	
+	/**
+	 * Camera movement speed.
+	 */
 	private int speed;
+	
+	/**
+	 * Speed constant.
+	 */
 	private static final int NORMAL_SPEED = 5;
 	
 	/**
@@ -54,7 +100,6 @@ public class Camera
 	 */
 	protected Camera() 
 	{
-		// TODO: Change to default values, this is just debug
 		pos = new Vec3();
 
 		screenH = 0;
@@ -85,12 +130,11 @@ public class Camera
 	}
 	
 	/**
-	 * Keep all cursors on camera, and the camera just wide enough
-	 * TODO: Move fluidly. 
+	 * It updates the camera. If necessary it interplolates it's movement in a straigth line
+	 * in the this.direction for this.distance.
 	 */
 	public void Update()
 	{
-		//Log.i("Camera", "Update");
 		if(HasToMove())
 		{
 			double increment = Math.min(this.distance, this.speed);				
@@ -111,15 +155,15 @@ public class Camera
 		this.screenW = w;
 		
 		// Set initial z then:
-		this.minZ = 2* this.screenH;
-		
+		this.minZ = 2* this.screenH;		
 	}
 	
-
-	
+	/**
+	 * Zooms the camera so all players are on screen.
+	 * @param players
+	 */
 	public void ZoomOnPlayers(Vector<Player> players)
 	{
-		Log.i("Camera", "Zooming on players");
 		if(players == null)
 		{
 			Log.e("Camera", "Zoom on all players: Players null");
@@ -130,7 +174,7 @@ public class Camera
 		maxX = maxY = 0;
 		minX = minY = Preferences.Get().mapWidth;
 		
-		// To calculate the center point
+		// To calculate the center point of all players
 		float centerX = 0, centerY = 0;
 		int cursorCount = 0;
 		
@@ -164,14 +208,14 @@ public class Camera
 		}
 		else
 		{
-			// point to go
+			// Point to go
 			Vec3 destination = new Vec3();
 			
 			// Center position of all the cursors that must be shown on screen
 			centerX /= cursorCount;
 			centerY /= cursorCount;
 			
-			// Make it so the camera viewport is at least as big as the screen
+			// Make it so the camera viewport is at least as big as the physical screen
 			int xWidth = (int) (maxX - minX);
 			int xHeight = (int) (maxY - minY);
 			xWidth = Math.max(xWidth, this.screenW);
@@ -180,12 +224,12 @@ public class Camera
 			// Set X and y
 			destination.SetX((centerX - xWidth/2) + this.screenW/2);
 			destination.SetY((centerY - xHeight/2) + this.screenH/2);
-			//this.x = (int) (centerX - xWidth/2) + this.screenW/2;
-			//this.y = (int) (centerY - xHeight/2) + this.screenH/2;
 			
 			// Set Z  (xDDD)			
 			xWidth = Math.max(1, xWidth); // To avoid /0 errors while loading
-			float ratio = xWidth / this.screenW;
+			
+			// Get the ratio map/screen
+			float ratio = xWidth / this.screenW; 
 			
 			this.maxRatio = Preferences.Get().mapWidth / screenW;
 			ratio = ratio - this.minRatio;
@@ -195,11 +239,11 @@ public class Camera
 			this.maxZ = 2*Preferences.Get().mapWidth;			
 			float zRange = this.maxZ - this.minZ;
 			
+			// Now we've got the % of ratio, just apply it to the allowed Z interval.
 			destination.SetZ(this.minZ + (zRange * ratio));
-			//this.z = (int) (this.minZ + (zRange * ratio));
 			
-			MoveTo(destination);
-			
+			// Once the destination point is calculated, request to move there.
+			MoveTo(destination);			
 		}
 		
 	}
@@ -208,7 +252,7 @@ public class Camera
 	 * Called to request the cursor to move to a specified position, in a straight line, to the max of it's speed.
 	 * @param destination is the point we want the Cursor to translate to
 	 */
-	public void MoveTo(Vec3 destination)
+	private void MoveTo(Vec3 destination)
 	{
 		if(! this.pos.Equals(destination))
 		{
@@ -223,7 +267,7 @@ public class Camera
 	 * The length of the vector is taken to be the length of the path we want
 	 * to move along. 
 	 */
-	public void MoveInDirection(Vec3 direction)
+	private void MoveInDirection(Vec3 direction)
 	{
 		this.distance = direction.Length();
 		
@@ -250,10 +294,34 @@ public class Camera
 		return true;
 	}
 	
+	/**
+	 * Gets the screen width
+	 * @return screen width
+	 */
 	public int GetScreenWidth() { return this.screenW; }
+	
+	/**
+	 * Gets the screen height
+	 * @return screen height
+	 */
 	public int GetScreenHeight() { return this.screenH; }
+	
+	/**
+	 * Gets the camera x
+	 * @return x
+	 */
 	public int X() { return (int) this.pos.X(); }
+	
+	/**
+	 * Get the camera y
+	 * @return y
+	 */
 	public int Y() { return (int) this.pos.Y(); }
+	
+	/**
+	 * Get the camera z
+	 * @return z
+	 */
 	public int Z() { return (int) this.pos.Z(); }	
 
 }

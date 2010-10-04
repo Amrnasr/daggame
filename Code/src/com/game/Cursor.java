@@ -3,12 +3,7 @@ package com.game;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-
 import javax.microedition.khronos.opengles.GL10;
-
-import com.game.MessageHandler.MsgReceiver;
-
-import android.bluetooth.BluetoothClass.Device;
 import android.util.Log;
 
 /**
@@ -195,11 +190,10 @@ public class Cursor
 	
 	
 	/**
-	 * TODO
-	 * sync!
-	 * @return
+	 * Gets the cursor position
+	 * @return a Vec2 with the x,y position in WCS.
 	 */
-	public Vec2 GetPosition()	{ return this.pos; }
+	public synchronized Vec2 GetPosition()	{ return this.pos; }
 	
 	/**
 	 * Draws the cursor.

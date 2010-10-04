@@ -3,9 +3,18 @@ package com.game;
 import android.os.Handler;
 import android.util.Log;
 
-
+/**
+ * Singleton message handler, to comunicate all the systems in the game.
+ * @author Ying
+ *
+ */
 public class MessageHandler 
 {
+	/**
+	 * List of receivers. Update to add more.
+	 * @author Ying
+	 *
+	 */
 	public enum MsgReceiver
 	{
 		ACTIVITY,

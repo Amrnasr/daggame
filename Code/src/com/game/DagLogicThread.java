@@ -15,11 +15,15 @@ import android.util.Log;
  */
 public class DagLogicThread extends Thread 
 {
-	/// Keeps the hearth beating! Jokes aside, it's the while() condition for the run function.
-	/// volatile so it's aware that this value might be modified by another thread, so don't cache it
+	/**
+	 * Keeps the hearth beating! Jokes aside, it's the while() condition for the run function.
+	 * volatile so it's aware that this value might be modified by another thread, so don't cache it
+	 */
 	private volatile boolean gameRuning;
 	
-	/// Controls all scenes in general, the current one in particular.
+	/**
+	 * Controls all scenes in general, the current one in particular.
+	 */
 	private SceneManager sceneManager;
 	
 	/**
@@ -33,12 +37,12 @@ public class DagLogicThread extends Thread
 	
 	/**
 	 * Called each update loop.
+	 * Updates the logic thread.
 	 */
 	@Override public void run()
 	{
 		while(gameRuning)
 		{
-			//Log.i("Thread", "Runnin' baby!");
 			if(sceneManager != null)
 			{
 				sceneManager.Update();
@@ -46,8 +50,7 @@ public class DagLogicThread extends Thread
 			else
 			{
 				Log.i("DagLogicThread", "No scene manager yet!!");
-			}
-			
+			}			
 		}
 	}
 	
