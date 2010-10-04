@@ -125,13 +125,6 @@ public enum MsgType
 	RENDERER_CONSTRUCTOR_DONE,
 	
 	/**
-	 * Sent to the renderer to set a specific cursor position
-	 * arg1: Which cursor to update
-	 * object: float[] with the coords
-	 */
-	UPDATE_CURSOR_POS,
-	
-	/**
 	 * Sent to the renderer to change a cursor color
 	 * arg1:   Which cursor to update
 	 * object: float[] with the rgba values
