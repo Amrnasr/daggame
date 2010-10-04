@@ -240,17 +240,24 @@ public class PlayScene extends Scene
 		if(!gameplayRegulator.IsReady())
 		{
 			return;
-		}
+		}		
 		
 		for(int i = 0; i < this.players.size(); i++)
 		{
 			this.players.elementAt(i).Update();			
 		}
 		
-		if(cameraZoomRegulator.IsReady())
+		if(Camera.Get() != null)
 		{
-			Camera.Get().ZoomOnPlayers(players);
+			if(cameraZoomRegulator.IsReady())
+			{
+				Camera.Get().ZoomOnPlayers(players);
+			}
+			
+			Camera.Get().Update();
 		}
+		
+		
 	}
 	
 	/**
