@@ -33,10 +33,8 @@ import android.util.Log;
  */
 public class Camera 
 {
-	private static Camera instance = new Camera();;
-	private int x;
-	private int y;
-	private int z;
+	private static Camera instance = new Camera();
+	private Vec3 pos;
 	
 	private int screenH;
 	private int screenW;
@@ -46,7 +44,10 @@ public class Camera
 	private float minRatio;
 	private float maxRatio;
 	
-	private DagRenderer renderRef;
+	private double distance;
+	private Vec3 direction;
+	private int speed;
+	private static final int NORMAL_SPEED = 5;
 	
 	/**
 	 * Prevents the instantiation of an object of the Camera class
@@ -54,10 +55,8 @@ public class Camera
 	protected Camera() 
 	{
 		// TODO: Change to default values, this is just debug
-		x = 0;
-		y = 0;
-		z = 0;
-		
+		pos = new Vec3();
+
 		screenH = 0;
 		screenW = 0;
 		
@@ -66,7 +65,10 @@ public class Camera
 		
 		minRatio = 1;
 		maxRatio = 0;
-
+		
+		direction = new Vec3();
+		distance = 0;
+		speed = NORMAL_SPEED;
 	}
 	
 	/**
@@ -79,21 +81,23 @@ public class Camera
 	 */
 	public static synchronized Camera Get()
 	{
-		/*if(instance == null)
-		{
-			instance = new Camera();
-		}*/
 		return instance;
 	}
 	
 	/**
 	 * Keep all cursors on camera, and the camera just wide enough
-	 * TODO: Keep cursors inside, move fluidly. 
-	 * TODO: Notify the DagRender of any camera changes.
+	 * TODO: Move fluidly. 
 	 */
 	public void Update()
 	{
-		
+		//Log.i("Camera", "Update");
+		if(HasToMove())
+		{
+			double increment = Math.min(this.distance, this.speed);				
+			this.pos.Offset(this.direction.X()*increment, this.direction.Y()*increment, this.direction.Z()*increment);
+			
+			this.distance -= increment;
+		}
 	}
 	
 	/**
@@ -111,84 +115,11 @@ public class Camera
 		
 	}
 	
-	/**
-	 * Given a point in the screen coordinates, it returns the point in
-	 * map coordinates, taking in account the camera position.
-	 * 
-	 * The logic here is:
-	 * (screenPoint + cam(x,y))* cam.z/InitialZ
-	 * The first sum is to displace, the multiplication is the ratio that results from 
-	 * zooming the camera in/ out.
-	 * 
-	 * @param touchPos is the point touched on the screen
-	 * @return map coordinates for touchPoint
-	 */
-	public Vec2 ScreenToWorld(Vec2 touchPos)
-	{
 
-		return this.renderRef.GetWorldCoords(touchPos, screenW, screenH, this);
-		/*
-		Vec2 aux = new Vec2();
-		int mapH = -1; 
-		int mapW = -1;
-		
-		mapH = Preferences.Get().mapHeight;
-		mapW = Preferences.Get().mapWidth;
-		
-		this.maxZ = 2*mapW;
-		this.maxRatio = mapW / screenW;
-		Log.i("Camera", "--------------------------------------");
-		Log.i("Camera", "Map: " + mapW + ", " + mapH);
-		Log.i("Camera", "Screen: " + screenW + ", " + screenH);
-		Log.i("Camera", "Touch pos: " + touchPos.X() + ", " + touchPos.Y());
-		Log.i("Camera", "X: " + x + " Y: " + y + " Z: " + z);
-		
-		// Safety checks
-		if(screenH == 0 || screenW == 0)
-		{
-			Log.e("Camera", "Screen size not initialized");
-		}
-		if(mapH == -1 || mapW == -1)
-		{
-			Log.e("Camera", "Map not initalized");
-		}
-		
-		
-		// The touch cc system is top left, instead of bottom left,only god knows why
-		touchPos.SetY(screenH - touchPos.Y());;
-		
-		// Multiply the coordinates by this ratio to apply the camera perspective transform.
-		// And add the displacement.
-		float ratio = GetRatioFromZ();	
-		Log.i("Camera", "Ratio: " + ratio);
-		
-		Log.i("Camera", " -- touchPos.X:" + touchPos.X() + ", x:" + x + ", ratio:" + ratio + ", screenW/2:" + (this.screenW/2));
-		double xx = (touchPos.X() + x)*ratio -(this.screenW/2) ;
-		double yy = (touchPos.Y() + y)*ratio - (this.screenH/2) ;		
-		
-		aux.Set(xx, yy);		
-		Log.i("Camera", "New pos: " + xx + ", " + yy);
-		
-		return aux;
-		*/
-	}
-	
-	private float GetRatioFromZ()
-	{
-		float zDisplazament = this.z - this.minZ;
-		float zRange = this.maxZ - this.minZ;
-		
-		float percentajeOfDisplazament = zDisplazament / zRange;
-		
-		float ratioRange = this.maxRatio - this.minRatio;
-		float ratioDispl = ratioRange * percentajeOfDisplazament;
-		
-		float ratio = this.minRatio + ratioDispl;
-		return ratio;
-	}
 	
 	public void ZoomOnPlayers(Vector<Player> players)
 	{
+		Log.i("Camera", "Zooming on players");
 		if(players == null)
 		{
 			Log.e("Camera", "Zoom on all players: Players null");
@@ -229,12 +160,13 @@ public class Camera
 		if(cursorCount == 0)
 		{
 			// No human players, just watch the whole damm thing
-			this.x = 0;
-			this.y = 0;
-			this.z = this.maxZ;
+			this.pos.Set(0, 0, this.maxZ);
 		}
 		else
 		{
+			// point to go
+			Vec3 destination = new Vec3();
+			
 			// Center position of all the cursors that must be shown on screen
 			centerX /= cursorCount;
 			centerY /= cursorCount;
@@ -246,8 +178,10 @@ public class Camera
 			xHeight = Math.max(xHeight, this.screenH);
 			
 			// Set X and y
-			this.x = (int) (centerX - xWidth/2) + this.screenW/2;
-			this.y = (int) (centerY - xHeight/2) + this.screenH/2;
+			destination.SetX((centerX - xWidth/2) + this.screenW/2);
+			destination.SetY((centerY - xHeight/2) + this.screenH/2);
+			//this.x = (int) (centerX - xWidth/2) + this.screenW/2;
+			//this.y = (int) (centerY - xHeight/2) + this.screenH/2;
 			
 			// Set Z  (xDDD)			
 			xWidth = Math.max(1, xWidth); // To avoid /0 errors while loading
@@ -261,15 +195,65 @@ public class Camera
 			this.maxZ = 2*Preferences.Get().mapWidth;			
 			float zRange = this.maxZ - this.minZ;
 			
-			this.z = (int) (this.minZ + (zRange * ratio));
+			destination.SetZ(this.minZ + (zRange * ratio));
+			//this.z = (int) (this.minZ + (zRange * ratio));
+			
+			MoveTo(destination);
+			
 		}
 		
 	}
 	
+	/**
+	 * Called to request the cursor to move to a specified position, in a straight line, to the max of it's speed.
+	 * @param destination is the point we want the Cursor to translate to
+	 */
+	public void MoveTo(Vec3 destination)
+	{
+		if(! this.pos.Equals(destination))
+		{
+			// move in that direction	
+			MoveInDirection(this.pos.GetVectorTo(destination));
+		}
+	}
+	
+	/**
+	 * Tells the cursor to move in a direction.
+	 * @param direction Non-unitary vector of the direction we want to move. 
+	 * The length of the vector is taken to be the length of the path we want
+	 * to move along. 
+	 */
+	public void MoveInDirection(Vec3 direction)
+	{
+		this.distance = direction.Length();
+		
+		this.direction  = direction;
+		this.direction.Normalize();		
+	}
+	
+	/**
+	 * Checks if the Cursor has to move
+	 * 
+	 * @return True if it has to move, false if it doesn't.
+	 */
+	private boolean HasToMove()
+	{
+		if(this.direction == null)
+		{
+			return false;
+		}
+		if(this.distance == 0)
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public int GetScreenWidth() { return this.screenW; }
 	public int GetScreenHeight() { return this.screenH; }
-	public int X() { return this.x; }
-	public int Y() { return this.y; }
-	public int Z() { return this.z; }	
-	public void SetRenderRef(DagRenderer ref) { this.renderRef = ref; }
+	public int X() { return (int) this.pos.X(); }
+	public int Y() { return (int) this.pos.Y(); }
+	public int Z() { return (int) this.pos.Z(); }	
+
 }

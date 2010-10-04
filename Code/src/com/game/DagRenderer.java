@@ -166,8 +166,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	    
 	    MessageHandler.Get().SetRendererHandler(this.handler);
 	    MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.RENDERER_CONSTRUCTOR_DONE);
-	    
-	    Camera.Get().SetRenderRef(this);
 	}
 	
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
@@ -208,7 +206,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, floatBuff);		
 		if(tileMap != null){
-			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, bufferLength/3);
+			//gl.glDrawArrays(GL10.GL_TRIANGLES, 0, bufferLength/3);
 			DrawCursors(gl);
 		}
 		
