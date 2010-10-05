@@ -165,7 +165,7 @@ public class SingleViewData extends ViewData
         	}
 
         });
-        opponentsSpinner.setSelection(Preferences.Get().singleNumberOpponents);
+        opponentsSpinner.setSelection(Preferences.Get().singleNumberOpponents-1);
         
         Spinner controlSpinner = (Spinner) xmlLayout.findViewById(R.id.control_single_spin);
         ArrayAdapter<CharSequence> controlAdapter = ArrayAdapter.createFromResource(

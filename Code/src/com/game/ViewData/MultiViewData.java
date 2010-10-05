@@ -182,7 +182,7 @@ public class MultiViewData extends ViewData {
         		Log.i("MultiViewData", "No opponents spinner item has been selected");
         	}
         });
-        opponentsSpinner.setSelection(Preferences.Get().multiNumberOpponents);
+        opponentsSpinner.setSelection(Preferences.Get().multiNumberOpponents-1);
         
         Spinner controlSpinner = (Spinner) xmlLayout.findViewById(R.id.control_multi_spin);
         ArrayAdapter<CharSequence> controlAdapter = ArrayAdapter.createFromResource(

@@ -4,10 +4,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
-
-import com.game.Camera;
+import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.Vec2;
+import com.game.MessageHandler.MsgReceiver;
 import com.game.Scenes.PlayScene;
 
 /**
@@ -32,9 +32,15 @@ public class TouchInputDevice extends InputDevice
 				if(msg.what == MsgType.TOUCH_EVENT.ordinal())
 				{
 					MotionEvent event = (MotionEvent)msg.obj;
+					Vec2 newPos = new Vec2(event.getX(),event.getY());
+					
+					MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.REQUEST_WCS_TRANSFORM, newPos);
 
-					Vec2 newPos = Camera.Get().ScreenToWorld(new Vec2(event.getX(),event.getY()));					
-					parent.GetCursor().MoveTo(newPos);
+					
+				}
+				if(msg.what == MsgType.REPLY_WCS_TRANSFORM_REQUEST.ordinal())
+				{
+					parent.GetCursor().MoveTo((Vec2)msg.obj);
 				}
 			}
 		};

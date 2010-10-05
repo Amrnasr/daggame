@@ -117,5 +117,31 @@ public enum MsgType
 	/**
 	 * Updates the camera position
 	 */
-	RENDERER_UPDATE_CAM
+	RENDERER_UPDATE_CAM,
+	
+	/**
+	 * Sent to logic to warn the renderer is ready
+	 */
+	RENDERER_CONSTRUCTOR_DONE,
+	
+	/**
+	 * Sent from the Logic to the renderer with the ref vector with the cursor list
+	 * object: vector of cursors
+	 */
+	GET_CURSOR_VECTOR,
+	
+	/**
+	 * Sent when the touch input device needs to calculate a SCS to WCS transformation on
+	 * a point. 
+	 * 
+	 * obj: Vec2 to transform.
+	 */
+	REQUEST_WCS_TRANSFORM,
+	
+	/**
+	 * Reply to the WCS transform request.
+	 * 
+	 * obj: Vec2 with the transform
+	 */
+	REPLY_WCS_TRANSFORM_REQUEST	
 }

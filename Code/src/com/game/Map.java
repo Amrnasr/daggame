@@ -41,7 +41,7 @@ public class Map {
 		
 		//Initialize the matrix
 		mTileMap = new Vector<Tile>();
-
+		
 		//Calculate the maximum capacity of each tile and initialize them
 		for( int j = tilesPerColumn-1; j >= 0; j--){
 			for(int i = 0; i < tilesPerRow; i++){

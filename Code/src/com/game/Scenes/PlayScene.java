@@ -6,13 +6,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.game.Camera;
 import com.game.Constants;
+import com.game.Cursor;
 import com.game.Map;
 import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.Player;
 import com.game.Preferences;
 import com.game.R;
+import com.game.Regulator;
 import com.game.InputDevice.AIInputDevice;
 import com.game.InputDevice.BallInputDevice;
 import com.game.InputDevice.InputDevice;
@@ -54,7 +57,15 @@ public class PlayScene extends Scene
 	 */
 	private GameState gameState;
 	
+	/**
+	 * Game map reference
+	 */
 	private Map map;
+	
+	/**
+	 * Flag that indicates whether to show the tilemap
+	 */
+	private boolean mShowTileMap;
 	
 	/**
 	 * List of all the players in the game
@@ -77,6 +88,16 @@ public class PlayScene extends Scene
 	private boolean mapLoaded = false;
 	
 	/**
+	 * Keeps the gameplay fps stable.
+	 */
+	private Regulator gameplayRegulator;
+	
+	/**
+	 * Keeps the update of the zoom funcion much lower than gameplay.
+	 */
+	private Regulator cameraZoomRegulator;
+	
+	/**
 	 * Initializes and sets the handler callback.
 	 */
 	public PlayScene()
@@ -87,8 +108,11 @@ public class PlayScene extends Scene
 		this.players = new Vector<Player>();
 		this.trackballEvent = null;
 		this.touchEvent = null;
-
+		this.gameplayRegulator = new Regulator(60);
+		this.cameraZoomRegulator = new Regulator(1);
 		CreatePlayers();
+
+		mShowTileMap = true;
 		
 		map = null;
 
@@ -107,6 +131,13 @@ public class PlayScene extends Scene
 	        		
 	        		//Log.i("PlayScene Handler: ", "Motion event: " + event.getX() + ", " + event.getY());
 	        	}
+	        	else if(msg.what == MsgType.REPLY_WCS_TRANSFORM_REQUEST.ordinal())
+				{
+	        		if( touchEvent != null )
+	        		{
+	        			touchEvent.sendMessage(touchEvent.obtainMessage(MsgType.REPLY_WCS_TRANSFORM_REQUEST.ordinal(), msg.obj));
+	        		}
+				}	        	
 	        	else if(msg.what == MsgType.TRACKBALL_EVENT.ordinal())
 				{	        		
 	        		if( trackballEvent != null )
@@ -124,6 +155,17 @@ public class PlayScene extends Scene
 	        	{
 	        		runScene = false;
 	        	}    	
+	        	else if(msg.what == MsgType.RENDERER_CONSTRUCTOR_DONE.ordinal())
+	        	{
+	        		// Send all the cursors
+	        		Vector<Cursor> cursors = new Vector<Cursor>();
+	        		for(int i = 0; i < players.size(); i++)
+	        		{
+	        			cursors.add(players.elementAt(i).GetCursor());
+	        		}
+	        		
+	        		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.GET_CURSOR_VECTOR, cursors);
+	        	}
 	        }
 	    };
 	    gameState = GameState.PLAYING;
@@ -135,6 +177,9 @@ public class PlayScene extends Scene
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * Initializes the play scene
+	 */
 	@Override
 	public void Start() 
 	{
@@ -148,26 +193,28 @@ public class PlayScene extends Scene
 		{
             public void run() {
             	Log.i("Debug", "Calling Playscene new thread run");
-            	map = new Map(refActivity,R.drawable.samplemap);
+            	map = new Map(refActivity,R.drawable.map_size480_1);
             	MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG);            	
             	mapLoaded = true;
             	
-            	if(Constants.DebugMode){
-	            	MessageHandler.Get().Send(
-	            			MsgReceiver.RENDERER, 
-	            			MsgType.NEW_TILEMAP, 
-	            			map.getBitmap().getWidth()/Constants.TileWidth,
-	            			map.getBitmap().getHeight()/Constants.TileWidth,  
-	            			map.getTileMap());        			
+            	//if(mShowTileMap){
+            	MessageHandler.Get().Send(
+            			MsgReceiver.RENDERER, 
+            			MsgType.NEW_TILEMAP, 
+            			map.getBitmap().getWidth()/Constants.TileWidth,
+            			map.getBitmap().getHeight()/Constants.TileWidth,  
+            			map.getTileMap());   
+            	
+            	
+            	// Set the initial pos for all the cursors
+        		for(int i= 0; i < players.size(); i++)
+        		{
+        			players.elementAt(i).SetCursorInitialPos();
         		}
-        		else{
-        			MessageHandler.Get().Send(
-        					MsgReceiver.RENDERER,
-        					MsgType.NEW_BITMAP, 
-        					0, 
-        					0, 
-        					map.getBitmap());
-        		}
+        		//}
+        		//else{
+        		//	sendRenderer.sendMessage(sendRenderer.obtainMessage(MsgType.NEW_BITMAP.ordinal(), map.getBitmap().getWidth(), map.getBitmap().getHeight(), map.getBitmap()));
+        		//}
             }
         };
         t.start();
@@ -176,7 +223,6 @@ public class PlayScene extends Scene
 
 	/**
 	 * Updates the game each update step until the thread is stopped
-	 * TODO: Set fps limit (must be easily deactivated for debugging speed)
 	 */
 	@Override
 	public void Update() 
@@ -186,8 +232,7 @@ public class PlayScene extends Scene
 		
 		// Logic only to run in playing (un-paused) mode
 		if(SceneReady())
-		{
-			
+		{			
 			Gameplay();
 		}
 	}
@@ -199,15 +244,32 @@ public class PlayScene extends Scene
 	 */
 	private void Gameplay()
 	{
+		if(!gameplayRegulator.IsReady())
+		{
+			return;
+		}		
+		
 		for(int i = 0; i < this.players.size(); i++)
 		{
-			this.players.elementAt(i).Update();
+			this.players.elementAt(i).Update();			
 		}
+		
+		if(Camera.Get() != null)
+		{
+			if(cameraZoomRegulator.IsReady())
+			{
+				Camera.Get().ZoomOnPlayers(players);
+			}
+			
+			Camera.Get().Update();
+		}
+		
+		
 	}
 	
 	/**
 	 * Creates the list of players and their InputDevices
-	 * TODO
+	 * TODO multiplayer version
 	 */
 	private void CreatePlayers()
 	{
@@ -240,13 +302,14 @@ public class PlayScene extends Scene
 					Log.e("PlayScene", "Input device requested for player not implemented yet!");				
 					break;
 			}
-			newPlayer = new Player(0, inputDevice);
+			newPlayer = new Player(0, inputDevice, true);
 			this.players.add(newPlayer);
 			
 			// Add all the opponents
 			for(int i = 0; i < Preferences.Get().singleNumberOpponents; i++ )
 			{
-				newPlayer = new Player(i+1, new AIInputDevice(this));
+				newPlayer = new Player(i+1, new AIInputDevice(this), false);
+				this.players.add(newPlayer);
 			}			
 		}
 	}
