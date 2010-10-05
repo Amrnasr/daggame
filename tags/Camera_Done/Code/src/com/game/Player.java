@@ -1,0 +1,107 @@
+package com.game;
+
+import java.util.Random;
+
+import android.util.Log;
+
+import com.game.InputDevice.InputDevice;
+
+/**
+ * Player class, a player has a Input mode and a Cursor to controll it's army.
+ * @author Ying
+ *
+ */
+public class Player 
+{
+	/**
+	 * Input device for controlling this player
+	 */
+	private InputDevice inputDevice;
+	
+	/**
+	 * Player cursor for moving the army
+	 */
+	private Cursor cursor;
+	
+	/**
+	 * Unique identifier for the player. It will come handy eventually, I can assure you.
+	 */
+	private int playerNumber;
+	
+	/**
+	 * Indicates wherether the player is human controled.
+	 */
+	private boolean humanPlayer;
+	
+	/**
+	 * Creates a new instance of the Player class.
+	 * @param playerNumber Unique player identifier. If it's not unique you'll regret it later.
+	 * @param inputDevice Input device used by this player.
+	 * @param humanPlayer true if it's a human player, false if it's IA
+	 */
+	public Player(int playerNumber, InputDevice inputDevice, boolean humanPlayer)
+	{
+		this.playerNumber = playerNumber;
+		this.humanPlayer = humanPlayer;
+		
+		// Cursor	
+		this.cursor = new Cursor(this);		
+		
+		this.inputDevice = inputDevice;
+		this.inputDevice.SetParent(this);		
+	}
+	
+	/**
+	 * Sets a random initial position for the player, inside map bounds.
+	 */
+	public void SetCursorInitialPos()
+	{
+		int wMargin = Preferences.Get().mapWidth/10;
+		int wArea = Preferences.Get().mapWidth*8/10;
+		
+		int hMargin = Preferences.Get().mapHeight /10;
+		int hArea = Preferences.Get().mapHeight *8/10;
+		
+		Random gen = new Random();
+		int x = gen.nextInt(wArea) + wMargin;
+		int y = gen.nextInt(hArea) + hMargin;
+		
+		this.cursor.SetPosition( x, y);		
+	}
+	
+	/**
+	 * Does naught
+	 */
+	public void Start()
+	{
+		
+	}
+	
+	/**
+	 * Updates the player logic. 
+	 * Requires cursor and input decice active and working
+	 */
+	public void Update()
+	{
+		this.cursor.Update();
+		this.inputDevice.Update();
+	}
+
+	/**
+	 * Gets the current player cursor
+	 * @return cursor
+	 */
+	public Cursor GetCursor() { return this.cursor; }
+	
+	/**
+	 * Gets the player ID relative to the PlayScene.
+	 * @return the id
+	 */
+	public int GetID() { return this.playerNumber; }
+
+	/**
+	 * Gets a value indicating whether the player is human.
+	 * @return if is human.
+	 */
+	public boolean IsHuman() { return this.humanPlayer; }
+}
