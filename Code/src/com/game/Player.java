@@ -13,15 +13,24 @@ import com.game.InputDevice.InputDevice;
  */
 public class Player 
 {
-	// Input device for controlling this player
+	/**
+	 * Input device for controlling this player
+	 */
 	private InputDevice inputDevice;
 	
-	// Player cursor for moving the army
+	/**
+	 * Player cursor for moving the army
+	 */
 	private Cursor cursor;
 	
-	// Unique identifier for the player. It will come handy eventually, I can assure you.
+	/**
+	 * Unique identifier for the player. It will come handy eventually, I can assure you.
+	 */
 	private int playerNumber;
 	
+	/**
+	 * Indicates wherether the player is human controled.
+	 */
 	private boolean humanPlayer;
 	
 	/**
@@ -42,6 +51,9 @@ public class Player
 		this.inputDevice.SetParent(this);		
 	}
 	
+	/**
+	 * Sets a random initial position for the player, inside map bounds.
+	 */
 	public void SetCursorInitialPos()
 	{
 		int wMargin = Preferences.Get().mapWidth/10;
@@ -57,11 +69,18 @@ public class Player
 		this.cursor.SetPosition( x, y);		
 	}
 	
+	/**
+	 * Does naught
+	 */
 	public void Start()
 	{
 		
 	}
 	
+	/**
+	 * Updates the player logic. 
+	 * Requires cursor and input decice active and working
+	 */
 	public void Update()
 	{
 		this.cursor.Update();
@@ -74,7 +93,15 @@ public class Player
 	 */
 	public Cursor GetCursor() { return this.cursor; }
 	
+	/**
+	 * Gets the player ID relative to the PlayScene.
+	 * @return the id
+	 */
 	public int GetID() { return this.playerNumber; }
 
+	/**
+	 * Gets a value indicating whether the player is human.
+	 * @return if is human.
+	 */
 	public boolean IsHuman() { return this.humanPlayer; }
 }

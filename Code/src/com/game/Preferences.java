@@ -11,11 +11,13 @@ import android.util.Log;
  */
 public class Preferences 
 {
-	// Private instance
-	private static Preferences instance;
+	/**
+	 * Private static sintleton instance, with active initialization.
+	 */
+	private static Preferences instance = new Preferences();
 	
 	/**
-	 * Defeats instantiation
+	 * Private constructor that defeats instantiation
 	 */
 	protected Preferences() 
 	{
@@ -31,15 +33,14 @@ public class Preferences
 	 * @return Preferences global instance 
 	 */
 	public static Preferences Get()
-	{
-		if(instance == null)
-		{
-			instance = new Preferences();
-		}
-		
+	{	
 		return instance;
 	}
 	
+	/**
+	 * Loads preferences from the android shared preferences, or gets the default values if nothing is stored.
+	 * @param activity from which to load.
+	 */
 	public void Load(Activity activity)
 	{
 		SharedPreferences settings = activity.getSharedPreferences(PREFS_NAME, 0);
@@ -68,6 +69,10 @@ public class Preferences
 		multiPowerups = settings.getBoolean("multiPowerups", true);
 	}
 	
+	/**
+	 * Saves the preferences to shared preferences memory.
+	 * @param activity to save in.
+	 */
 	public void Save(Activity activity)
 	{
 		SharedPreferences settings = activity.getSharedPreferences(PREFS_NAME, 0);
@@ -100,6 +105,10 @@ public class Preferences
 	    editor.commit();
 	}
 	
+	/**
+	 * From the loaded preferences, calculates the number of players.
+	 * @return number of players, including human.
+	 */
 	public int GetNumberOfPlayers()
 	{
 		int numb = 0;
@@ -116,34 +125,113 @@ public class Preferences
 		return numb;
 	}
 	
+	/**
+	 * Name of the preference files to store in.
+	 */
 	public static final String PREFS_NAME = "MyPrefsFile";
 	
-	// Options data
+	// Options data //
+	/**
+	 * Indicates whether the music is set to mute
+	 */
 	public boolean optionsSoundMute;
+	
+	/**
+	 * Indicates the unit eating speed.
+	 */
 	public int optionsUnitEatSpeed;
+	
+	/**
+	 * Indicates the unit move speed.
+	 */
 	public int optionsUnitMoveSpeed;
+	
+	/**
+	 * Indicates the number of units a player can have.
+	 */
 	public int optionsUnitCuantity;
 	
-	// Single player data
+	// Single player data //
+	/**
+	 * The current map selection in singleplayer mode
+	 */
 	public int singleCurrentMap;
+	
+	/**
+	 * Color of the human player in single player mode.
+	 */
 	public int singlePlayer1Color;
+	
+	/**
+	 * Number of opponents in singleplayer.
+	 */
 	public int singleNumberOpponents;
+	
+	/**
+	 * Input mode for the human player ins singleplayer mode.
+	 */
 	public int singleControlMode;
+	
+	/**
+	 * Indicates whether to show the minimap in the corner.
+	 */
 	public boolean singleShowMinmap;
+	
+	/**
+	 * Indicates whether there will be powerups in this game.
+	 */
 	public boolean singlePowerups;
 	
-	// Multiplayer data
+	// Multiplayer data //
+	/**
+	 * Current map in multiplayer
+	 */
 	public int multiCurrentMap;
+	
+	/**
+	 * Player 1 color in multiplayer mode
+	 */
 	public int multiPlayer1Color;
+	
+	/**
+	 * Player 2 color in multiplayer mode
+	 */
 	public int multiPlayer2Color;
+	
+	/**
+	 * Number of AI opponents in multiplayer mode
+	 */
 	public int multiNumberOpponents;
+	
+	/**
+	 * Control mode for player 1 in multiplayer mode.
+	 */
 	public int multiControlMode;
+	
+	/**
+	 * Indicates whether to show the minimap in multiplayer mode
+	 */
 	public boolean multiShowMinimap;
+	
+	/**
+	 * Indicates whether to have powerups in multiplayer mode
+	 */
 	public boolean multiPowerups;
 	
-	// Other global data
+	// Other global data //
+	/**
+	 * Indicates whether the game is a multiplayer one or not (singleplayer)
+	 */
 	public boolean multiplayerGame;
+	
+	/**
+	 * Map width in WCS
+	 */
 	public int mapWidth;
+	
+	/**
+	 * Map height in WCS
+	 */
 	public int mapHeight;
 
 }
