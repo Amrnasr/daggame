@@ -148,7 +148,7 @@ public class PlayScene extends Scene
 		{
             public void run() {
             	Log.i("Debug", "Calling Playscene new thread run");
-            	map = new Map(refActivity,R.drawable.map_size480_1);
+            	map = new Map(refActivity,R.drawable.samplemap);
             	MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG);            	
             	mapLoaded = true;
             	
@@ -164,7 +164,7 @@ public class PlayScene extends Scene
         			MessageHandler.Get().Send(
         					MsgReceiver.RENDERER,
         					MsgType.NEW_BITMAP, 
-        					R.drawable.map_size480_1, 
+        					0, 
         					0, 
         					map.getBitmap());
         		}

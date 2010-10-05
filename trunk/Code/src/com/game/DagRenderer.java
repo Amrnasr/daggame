@@ -3,6 +3,7 @@ package com.game;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -26,19 +27,15 @@ import android.util.Log;
  */
 public class DagRenderer implements GLSurfaceView.Renderer 
 {	
-	// To receive messages from the logic thread.
+	//To receive messages from the logic thread.
 	private Handler handler;
 	
 	//Debug info
 	FloatBuffer floatBuff;
-	float[] debSquare = new float[] 
-	                              { 30f, 30f, 0.0f,
-									-25f, 30f, 0.0f,
-									30f, -25f, 0.0f,
-									-25f, -25f, 0.0f };
 	
-	private int height;
-	private int width;
+	//Dimensions of the map
+	private int mapWidth;
+	private int mapHeight;
 	
 	//Tilemap rendered in the debug mode
 	private Vector<Tile> tileMap;	
@@ -47,42 +44,62 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private Bitmap bitmap;
 	private FloatBuffer vertexMapBuffer;
 	private FloatBuffer textureMapBuffer;
-	//Bitmap resource
-	private int mapFile;
+	private FloatBuffer normalMapBuffer;
+	
+	//Id of the texture of the map
+	private int textureId;
+	
 	//Length of the tilemap array
 	private int bufferLength;	
+	
+	//Light parameters
+	private float LightAmbient[]= { 1.0f, 1.0f, 1.0f,1.0f};
+	
+	//Map material parameters
+	private float matAmbient[] = { 1.0f, 1.0f, 1.0f,1.0f};
+	
+	//Initialization checks
+	private boolean ready;
+	private boolean texReady;
+	
+	
 	
 	public DagRenderer()
 	{
 		super();
+		Log.i("DagRenderer", "Started constructor");
 		
 		tileMap = null;
 		bitmap = null;
+		floatBuff = null;
 		
-		// Link square to a float buffer
-		floatBuff = makeFloatBuffer(debSquare);
-		
-	    height = 0;
-	    width = 0;
+		mapWidth = 0;
+		mapHeight = 0;
+	    
+	    ready=false;
+	    texReady=false;
 		
 		// Initialize handler
 		this.handler = new Handler() 
 		{
 	        public void handleMessage(Message msg) 
-	        {
+	        {	//If a new tilemap is received
 	        	if(msg.what == MsgType.NEW_TILEMAP.ordinal())
 	        	{
+	        		//Store the tilemap and its dimensions in pixels
 	        		tileMap = (Vector<Tile>) msg.obj;
 	        		int rowTiles = msg.arg1;
 	        		int columnTiles = msg.arg2;
-	        		width=rowTiles*Constants.TileWidth;
-	        		height=columnTiles*Constants.TileWidth;
+	        		mapWidth=rowTiles*Constants.TileWidth;
+	        		mapHeight=columnTiles*Constants.TileWidth;
 	        		
-	        		float[] floatArray= new float[rowTiles*columnTiles*6*3];
-	        		
+	        		//Initialize the vertex array and other auxiliar variables
+	        		float[] floatArray= new float[rowTiles*columnTiles*6*3];        		
 	        		Iterator<Tile> it = tileMap.listIterator();
 	        		Tile tile = null;
 	        		bufferLength = 0;
+	        		
+	        		//Calculate the vertices of the tilemap
 	        		for(int j = 0; j < columnTiles; j++){
 	        			for(int i = 0; i < rowTiles; i++){			
 	        				tile = it.next();
@@ -116,15 +133,20 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        			}			
 	        		}
 	        		
+	        		//store it in a float buffer
 	        		floatBuff = makeFloatBuffer(floatArray);
+	        		
+	        		ready=true;
 	        	}
+	        	//if a new bitmap is received
 	        	else if(msg.what == MsgType.NEW_BITMAP.ordinal()){
+	        		//Store the bitmap and its dimensions in pixels
 	        		bitmap = (Bitmap) msg.obj;
 	        		
-	        		mapFile = msg.arg1;
-	        		
-	        		width = bitmap.getWidth();
-	        		height = bitmap.getHeight();
+	        		mapWidth = bitmap.getWidth();
+	        		mapHeight = bitmap.getHeight();
+
+	        		ready=true;
 	        	}
 	        }
 	    };
@@ -134,28 +156,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
     {   
-		
-		/*gl.glClientActiveTexture(GL10.GL_TEXTURE0);
-		gl.glShadeModel(GL10.GL_SMOOTH);
-        gl.glEnable(GL10.GL_DEPTH_TEST);
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-		
-		int[] tmp_tex = new int[1];
-		gl.glGenTextures(1, tmp_tex, 0); 
-		int tex = tmp_tex[0];
-		
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, tex);
-		
-		float[] vertexArray = {0.0f,0.0f,0.0f,width,0.0f,0.0f,width,height,0.0f,0.0f,height,0.0f};
-		float[] textureArray = {0.0f,1.0f,1.0f,1.0f,0.0f,0.0f,1.0f,0.0f};;
-		
-		vertexMapBuffer = makeFloatBuffer(vertexArray);
-		textureMapBuffer = makeFloatBuffer(textureArray);
-		
-		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);*/
-
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 	
 	public void onSurfaceChanged(GL10 gl, int w, int h) 
@@ -166,36 +167,105 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glLoadIdentity();
 		
 		gl.glViewport(0,0,w,h);
-		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, 1f, 2000f);
-		
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		
-		height = h;
-		width = w;
+		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, 1f, 4000f);
 	}
 	 
 	public void onDrawFrame(GL10 gl) 
     {
+		//Initialize the buffers and matrices
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-        
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
+		
+		//If the bitmap hasn't been received don't do anything
+		if(!ready) return;		
+
 		if(!Constants.DebugMode){
-			gl.glTranslatef(-width/2.0f,-height/2.0f,-(2.0f*width));
+			//Load the texture if it hasn't been loaded
+			if(!texReady){
+        		gl.glEnable(GL10.GL_LIGHTING);
+        		
+        		//Set the materials
+        		gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, matAmbient,0);	
+        		
+        		//set the light
+        		gl.glLightModelfv(GL10.GL_LIGHT_MODEL_AMBIENT, LightAmbient,0);
+        		
+                gl.glEnable(GL10.GL_DEPTH_TEST);
+                
+                //Enable the use of textures and set the texture 0 as the current texture
+        		gl.glEnable(GL10.GL_TEXTURE_2D);
+        		gl.glClientActiveTexture(GL10.GL_TEXTURE0);
+        		gl.glActiveTexture(GL10.GL_TEXTURE0); 
+        		
+        		//Generate the texture and bind it
+        		int[] tmp_tex = new int[1];
+        		gl.glGenTextures(1, tmp_tex, 0); 
+        		textureId = tmp_tex[0];
+        		
+        		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
+        		
+        		//Create the float buffers of the vertices, texture coordinates and normals
+        		float vertexArray[] = {mapWidth/2.0f,mapHeight/2.0f,0.0f,
+        				-mapWidth/2.0f,mapHeight/2.0f,0.0f,
+        				mapWidth/2.0f,-mapHeight/2.0f,0.0f,
+        				-mapWidth/2.0f,-mapHeight/2.0f,0.0f};
+        		Log.i("DagRenderer","width: " + mapWidth + " height: " + mapHeight);
+        		float textureArray[] = {1.0f,1.0f,0.0f,1.0f,1.0f,0.0f,0.0f,0.0f};
+        		float normalArray[] = { 0.0f,0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f,0.0f,-1.0f, 0.0f,0.0f,-1.0f };
+        		
+        		vertexMapBuffer = makeFloatBuffer(vertexArray);
+        		textureMapBuffer = makeFloatBuffer(textureArray);
+        		normalMapBuffer = makeFloatBuffer(normalArray);
+        		
+        		//Link the bitmap to the current texture
+        		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
+        		
+        		//Set the texture parameters
+        		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
+        				GL10.GL_CLAMP_TO_EDGE);
+        		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
+        				GL10.GL_CLAMP_TO_EDGE); 
+        		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
+        				GL10.GL_LINEAR);
+        		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
+        				GL10.GL_LINEAR);
+        		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,
+        				GL10.GL_MODULATE); 
+        		
+        		//Set the rendering parameters
+        		gl.glEnable(GL10.GL_CULL_FACE);
+        		gl.glShadeModel(GL10.GL_FLAT);
+        		
+				texReady=true;
+			}
+
+			gl.glTranslatef(0.0f,-(mapHeight/2.0f),-(mapWidth*2.0f));
 			
 			gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			
-			gl.glActiveTexture(GL10.GL_TEXTURE0);
+			//Set the vertices
+			gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+    		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexMapBuffer);
+    		
+    		//Set the texture coordinates
+    		gl.glActiveTexture(GL10.GL_TEXTURE0); 
+			gl.glClientActiveTexture(GL10.GL_TEXTURE0);
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId); 
 			
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexMapBuffer);
-			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
+    		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+    		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
+    		
+    		//Set the normals
+    		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
+    		gl.glNormalPointer(3, GL10.GL_FLOAT, normalMapBuffer);
 			
+    		//Draw the bitmap
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		}
-		else if(Constants.DebugMode && tileMap != null){
-			gl.glTranslatef(-width/2.0f,-height/2.0f,-(2.0f*width));
-			
+		else{
+			gl.glTranslatef(-mapWidth/2.0f,-mapHeight/2.0f,-(2.0f*mapWidth));
+
 			// Draw tilemap
 			gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, floatBuff);		
@@ -203,13 +273,16 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		}	
     }
 	
+	/**
+	 * Creates a float buffer from a float array
+	 */
 	protected static FloatBuffer makeFloatBuffer(float[] arr)
 	{
-	ByteBuffer bb = ByteBuffer.allocateDirect(arr.length*4);
-	bb.order(ByteOrder.nativeOrder());
-	FloatBuffer fb = bb.asFloatBuffer();
-	fb.put(arr);
-	fb.position(0);
-	return fb;
+		ByteBuffer bb = ByteBuffer.allocateDirect(arr.length*4);
+		bb.order(ByteOrder.nativeOrder());
+		FloatBuffer fb = bb.asFloatBuffer();
+		fb.put(arr);
+		fb.position(0);
+		return fb;
 	}
 }
