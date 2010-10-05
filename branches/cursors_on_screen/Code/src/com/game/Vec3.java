@@ -8,8 +8,19 @@ package com.game;
  */
 public class Vec3 
 {
+	/**
+	 * x coordinate of the vector
+	 */
 	private double x;
+	
+	/**
+	 * y coordinate of the vector
+	 */
 	private double y;
+	
+	/**
+	 * z coordinate of the vector
+	 */
 	private double z;
 	
 	/**

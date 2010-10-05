@@ -8,7 +8,14 @@ package com.game;
  */
 public class Vec2 
 {
+	/**
+	 * x coordinate of the vector
+	 */
 	private double x;
+	
+	/**
+	 * y coordinate of the vector
+	 */
 	private double y;
 	
 	/**

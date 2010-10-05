@@ -16,7 +16,9 @@ import com.game.DagActivity.SceneType;
  */
 public class SceneManager 
 {
-	/// Scene active right now, there can be one and only one.
+	/**
+	 *  Scene active right now, there can be one and only one.
+	 */
 	private Scene currentScene;
 	
 	/**
@@ -42,7 +44,6 @@ public class SceneManager
 
         currentScene = newScene;
         currentScene.setRefActivity(refActivity);
-        //TODO: Remove or un-comment: currentScene.Start();
     }
 	
 	/**

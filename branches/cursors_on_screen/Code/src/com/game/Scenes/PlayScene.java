@@ -57,8 +57,14 @@ public class PlayScene extends Scene
 	 */
 	private GameState gameState;
 	
+	/**
+	 * Game map reference
+	 */
 	private Map map;
 	
+	/**
+	 * Flag that indicates whether to show the tilemap
+	 */
 	private boolean mShowTileMap;
 	
 	/**
@@ -171,6 +177,9 @@ public class PlayScene extends Scene
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * Initializes the play scene
+	 */
 	@Override
 	public void Start() 
 	{
@@ -214,7 +223,6 @@ public class PlayScene extends Scene
 
 	/**
 	 * Updates the game each update step until the thread is stopped
-	 * TODO: Set fps limit (must be easily deactivated for debugging speed)
 	 */
 	@Override
 	public void Update() 
@@ -224,8 +232,7 @@ public class PlayScene extends Scene
 		
 		// Logic only to run in playing (un-paused) mode
 		if(SceneReady())
-		{
-			
+		{			
 			Gameplay();
 		}
 	}
@@ -262,7 +269,7 @@ public class PlayScene extends Scene
 	
 	/**
 	 * Creates the list of players and their InputDevices
-	 * TODO
+	 * TODO multiplayer version
 	 */
 	private void CreatePlayers()
 	{

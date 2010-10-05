@@ -16,14 +16,24 @@ import android.os.Handler;
  */
 public abstract class Scene 
 {
-	/// Handler for messages to the scene
+	/**
+	 * Handler for messages to the scene
+	 */
 	protected Handler handler = null;
 	
-	/// Variables to ensure thread safety on scene shutdown
+	/**
+	 * Used to ensure thread safety on scene shutdown
+	 */
 	protected boolean 	runScene;
+	
+	/**
+	 * Used to ensure thread safety on scene shutdown
+	 */
 	private boolean 	stopScene;
 	
-	// Reference to the activity to load resources.
+	/**
+	 * Reference to the activity to load resources.
+	 */
 	protected Activity refActivity = null;
 	
 	/**
@@ -79,6 +89,10 @@ public abstract class Scene
 		}
 	}
 
+	/**
+	 * Sets the reference to the activity
+	 * @param refActivity
+	 */
 	public void setRefActivity(Activity refActivity) 
 	{
 		this.refActivity = refActivity;

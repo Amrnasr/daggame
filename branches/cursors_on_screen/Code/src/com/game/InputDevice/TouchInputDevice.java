@@ -4,8 +4,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
-
-import com.game.Camera;
 import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.Vec2;

@@ -125,13 +125,6 @@ public enum MsgType
 	RENDERER_CONSTRUCTOR_DONE,
 	
 	/**
-	 * Sent to the renderer to change a cursor color
-	 * arg1:   Which cursor to update
-	 * object: float[] with the rgba values
-	 */
-	UPDATE_CURSOR_COLOR,
-	
-	/**
 	 * Sent from the Logic to the renderer with the ref vector with the cursor list
 	 * object: vector of cursors
 	 */
@@ -150,6 +143,5 @@ public enum MsgType
 	 * 
 	 * obj: Vec2 with the transform
 	 */
-	REPLY_WCS_TRANSFORM_REQUEST
-	
+	REPLY_WCS_TRANSFORM_REQUEST	
 }
