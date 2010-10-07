@@ -108,7 +108,7 @@ public class DagActivity extends Activity
 		
 		// Load layout from xml and create callbacks for the buttons.
     	View xmlLayout = xmlLayoutData.createXMLView(this);
-    	
+
     	// Create profiler
     	profiler = new Profiler();
         

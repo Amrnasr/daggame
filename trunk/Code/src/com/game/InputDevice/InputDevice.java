@@ -11,9 +11,16 @@ import android.os.Handler;
  * @author Ying
  *
  */
-public abstract class InputDevice {
-	
+public abstract class InputDevice 
+{
+	/**
+	 * Parent player for this InputDevice
+	 */
 	protected Player parent;
+	
+	/**
+	 * Handler for messages to the input device
+	 */
 	protected Handler deviceHandler;
 	
 	/**
