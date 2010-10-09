@@ -230,6 +230,7 @@ public class DagActivity extends Activity
     	if(nextScene == SceneType.PLAY_SCENE)
     	{
     		dialog = new ProgressDialog(this);
+    		dialog.setMessage("Loading...");
     		dialog.setCancelable(false);
     		dialog.show();
     	}
