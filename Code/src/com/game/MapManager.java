@@ -11,13 +11,21 @@ import android.util.Log;
  *
  */
 public class MapManager {
-	/// Map active right now, there can be one and only one.
+	/**
+	 * Map active right now, there can be one and only one.
+	 */
 	private Map mCurrentMap;
-	// Minimap active right now, there can be one and only one.
+	/**
+	 * Minimap active right now, there can be one and only one.
+	 */
 	private Minimap mCurrentMinimap;
-	// Activity that created the map manager
+	/**
+	 * Activity that created the map manager
+	 */
 	private Activity mCurrentActivity;
-	// Stores whether the minimap must be shown or not
+	/**
+	 * Stores whether the minimap must be shown or not
+	 */
 	private boolean mShowMinimap;
 	
 	/**
@@ -34,10 +42,11 @@ public class MapManager {
 	
 	/**
 	 * Swaps the current map for a new one. 
-	 * @param mapRef Reference to the map to change to.
+	 * @param bitmapRef Reference to the bitmap to change to.
+	 * @param tilemapRef Reference to the tile map to change to.
 	 * @param showMinimap Whether the minimap must be drawn or not.
 	 */
-	public void Load(int mapRef, boolean showMinimap)
+	public void Load(int bitmapRef, int tilemapRef, boolean showMinimap)
     {
 		mShowMinimap=showMinimap;
 		//Finish the previous map and minimap if it existed
@@ -52,7 +61,7 @@ public class MapManager {
         	mCurrentMinimap=null;
         }
         //Initialize the new map
-        mCurrentMap = new Map(mCurrentActivity,mapRef);
+        mCurrentMap = new Map(mCurrentActivity,bitmapRef,tilemapRef);
         mCurrentMap.Start();
         
         //Initialize the new minimap if needed

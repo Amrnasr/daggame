@@ -90,11 +90,13 @@ public enum MsgType
 	
 	/**
 	 * Sent by the PlayScene to the renderer to give the renderer the new tilemap (Debug mode)
+	 * obj: The new tile map
 	 */
 	NEW_TILEMAP,
 	
 	/**
 	 * Sent by the PlayScene to the renderer to give the renderer the new Bitmap (Release mode)
+	 * obj: The new bitmap
 	 */
 	NEW_BITMAP,
 	
@@ -126,7 +128,7 @@ public enum MsgType
 	
 	/**
 	 * Sent from the Logic to the renderer with the ref vector with the cursor list
-	 * object: vector of cursors
+	 * obj: vector of cursors
 	 */
 	GET_CURSOR_VECTOR,
 	

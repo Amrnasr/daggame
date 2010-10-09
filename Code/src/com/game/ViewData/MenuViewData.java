@@ -26,7 +26,7 @@ public class MenuViewData extends ViewData
 	 */
 	@Override public View createXMLView(Activity activity) 
 	{
-		Log.i("MenuViewData", "Got here!");
+		Log.i("MenuViewData", "createXMLView");
 		// Access xml layout
 		LayoutInflater li = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View xmlLayout = (View) li.inflate(R.layout.menu, null);

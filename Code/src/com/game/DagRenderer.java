@@ -25,59 +25,79 @@ import android.util.Log;
 
 public class DagRenderer implements GLSurfaceView.Renderer 
 {	
-	//To receive messages from the logic thread.
+	/**
+	 * To receive messages from the logic thread.
+	 */
 	private Handler handler;
+	/**
+	 * OpenGl context copy
+	 */
 	GL10 gl = null;
-	
-	//Debug info
-	FloatBuffer floatBuff;
-
-	float[] debSquare = new float[] 
+	/**
+	 * Vertex Array of the cursors
+	 */
+	float[] cursorSquare = new float[] 
 	                              { 30f, 30f, 1.0f,
 									0f, 30f, 1.0f,
 									30f, 0f, 1.0f,
 									0f, 0f, 1.0f };
-
-	//Dimensions of the map
-	private int mapWidth;
-	private int mapHeight;
-
-	// A square to be drawn as the cursor, at each position we have a cursor
+	/**
+	 * A square to be drawn as the cursor, at each position we have a cursor
+	 */
 	FloatBuffer cursorBuff;
-	
-	// Reference to the cursors
+	/**
+	 * Reference to the cursors
+	 */
 	private Vector<Cursor> cursorsRef;
-	
-	private int height;
-	private int width;
-	
-	//Tilemap rendered in the debug mode
+	/**
+	 * Tile map rendered in the debug mode
+	 */
 	private Vector<Tile> tileMap;	
-	
-	//Bitmap rendered in release mode
+	/**
+	 * Bitmap rendered in release mode
+	 */
 	private Bitmap bitmap;
+	/**
+	 * Map's vertex buffer
+	 */
 	private FloatBuffer vertexMapBuffer;
+	/**
+	 * Map's texture coordinates buffer
+	 */
 	private FloatBuffer textureMapBuffer;
+	/**
+	 * Map's normal coordinates buffer
+	 */
 	private FloatBuffer normalMapBuffer;
-	
-	//Id of the texture of the map
+	/**
+	 * Id of the texture of the map
+	 */
 	private int textureId;
-	
-	//Length of the tilemap array
+	/**
+	 * Length of the tile map array
+	 */
 	private int bufferLength;	
-	
-	//Light parameters
+	/**
+	 * Ambient light intensity
+	 */
 	private float LightAmbient[]= { 1.0f, 1.0f, 1.0f,1.0f};
-	
-	//Map material parameters
+	/**
+	 * Ambient light material reflection
+	 */
 	private float matAmbient[] = { 1.0f, 1.0f, 1.0f,1.0f};
-	
-	//Initialization checks
+	/**
+	 * Map loaded check
+	 */
 	private boolean ready;
+	/**
+	 * Texture loaded check
+	 */
 	private boolean texReady;
 	
 	
-	
+	/**
+	 * Initializes the renderer
+	 */
 	public DagRenderer()
 	{
 		super();
@@ -85,20 +105,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		tileMap = null;
 		bitmap = null;
-		floatBuff = null;
-		
-		mapWidth = 0;
-		mapHeight = 0;
 	    
 	    ready=false;
 	    texReady=false;
-		cursorBuff = makeFloatBuffer(debSquare);
+		cursorBuff = makeFloatBuffer(cursorSquare);
 		
 
 		cursorsRef = new Vector<Cursor>();
-		
-	    height = 0;
-	    width = 0;
 		
 		// Initialize handler
 		this.handler = new Handler() 
@@ -109,10 +122,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        	{	        	
 	        		//Store the tilemap and its dimensions in pixels
 	        		tileMap = (Vector<Tile>) msg.obj;
-	        		int rowTiles = msg.arg1;
-	        		int columnTiles = msg.arg2;
-	        		mapWidth=rowTiles*Constants.TileWidth;
-	        		mapHeight=columnTiles*Constants.TileWidth;
+	        		int rowTiles = Preferences.Get().mapWidth/Constants.TileWidth;
+	        		int columnTiles = Preferences.Get().mapHeight/Constants.TileWidth;
 	        		
 	        		//Initialize the vertex array and other auxiliar variables
 	        		float[] floatArray= new float[rowTiles*columnTiles*6*3];        		
@@ -155,16 +166,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        		}
 	        		
 	        		//store it in a float buffer
-	        		floatBuff = makeFloatBuffer(floatArray);
+	        		vertexMapBuffer = makeFloatBuffer(floatArray);
 	        		ready=true;
 	        	}
 	        	//if a new bitmap is received
 	        	else if(msg.what == MsgType.NEW_BITMAP.ordinal()){
 	        		//Store the bitmap and its dimensions in pixels
 	        		bitmap = (Bitmap) msg.obj;
-	        		
-	        		mapWidth = bitmap.getWidth();
-	        		mapHeight = bitmap.getHeight();
 
 	        		ready=true;
 	        	}
@@ -208,10 +216,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		gl.glColor4f(1.0f, 0.0f, 1.0f, 0.5f);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		
-		height = h;
-		width = w;
-
 	}
 	 
 	public void onDrawFrame(GL10 gl) 
@@ -257,11 +261,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
         		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
         		
         		//Create the float buffers of the vertices, texture coordinates and normals
-        		float vertexArray[] = {mapWidth,mapHeight,0.0f,
-        				0f,mapHeight,0.0f,
-        				mapWidth,0f,0.0f,
+        		float vertexArray[] = {Preferences.Get().mapWidth,Preferences.Get().mapHeight,0.0f,
+        				0f,Preferences.Get().mapHeight,0.0f,
+        				Preferences.Get().mapWidth,0f,0.0f,
         				0f,0f,0.0f};
-        		Log.i("DagRenderer","width: " + mapWidth + " height: " + mapHeight);
+        		Log.i("DagRenderer","width: " + Preferences.Get().mapWidth + " height: " + Preferences.Get().mapHeight);
         		float textureArray[] = {1.0f,1.0f,0.0f,1.0f,1.0f,0.0f,0.0f,0.0f};
         		float normalArray[] = { 0.0f,0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f,0.0f,-1.0f, 0.0f,0.0f,-1.0f };
         		
@@ -321,10 +325,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		{
 			//gl.glTranslatef(-mapWidth/2.0f,-mapHeight/2.0f,-(2.0f*mapWidth));
 
-			// Draw tilemap
+			// Draw tile map
 			
 			gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, floatBuff);		
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexMapBuffer);		
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, bufferLength/3);
 			
 		}	

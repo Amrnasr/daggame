@@ -15,11 +15,13 @@ public class Constants
 	 * Maximum number of players.
 	 */
 	public static final int MaxPlayers = 6;
-	
 	/**
 	 * Size of a map tile.
 	 */
-	public static final int TileWidth = 4;
+	public static final int TileWidth = 16;
+	/**
+	 * Debug mode check.
+	 */
 	public static final boolean DebugMode = false;
 
 }
