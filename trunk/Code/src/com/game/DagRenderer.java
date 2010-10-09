@@ -322,7 +322,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			//gl.glTranslatef(-mapWidth/2.0f,-mapHeight/2.0f,-(2.0f*mapWidth));
 
 			// Draw tilemap
-			// TODO: Uncoment, debuging here.
 			
 			gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, floatBuff);		
