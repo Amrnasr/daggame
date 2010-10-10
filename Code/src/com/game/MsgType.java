@@ -89,18 +89,6 @@ public enum MsgType
 	TRACKBALL_EVENT,
 	
 	/**
-	 * Sent by the PlayScene to the renderer to give the renderer the new tilemap (Debug mode)
-	 * obj: The new tile map
-	 */
-	NEW_TILEMAP,
-	
-	/**
-	 * Sent by the PlayScene to the renderer to give the renderer the new Bitmap (Release mode)
-	 * obj: The new bitmap
-	 */
-	NEW_BITMAP,
-	
-	/**
 	 * Sent to the activity to request the current contentView to be replaced by the load one.
 	 */
 	ACTIVITY_REQUEST_LOAD_SCREEN,
@@ -124,7 +112,7 @@ public enum MsgType
 	/**
 	 * Sent to logic to warn the renderer is ready
 	 */
-	RENDERER_CONSTRUCTOR_DONE,
+	RENDERER_INITIALIZATION_DONE,
 	
 	/**
 	 * Sent from the Logic to the renderer with the ref vector with the cursor list
@@ -145,5 +133,13 @@ public enum MsgType
 	 * 
 	 * obj: Vec2 with the transform
 	 */
-	REPLY_WCS_TRANSFORM_REQUEST	
+	REPLY_WCS_TRANSFORM_REQUEST,
+	
+	/**
+	 * Sent to the DagRenderer to initialize the renderer once the logic has loaded stuff
+	 * 
+	 * obj: Render initialization data (As a RenderInitData object)
+	 */
+	INITIALIZE_RENDERER
+	
 }

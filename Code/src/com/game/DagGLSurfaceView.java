@@ -6,6 +6,8 @@ import com.game.MessageHandler.MsgReceiver;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.os.Handler;
+import android.os.Message;
 import android.view.MotionEvent;
 
 /**
@@ -18,7 +20,12 @@ public class DagGLSurfaceView extends GLSurfaceView
 	/**
 	 * OGL renderer object
 	 */
-	private DagRenderer mRenderer;
+	private DagRenderer mRenderer = null;
+	
+	/**
+	 * Message handler for messages to the GLSurfaceView
+	 */
+	private Handler handler = null;
 	
 	/**
 	 * Instantiates a new DagGLSurfaceView object. The new object creates it's own DagRenderer.
@@ -38,7 +45,18 @@ public class DagGLSurfaceView extends GLSurfaceView
 					public GL wrap(GL gl) { return new MatrixTrackingGL(gl); }
 				});  
 		
-        mRenderer = new DagRenderer();
+		// Initialize handler
+		this.handler = new Handler() 
+		{
+	        public void handleMessage(Message msg) 
+	        {
+	        	
+	        }
+	    };
+	    
+	    MessageHandler.Get().SetGLSurfaceHandler(this.handler);
+	    
+	    mRenderer = new DagRenderer();
         setRenderer(mRenderer);
     }
 

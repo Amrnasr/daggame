@@ -19,7 +19,8 @@ public class MessageHandler
 	{
 		ACTIVITY,
 		RENDERER,
-		LOGIC
+		LOGIC,
+		GLSURFACEVIEW
 	}
 	
 	/**
@@ -42,6 +43,11 @@ public class MessageHandler
 	 * Handler for messages for the logic 
 	 */
 	private Handler logicHandler = null;	
+	
+	/**
+	 * Handler for the opengl surface view
+	 */
+	private Handler glSurfaceHandler = null;
 	
 	/**
 	 * Private constructor to avoid multiple copies.
@@ -74,6 +80,13 @@ public class MessageHandler
 	 * @param logicHandler to pass messages to.
 	 */
 	public void SetLogicHandler( Handler logicHandler) { this.logicHandler = logicHandler;}
+	
+	/**
+	 * Sets the gl surface handler pointer
+	 * @param glSurfaceHandler to pass messages to.
+	 */
+	public void SetGLSurfaceHandler( Handler glSurfaceHandler) { this.glSurfaceHandler = glSurfaceHandler;}
+	
 	
 	/**
 	 * Send a message to a handler.
@@ -159,6 +172,16 @@ public class MessageHandler
 			else
 			{
 				Log.e("MessageHandler", "Logic handler not initialized");
+			}
+			break;
+		case GLSURFACEVIEW:
+			if(this.glSurfaceHandler != null)
+			{
+				this.glSurfaceHandler.sendMessage(glSurfaceHandler.obtainMessage(type.ordinal(), arg1, arg2, object));
+			}
+			else
+			{
+				Log.e("MessageHandler", "GL SurfaceHandler handler not initialized");
 			}
 			break;
 
