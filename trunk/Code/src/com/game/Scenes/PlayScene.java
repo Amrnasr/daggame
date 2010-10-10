@@ -16,6 +16,7 @@ import com.game.Player;
 import com.game.Preferences;
 import com.game.R;
 import com.game.Regulator;
+import com.game.RenderInitData;
 import com.game.InputDevice.AIInputDevice;
 import com.game.InputDevice.BallInputDevice;
 import com.game.InputDevice.InputDevice;
@@ -34,7 +35,7 @@ public class PlayScene extends Scene
 	 * @author Ying
 	 *
 	 */
-	public enum GameState
+	public enum LogicState
 	{
 		/**
 		 * When the state is created but not yet ready
@@ -55,7 +56,7 @@ public class PlayScene extends Scene
 	/**
 	 * Current state of the game
 	 */
-	private GameState gameState;
+	private LogicState gameState;
 	
 	/**
 	 * Game map reference
@@ -83,11 +84,6 @@ public class PlayScene extends Scene
 	public Handler touchEvent;
 	
 	/**
-	 * Glag used to check if we are ready to play (checks map loaded)
-	 */
-	private boolean mapLoaded = false;
-	
-	/**
 	 * Keeps the gameplay fps stable.
 	 */
 	private Regulator gameplayRegulator;
@@ -104,12 +100,13 @@ public class PlayScene extends Scene
 	{
 		super();
 		
-		this.gameState = GameState.UNINITIALIZED;
+		this.gameState = LogicState.UNINITIALIZED;
 		this.players = new Vector<Player>();
 		this.trackballEvent = null;
 		this.touchEvent = null;
 		this.gameplayRegulator = new Regulator(60);
 		this.cameraZoomRegulator = new Regulator(1);
+		
 		CreatePlayers();
 		
 		map = null;
@@ -126,8 +123,6 @@ public class PlayScene extends Scene
 	        			// send him the message. Otherwise we ignore it.
 	        			touchEvent.sendMessage(touchEvent.obtainMessage(MsgType.TOUCH_EVENT.ordinal(), msg.obj));
 	        		}
-	        		
-	        		//Log.i("PlayScene Handler: ", "Motion event: " + event.getX() + ", " + event.getY());
 	        	}
 	        	else if(msg.what == MsgType.REPLY_WCS_TRANSFORM_REQUEST.ordinal())
 				{
@@ -153,20 +148,15 @@ public class PlayScene extends Scene
 	        	{
 	        		runScene = false;
 	        	}    	
-	        	else if(msg.what == MsgType.RENDERER_CONSTRUCTOR_DONE.ordinal())
+	        	else if(msg.what == MsgType.RENDERER_INITIALIZATION_DONE.ordinal())
 	        	{
-	        		// Send all the cursors
-	        		Vector<Cursor> cursors = new Vector<Cursor>();
-	        		for(int i = 0; i < players.size(); i++)
-	        		{
-	        			cursors.add(players.elementAt(i).GetCursor());
-	        		}
-	        		
-	        		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.GET_CURSOR_VECTOR, cursors);
+	        		// The renderer is done, so start has been done as well.
+	        		gameState = LogicState.PLAYING;
 	        	}
 	        }
-	    };
-	    gameState = GameState.PLAYING;
+	    };	  
+	    
+	    Log.i("PlayScene", "PlayScene constructed");
 	}
 
 	@Override
@@ -176,55 +166,52 @@ public class PlayScene extends Scene
 	}
 
 	/**
-	 * Initializes the play scene
+	 * Initializes the play scene data.
+	 * Loaded async to allow the loading dialog to function.
 	 */
 	@Override
 	public void Start() 
 	{
-		if(refActivity == null )
-		{
-			Log.e("PlayScene","Reference pointer to activity broken!");
-		}
+		final RenderInitData renderInitData = new RenderInitData();
 		
 		// A thread for background loading of the map
 		Thread t = new Thread() 
 		{
-            public void run() {
-            	Log.i("Debug", "Calling Playscene new thread run");
+            public void run() 
+            {
             	map = new Map(refActivity,R.drawable.samplemap, R.raw.samplemaptilemap);
-            	MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG);            	
-            	mapLoaded = true;
 
-            	if(Constants.DebugMode){
-	            	MessageHandler.Get().Send(
-	            			MsgReceiver.RENDERER, 
-	            			MsgType.NEW_TILEMAP, 
-	            			0,
-	            			0,  
-	            			map.getTileMap());        			
+            	if(Constants.DebugMode)
+            	{
+            		renderInitData.SetTileMap(map.getTileMap());
         		}
-        		else{
-        			MessageHandler.Get().Send(
-        					MsgReceiver.RENDERER,
-        					MsgType.NEW_BITMAP, 
-        					0, 
-        					0, 
-        					map.getBitmap());
+        		else
+        		{
+        			renderInitData.SetMapImage(map.getBitmap());
         		}
 
+            	
+            	
             	// Set the initial pos for all the cursors
         		for(int i= 0; i < players.size(); i++)
         		{
         			players.elementAt(i).SetCursorInitialPos();
         		}
-        		//}
-        		//else{
-        		//	sendRenderer.sendMessage(sendRenderer.obtainMessage(MsgType.NEW_BITMAP.ordinal(), map.getBitmap().getWidth(), map.getBitmap().getHeight(), map.getBitmap()));
-        		//}
+        		
+        		// Send all the cursors
+        		Vector<Cursor> cursors = new Vector<Cursor>();
+        		for(int i = 0; i < players.size(); i++)
+        		{
+        			cursors.add(players.elementAt(i).GetCursor());
+        		}
+        		renderInitData.SetCursors(cursors);
+        		
+        		// Done initializing logic, get the word out to the renderer.
+        		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.INITIALIZE_RENDERER, renderInitData); 
+        		Log.i("PlayScene", "Start function finished");
             }
         };
-        t.start();
-		
+        t.start();		
 	}
 
 	/**
@@ -326,7 +313,7 @@ public class PlayScene extends Scene
 	 */
 	private boolean SceneReady()
 	{
-		return (gameState == GameState.PLAYING) && mapLoaded; 
+		return (gameState == LogicState.PLAYING); 
 	}
 
 }
