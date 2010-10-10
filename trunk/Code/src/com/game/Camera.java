@@ -340,5 +340,16 @@ public class Camera
 	 * @return the pos vector
 	 */
 	public Vec3 Position() {return this.pos; }
+	
+	/**
+	 * Gets the minimum z
+	 * @return minZ
+	 */
+	public int GetMinZ() { return this.minZ; }
+	
+	/**
+	 * Gets the maximum z
+	 */
+	public int GetMaxZ() { return 2*Preferences.Get().mapWidth; }
 
 }

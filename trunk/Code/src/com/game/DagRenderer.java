@@ -115,6 +115,31 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private boolean texReady;
 	
+	/**
+	 * Stores the last width provided by surface change callback
+	 */
+	private int lastWidht;
+	
+	/**
+	 * Stores the last height provided by surface change callback
+	 */
+	private int lastHeight;
+	
+	/**
+	 * Minimum z the camera can be at. Used for the perspective limits.
+	 */
+	private int minZ;
+	
+	/**
+	 * Maximum z the camera can be at. Used for the perspective limits.
+	 */
+	private int maxZ;
+	
+	/**
+	 * Notifies the draw function to update the surface if needed.
+	 */
+	private boolean surfaceUpdatePending;
+	
 	
 	/**
 	 * Initializes the renderer
@@ -127,7 +152,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		tileMap = null;
 		bitmap = null;
 		cursorsRef = null;
-	    texReady = false;	    
+	    texReady = false;	
+	    lastWidht = 0;
+	    lastHeight = 0;
+		minZ = 10;
+		maxZ = 100;
+		surfaceUpdatePending = false;
 		
 		// Initialize handler
 		this.handler = new Handler() 
@@ -167,17 +197,24 @@ public class DagRenderer implements GLSurfaceView.Renderer
     		bitmap = initData.GetMapImage();
 		}
 		
+		this.minZ = Camera.Get().GetMinZ() -2;
+		this.maxZ = 2*Camera.Get().GetMaxZ() +2;
+		
+		Log.i("DagRenderer", "--- DEBUUUG: Z [" + minZ + ", " + maxZ + "] size: " + lastWidht + ", " + lastHeight);
+		
+		surfaceUpdatePending = true;
+		
 		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.RENDERER_INITIALIZATION_DONE);		    
-	    state = RenderState.RENDERING;
+		state = RenderState.RENDERING;
 	    
-	    MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG); 
-	    
+	    MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG);
 	    Log.i("DagRenderer", "Initialization done");
 	}
 	
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
     {   
 		Log.i("DagRenderer","Surface Created" );
+		
 		gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
     }
 	
@@ -186,22 +223,39 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		Log.i("DagRenderer","Surface changed: " + w + " / " + h );
 		
 		this.gl = gl;
+		
+		this.lastWidht = w;
+		this.lastHeight = h;
+		
+		SurfaceShapeUpdate(gl);
+	}
+	
+	public void SurfaceShapeUpdate(GL10 gl)
+	{
+		int w = lastWidht;
+		int h = lastHeight;
+		
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
 		gl.glViewport(0,0,w,h);
 
-		// TODO: IMPORTANT Make them dependant on map size
-		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, 900f, 4000f);
-
+		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, minZ, maxZ);
 		
 		gl.glColor4f(1.0f, 0.0f, 1.0f, 0.5f);
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);		
 	}
 	 
 	public void onDrawFrame(GL10 gl) 
     {
 		// Save context for matrix retrieval
 		this.gl = gl;
+		
+		// Update the view if needed.
+		if(surfaceUpdatePending)
+		{
+			SurfaceShapeUpdate(gl);
+			surfaceUpdatePending = false;
+		}
 		
 		//Initialize the buffers and matrices		
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
@@ -212,6 +266,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		//If the bitmap hasn't been received don't do anything
 		if(state != RenderState.RENDERING) return;		
+		
+		
 
 		if(!Constants.DebugMode )
 		{
