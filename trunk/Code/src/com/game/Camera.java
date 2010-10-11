@@ -164,7 +164,7 @@ public class Camera
 	 */
 	public void ZoomOnPlayers(Vector<Player> players)
 	{
-		Log.i("Camera", "Zoom on players -------------- ");
+		//Log.i("Camera", "Zoom on players -------------- ");
 		
 		if(players == null)
 		{
@@ -222,7 +222,7 @@ public class Camera
 			int xHeight = (int) (maxY - minY);
 			xWidth = Math.max(xWidth, this.screenW);
 			xHeight = Math.max(xHeight, this.screenH);
-			Log.i("Camera", "Viewport: " + xWidth  + ", " + xHeight);
+			//Log.i("Camera", "Viewport: " + xWidth  + ", " + xHeight);
 			
 			// Set X and y
 			destination.SetX((centerX - xWidth/2) + this.screenW/2);
@@ -232,25 +232,25 @@ public class Camera
 			xWidth = Math.max(1, xWidth); // To avoid /0 errors while loading
 			
 			// Get the ratio map/screen
-			float ratio = xWidth / this.screenW; 
-			Log.i("Camera", "Ratio: " + ratio);
+			float ratio = (float)((float)(xWidth) / (float)(this.screenW)); 
+			//Log.i("Camera", "Ratio: " + ratio);
 			
-			this.maxRatio = Preferences.Get().mapWidth / screenW;
+			this.maxRatio = (float)((float)(Preferences.Get().mapWidth) / (float)(screenW));
 			ratio = ratio - this.minRatio;
 			float ratioRange = this.maxRatio - this.minRatio;
-			Log.i("Camera", "Ratio: [" + this.minRatio + ", " + this.maxRatio + "], range: " + ratioRange);
+			//Log.i("Camera", "Ratio: [" + this.minRatio + ", " + this.maxRatio + "], range: " + ratioRange);
 			
 			
 			ratio = ratio / ratioRange; // % of the total ratio range
-			Log.i("Camera", "Ratio %:" + ratio);
+			//Log.i("Camera", "Ratio %:" + ratio);
 			
 			this.maxZ = 2*Preferences.Get().mapWidth;			
 			float zRange = this.maxZ - this.minZ;
-			Log.i("Camera", "Z: [" + this.minZ + ", " + this.maxZ + "] range: " + zRange );
+			//Log.i("Camera", "Z: [" + this.minZ + ", " + this.maxZ + "] range: " + zRange );
 			
 			// Now we've got the % of ratio, just apply it to the allowed Z interval.
 			destination.SetZ(this.minZ + (zRange * ratio));
-			destination.Print("Camera", "Destination:");
+			//destination.Print("Camera", "Destination:");
 			
 			// Once the destination point is calculated, request to move there.
 			MoveTo(destination);			
