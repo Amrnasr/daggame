@@ -189,8 +189,6 @@ public class PlayScene extends Scene
         		{
         			renderInitData.SetMapImage(map.getBitmap());
         		}
-
-            	
             	
             	// Set the initial pos for all the cursors
         		for(int i= 0; i < players.size(); i++)

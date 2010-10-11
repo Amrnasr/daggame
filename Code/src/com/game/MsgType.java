@@ -89,11 +89,6 @@ public enum MsgType
 	TRACKBALL_EVENT,
 	
 	/**
-	 * Sent to the activity to request the current contentView to be replaced by the load one.
-	 */
-	ACTIVITY_REQUEST_LOAD_SCREEN,
-	
-	/**
 	 * Tells a scene to call the Start() function.
 	 * This is my attempt on having the PlayScene load async.
 	 */
@@ -105,20 +100,9 @@ public enum MsgType
 	ACTIVITY_DISMISS_LOAD_DIALOG,
 	
 	/**
-	 * Updates the camera position
-	 */
-	RENDERER_UPDATE_CAM,
-	
-	/**
 	 * Sent to logic to warn the renderer is ready
 	 */
 	RENDERER_INITIALIZATION_DONE,
-	
-	/**
-	 * Sent from the Logic to the renderer with the ref vector with the cursor list
-	 * obj: vector of cursors
-	 */
-	GET_CURSOR_VECTOR,
 	
 	/**
 	 * Sent when the touch input device needs to calculate a SCS to WCS transformation on

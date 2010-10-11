@@ -52,10 +52,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * To receive messages from the logic thread.
 	 */
 	private Handler handler;
+	
 	/**
 	 * OpenGl context copy
 	 */
 	GL10 gl = null;
+	
 	/**
 	 * Vertex Array of the cursors
 	 */
@@ -69,38 +71,47 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * Reference to the cursors
 	 */
 	private Vector<Cursor> cursorsRef;
+	
 	/**
 	 * Tile map rendered in the debug mode
 	 */
 	private Vector<Tile> tileMap;	
+	
 	/**
 	 * Bitmap rendered in release mode
 	 */
 	private Bitmap bitmap;
+	
 	/**
 	 * Map's vertex buffer
 	 */
 	private FloatBuffer vertexMapBuffer;
+	
 	/**
 	 * Map's texture coordinates buffer
 	 */
 	private FloatBuffer textureMapBuffer;
+	
 	/**
 	 * Map's normal coordinates buffer
 	 */
 	private FloatBuffer normalMapBuffer;
+	
 	/**
 	 * Id of the texture of the map
 	 */
 	private int textureId;
+	
 	/**
 	 * Length of the tile map array
 	 */
 	private int bufferLength;	
+	
 	/**
 	 * Ambient light intensity
 	 */
 	private float LightAmbient[]= { 1.0f, 1.0f, 1.0f,1.0f};
+	
 	/**
 	 * Ambient light material reflection
 	 */
@@ -110,6 +121,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * Specifies the current renderer state.
 	 */
 	private RenderState state = RenderState.UNINITIALIZED;
+	
 	/**
 	 * Texture loaded check
 	 */
@@ -136,13 +148,17 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private int maxZ;
 	
 	/**
-	 * Notifies the draw function to update the surface if needed.
+	 * Is the amount of margin we have respecting the camera Z margins.
 	 */
-	private boolean surfaceUpdatePending;
-	
+	private static final int camZOffset = 3;
 	
 	/**
-	 * Initializes the renderer
+	 * Notifies the draw function to update the surface if needed.
+	 */
+	private boolean surfaceUpdatePending;	
+	
+	/**
+	 * Initializes the renderer and sets the handler callbacks.
 	 */
 	public DagRenderer()
 	{
@@ -155,6 +171,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	    texReady = false;	
 	    lastWidht = 0;
 	    lastHeight = 0;
+	    
+	    // Default frustrum cull planes so ogl doesn't go crazy on initializing.
 		minZ = 10;
 		maxZ = 100;
 		surfaceUpdatePending = false;
@@ -164,12 +182,15 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		{
 	        public void handleMessage(Message msg) 
 	        {	
+	        	// If asked to do a wcs to scs transform, do so and reply
 	        	if(msg.what == MsgType.REQUEST_WCS_TRANSFORM.ordinal())
 	        	{
 	        		// TODO: Camera syncronization check 
 	        		Vec2 reply = GetWorldCoords((Vec2)msg.obj, Camera.Get());
 	        		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.REPLY_WCS_TRANSFORM_REQUEST, reply);
 	        	}
+	        	
+	        	// Get the message to initialize the renderer. Do so.
 	        	else if(msg.what == MsgType.INITIALIZE_RENDERER.ordinal())
 	        	{
 	        		Start((RenderInitData)msg.obj);
@@ -177,11 +198,15 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        }
 	    };
 	    
-	    MessageHandler.Get().SetRendererHandler(this.handler);
-	   
+	    MessageHandler.Get().SetRendererHandler(this.handler);	   
 	    Log.i("DagRenderer", "Renderer constructed");
 	}
 	
+	/**
+	 * Initializes the renderer data that is dependent on the logic data.
+	 * It's called once Logic() and Logic.Start() have been called 
+	 * @param initData A container of initialization data.
+	 */
 	public void Start(RenderInitData initData)
 	{
 		cursorsRef = initData.GetCursors();
@@ -197,20 +222,24 @@ public class DagRenderer implements GLSurfaceView.Renderer
     		bitmap = initData.GetMapImage();
 		}
 		
-		this.minZ = Camera.Get().GetMinZ() -2;
-		this.maxZ = 2*Camera.Get().GetMaxZ() +2;
+		// The camZOffset is because the min/max z of the camera is the limits we can see
+		// at, so we need to give ourselves a little margin to see just at the limits, where our stuff is.
+		this.minZ = Camera.Get().GetMinZ() - camZOffset;
+		this.maxZ = 2*Camera.Get().GetMaxZ() + camZOffset;
 		
-		Log.i("DagRenderer", "--- DEBUUUG: Z [" + minZ + ", " + maxZ + "] size: " + lastWidht + ", " + lastHeight);
-		
-		surfaceUpdatePending = true;
-		
-		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.RENDERER_INITIALIZATION_DONE);		    
-		state = RenderState.RENDERING;
+		// Z's changed, so tell the update to update the surface perspective.
+		surfaceUpdatePending = true;		
 	    
 	    MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG);
+	    MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.RENDERER_INITIALIZATION_DONE);		    
+		state = RenderState.RENDERING;
+		
 	    Log.i("DagRenderer", "Initialization done");
 	}
 	
+	/**
+	 * Called when a Opengl surface is created.
+	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
     {   
 		Log.i("DagRenderer","Surface Created" );
@@ -218,6 +247,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
     }
 	
+	/**
+	 * Called when the surface changes size. 
+	 * Might be called at any moment. 
+	 */
 	public void onSurfaceChanged(GL10 gl, int w, int h) 
 	{        
 		Log.i("DagRenderer","Surface changed: " + w + " / " + h );
@@ -230,8 +263,15 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		SurfaceShapeUpdate(gl);
 	}
 	
+	/**
+	 * Utility function that resets the surface shape.
+	 * Called when the w/h or the minz/maxz change.
+	 * @param gl
+	 */
 	public void SurfaceShapeUpdate(GL10 gl)
 	{
+		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
+		
 		int w = lastWidht;
 		int h = lastHeight;
 		
@@ -245,6 +285,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);		
 	}
 	 
+	/**
+	 * Called every draw step.
+	 * Renders the scene and takes care of updating any logic inherent to the
+	 * render thread
+	 */
 	public void onDrawFrame(GL10 gl) 
     {
 		// Save context for matrix retrieval
@@ -257,18 +302,18 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			surfaceUpdatePending = false;
 		}
 		
-		//Initialize the buffers and matrices		
+		// Initialize the buffers and matrices		
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		
+		// Camera transform
 		gl.glTranslatef(-Camera.Get().X(),-Camera.Get().Y(),-Camera.Get().Z());	
 		
-		//If the bitmap hasn't been received don't do anything
+		// If the bitmap hasn't been received don't do anything
 		if(state != RenderState.RENDERING) return;		
-		
-		
 
+		// Draw the corresponding data, debug or not.
 		if(!Constants.DebugMode )
 		{
 			//Load the texture if it hasn't been loaded
@@ -287,12 +332,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, bufferLength/3);
 		}	
 
-		
 		gl.glDisable(GL10.GL_LIGHTING);
-		DrawCursors(gl);
-							
+		DrawCursors(gl);							
     }
 	
+	/**
+	 * Draws the textured map image.
+	 * @param gl Opengl context
+	 */
 	private void DrawTexturedMap(GL10 gl)
 	{
 		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -320,6 +367,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glDisable(GL10.GL_TEXTURE_2D);
 	}
 	
+	/**
+	 * Loads the textures needed into Opengl
+	 * @param gl Opengl context.
+	 */
 	private void SetTextures(GL10 gl)
 	{
 		gl.glEnable(GL10.GL_LIGHTING);
@@ -379,6 +430,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		texReady=true;
 	}
 	
+	/**
+	 * Creates the tilemap render from a list of tiles
+	 * @param tilemap Vector of reference tiles.
+	 */
 	private void LoadTileMap(Vector<Tile> tilemap)
 	{
 		//Store the tilemap and its dimensions in pixels
