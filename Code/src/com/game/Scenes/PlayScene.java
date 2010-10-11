@@ -260,13 +260,47 @@ public class PlayScene extends Scene
 	
 	/**
 	 * Creates the list of players and their InputDevices
-	 * TODO multiplayer version
 	 */
 	private void CreatePlayers()
 	{
 		if(Preferences.Get().multiplayerGame)
 		{
 			// Multiplayer game
+			
+			// Player 1 gets to choose input device
+			Player player1;
+			InputDevice player1ID = null;
+			
+			switch (Preferences.Get().multiControlMode) 
+			{
+				case 0:
+					// Touch mode
+					player1ID = new TouchInputDevice(this);
+					break;
+				
+				case 1:
+					// Trackball
+					player1ID = new BallInputDevice(this);
+					break;
+	
+				default:
+					Log.e("PlayScene", "Input device requested for player not implemented yet!");				
+					break;
+			}
+			player1 = new Player(0, player1ID, true);
+			this.players.add(player1);
+			
+			// Player 2 gets stuck with trackball.
+			Player player2 = new Player(1, new BallInputDevice(this), true);
+			this.players.add(player2);
+			
+			// Add all the opponents
+			Player newPlayer = null;
+			for(int i = 0; i < Preferences.Get().multiNumberOpponents; i++ )
+			{
+				newPlayer = new Player(i+2, new AIInputDevice(this), false);
+				this.players.add(newPlayer);
+			}
 			
 		}
 		else

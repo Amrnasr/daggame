@@ -207,8 +207,15 @@ public class Cursor
 		
 		gl.glTranslatef((float)this.pos.X(),(float)this.pos.Y(),1);		
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursorBuff);
-		// TODO: Create color variable.
-		gl.glColor4f(1, 0, 0, 1);		
+
+		if(parent.IsHuman())
+		{
+			gl.glColor4f(0, 0, 1, 1);
+		}
+		else
+		{
+			gl.glColor4f(1, 0, 0, 1);
+		}
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		
 		gl.glPopMatrix();
