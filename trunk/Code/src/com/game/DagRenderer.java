@@ -157,6 +157,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private boolean surfaceUpdatePending;	
 	
+	private float[] lastProjectionMat = null;
+	
+	private float[] lastModelViewMat = null;
+	
 	/**
 	 * Initializes the renderer and sets the handler callbacks.
 	 */
@@ -171,6 +175,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	    texReady = false;	
 	    lastWidht = 0;
 	    lastHeight = 0;
+	    
+	    lastProjectionMat = new float[16];
+	    lastModelViewMat = new float[16];
 	    
 	    // Default frustrum cull planes so ogl doesn't go crazy on initializing.
 		minZ = 10;
@@ -333,7 +340,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		}	
 
 		gl.glDisable(GL10.GL_LIGHTING);
-		DrawCursors(gl);							
+		DrawCursors(gl);	
+		
+		getCurrentModelView(gl);
+		getCurrentProjection(gl);
     }
 	
 	/**
@@ -508,7 +518,28 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	{			
 		for(int i = 0; i < cursorsRef.size(); i++ )
 		{
-			cursorsRef.elementAt(i).DrawCursors(gl);
+			Cursor cursor = cursorsRef.elementAt(i);
+			//gl.glPushMatrix();
+			float x =(float)cursor.GetPosition().X();
+			float y = (float)cursor.GetPosition().Y();
+			
+			gl.glTranslatef(x,y,1);		
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursor.GetBuffer());
+
+			if(cursor.IsFromHuman())
+			{
+				gl.glColor4f(0, 0, 1, 1);
+			}
+			else
+			{
+				gl.glColor4f(1, 0, 0, 1);
+			}
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+			
+			gl.glTranslatef(-x,-y,-1);		
+			//gl.glPopMatrix();
+			
+			//cursorsRef.elementAt(i).DrawCursors(gl);
 		}
 	}
 	
@@ -517,11 +548,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
     * setting the current matrix state to GL_MODELVIEW
     * @param gl context
     */
-   public float[] getCurrentModelView(GL10 gl) 
+   public void getCurrentModelView(GL10 gl) 
    {
-		float[] mModelView = new float[16];
-		getMatrix(gl, GL10.GL_MODELVIEW, mModelView);
-		return mModelView;
+		//float[] mModelView = new float[16];
+		getMatrix(gl, GL10.GL_MODELVIEW, lastModelViewMat);
+		//return lastModelViewMat;
    }
 
    /**
@@ -529,11 +560,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
     * setting the current matrix state to GL_PROJECTION
     * @param gl context
     */
-   public float[] getCurrentProjection(GL10 gl) 
+   public void getCurrentProjection(GL10 gl) 
    {
-	   float[] mProjection = new float[16];
-       getMatrix(gl, GL10.GL_PROJECTION, mProjection);
-       return mProjection;
+	   //float[] mProjection = new float[16];
+	   
+       getMatrix(gl, GL10.GL_PROJECTION, lastProjectionMat);
+       //return lastProjectionMat;
    }
 
    /**
@@ -548,6 +580,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
        gl2.glMatrixMode(mode);
        gl2.getMatrix(mat, 0);
    }
+   
    
    /**
     * Prints a float vector
@@ -574,7 +607,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
     */
    public Vec2 GetWorldCoords( Vec2 touch, Camera cam)
    {
-	   //Log.i("World Coords", "-------------- ");
+	   Log.i("World Coords", "-------------- ");
 	   
 	   // Initialize auxiliary variables.
 	   Vec2 worldPos = new Vec2();
@@ -583,10 +616,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   float screenW = cam.GetScreenWidth();
 	   float screenH = cam.GetScreenHeight();
 	   
-	   //Camera.Get().Position().Print("World Coords", "Camera");
-	   //touch.Print("World Coords", "Screen touch");
-	   //Log.i("World Coords", "Screen: " + screenW + ", " + screenH);
-	   //Log.i("World Coords", "World: " + Preferences.Get().mapWidth + ", " + Preferences.Get().mapHeight);
+	   Camera.Get().Position().Print("World Coords", "Camera");
+	   touch.Print("World Coords", "Screen touch");
+	   Log.i("World Coords", "Screen: " + screenW + ", " + screenH);
+	   Log.i("World Coords", "World: " + Preferences.Get().mapWidth + ", " + Preferences.Get().mapHeight);
 	   
 	   // Auxiliary matrix and vectors to deal with ogl.
 	   float[] invertedMatrix, transformMatrix, normalizedInPoint, outPoint;
@@ -607,14 +640,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   //Print("In", normalizedInPoint);
 
 	   /* Obtain the transform matrix and then the inverse. */
-	   //Print("Proj", getCurrentProjection(gl));
-	   //Print("Model", getCurrentModelView(gl));
-	   Matrix.multiplyMM(transformMatrix, 0, getCurrentProjection(gl), 0, getCurrentModelView(gl), 0);
+	   
+	   Matrix.multiplyMM(transformMatrix, 0, lastProjectionMat, 0, lastModelViewMat, 0);
 	   Matrix.invertM(invertedMatrix, 0, transformMatrix, 0);	   
 
 	   /* Apply the inverse to the point in clip space */
 	   Matrix.multiplyMV(outPoint, 0, invertedMatrix, 0, normalizedInPoint, 0);
-	   //Print("Out ", outPoint);
+	   Print("Out ", outPoint);
 	   
 	   if (outPoint[3] == 0.0)
 	   {
@@ -629,7 +661,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   // Unnecesary, but here for log purposes.
 	   float worldZ = outPoint[2] / outPoint[3];
 	   
-	   //Log.i("World Coords", "Move to point: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);			   
+	   Log.i("World Coords", "Move to point: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);			   
 	   
 	   return worldPos;	   
    }
