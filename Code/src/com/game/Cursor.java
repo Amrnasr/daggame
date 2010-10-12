@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import javax.microedition.khronos.opengles.GL10;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 /**
  * Cursor the player moves around
@@ -220,4 +221,8 @@ public class Cursor
 		
 		gl.glPopMatrix();
 	}
+	
+	public boolean IsFromHuman() { return this.parent.IsHuman(); }
+	public FloatBuffer GetBuffer() { return this.cursorBuff; }
+
 }
