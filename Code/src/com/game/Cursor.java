@@ -201,6 +201,7 @@ public class Cursor
 	 * It's called by the render thread, so it must be sync to avoid problems.
 	 * 
 	 * @param gl OGL context to draw in
+	 * @deprecated Not used anymore as it gave sync problems.
 	 */
 	public synchronized void DrawCursors(GL10 gl)
 	{		
