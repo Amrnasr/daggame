@@ -28,6 +28,16 @@ public class Map {
 	private Vector<Tile> tileMap;
 	
 	/**
+	 * How many tiles there are in a horizontal line
+	 */
+	private int tilesPerRow;
+	
+	/**
+	 * How many tiles in a vertical line
+	 */
+	private int tilesPerColumn;
+	
+	/**
 	 * Initializes the map
 	 * @param activity Activity that created the map manager
 	 * @param bitmapRef Reference to the bitmap to load.
@@ -39,8 +49,10 @@ public class Map {
 		Log.i("Map", "Started constructor");
 		bitmap=BitmapFactory.decodeResource(activity.getResources(), bitmapRef);
 
-		int tilesPerRow = bitmap.getWidth() / Constants.TileWidth;
-		int tilesPerColumn = bitmap.getHeight() / Constants.TileWidth;
+		tilesPerRow = bitmap.getWidth() / Constants.TileWidth;
+		tilesPerColumn = bitmap.getHeight() / Constants.TileWidth;		
+		
+		Log.i("Map", "Tiles: " + tilesPerRow + ", " + tilesPerColumn);
 		
 		//Store the width and height of the map
 		Preferences.Get().mapWidth=bitmap.getWidth();
@@ -74,9 +86,11 @@ public class Map {
 				
 				
 				
-				tileMap.addElement(new Tile(i,j, value));
+				tileMap.addElement(new Tile(i,j, value, this));
 			}
 		}
+		
+		Log.i("Map", "Tiles: " + tilesPerRow + ", " + tilesPerColumn + " total: " + tileMap.size());
 	}
 	/**
 	 * Returns the current bitmap
@@ -105,6 +119,40 @@ public class Map {
 	
 	public void End(){
 		// TODO Auto-generated method stub
+	}
+	
+	/**
+	 * Gets the tile at the specified tile position 
+	 * (ej, 12,34 returns the tile at column 12, row 34)
+	 * @param col Where the tile is at
+	 * @param row Where the tile is at
+	 * @return The tile specified by the row, col
+	 */
+	public Tile AtTile(int col, int row)
+	{
+		//Log.i("Tile", "AtTile: " + col + ", " + row);
+		
+		// Bounds check
+		if(row < 0 || col >= tilesPerRow || col < 0 || row >= tilesPerColumn) 
+		{
+			return null;
+		}
+		
+		int location = row * this.tilesPerRow + col;
+		//Log.i("Tile", "AtTile: " + location);
+		return this.tileMap.elementAt(location);
+	}
+	
+	/**
+	 * Gets the tile closest to the specified world position
+	 * (ej, 300, 450 returns the tile at column 300/tileSize, 450/tilesize)
+	 * @param x In world coordinates of the tile
+	 * @param y In world coordinates of the tile
+	 * @return The tile specified by x,y
+	 */
+	public Tile AtWorld(int x, int y)
+	{
+		return AtTile(x/Constants.TileWidth, y/Constants.TileWidth);
 	}
 	
 
