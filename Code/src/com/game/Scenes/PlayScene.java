@@ -191,6 +191,7 @@ public class PlayScene extends Scene
         		for(int i= 0; i < players.size(); i++)
         		{
         			players.elementAt(i).SetCursorInitialPos();
+        			players.elementAt(i).SetInitialTile(map);
         		}
         		
         		// Send all the cursors
@@ -243,6 +244,8 @@ public class PlayScene extends Scene
 			return;
 		}		
 		
+		PrepareUpdate();
+		
 		for(int i = 0; i < this.players.size(); i++)
 		{
 			this.players.elementAt(i).Update();			
@@ -257,8 +260,17 @@ public class PlayScene extends Scene
 			
 			Camera.Get().Update();
 		}
-		
-		
+	}
+	
+	/**
+	 * Prepares everything that needs to be prepared before the update step
+	 */
+	private void PrepareUpdate()
+	{
+		for(int i = 0; i < this.players.size(); i++)
+		{
+			this.players.elementAt(i).Prepare();			
+		}
 	}
 	
 	/**

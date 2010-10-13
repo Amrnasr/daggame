@@ -496,7 +496,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		for(int j = 0; j < columnTiles; j++){
 			for(int i = 0; i < rowTiles; i++){			
 				tile = it.next();
-				if(tile.maxCapacity > 0){
+				if(tile.GetMaxCapacity() > 0){
 					floatArray[bufferLength] = i*Constants.TileWidth; 
 					floatArray[bufferLength+1] = j*Constants.TileWidth;
 					floatArray[bufferLength+2] = 0.0f; 
