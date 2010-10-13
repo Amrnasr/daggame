@@ -130,7 +130,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	/**
 	 * Stores the last width provided by surface change callback
 	 */
-	private int lastWidht;
+	private int lastWidth;
 	
 	/**
 	 * Stores the last height provided by surface change callback
@@ -173,7 +173,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		bitmap = null;
 		cursorsRef = null;
 	    texReady = false;	
-	    lastWidht = 0;
+	    lastWidth = 0;
 	    lastHeight = 0;
 	    
 	    lastProjectionMat = new float[16];
@@ -226,7 +226,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		else
 		{
 			//Store the bitmap and its dimensions in pixels
-    		bitmap = initData.GetMapImage();
+    		bitmap = initData.GetBitmap();
 		}
 		
 		// The camZOffset is because the min/max z of the camera is the limits we can see
@@ -251,6 +251,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
     {   
 		Log.i("DagRenderer","Surface Created" );
 		
+		//Enable blending
+		gl.glEnable (GL10.GL_BLEND);
+		gl.glBlendFunc (GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		
 		gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
     }
 	
@@ -264,7 +268,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		this.gl = gl;
 		
-		this.lastWidht = w;
+		this.lastWidth = w;
 		this.lastHeight = h;
 		
 		SurfaceShapeUpdate(gl);
@@ -279,17 +283,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	{
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
 		
-		int w = lastWidht;
+		int w = lastWidth;
 		int h = lastHeight;
 		
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
 		gl.glViewport(0,0,w,h);
 
-		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, minZ, maxZ);
-		
-		gl.glColor4f(1.0f, 0.0f, 1.0f, 0.5f);
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);		
+		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, minZ, maxZ);	
 	}
 	 
 	/**
@@ -328,7 +329,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			{
         		SetTextures(gl);
 			}
-			
+			gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			DrawTexturedMap(gl);
 		}
 		else
@@ -344,6 +345,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		getCurrentModelView(gl);
 		getCurrentProjection(gl);
+		
+		DrawMinimap(gl);
     }
 	
 	/**
@@ -352,7 +355,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private void DrawTexturedMap(GL10 gl)
 	{
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		
 		//Set the vertices
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -375,6 +377,40 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		//Draw the bitmap
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		gl.glDisable(GL10.GL_TEXTURE_2D);
+	}
+	
+	/**
+	 * Draws the minimap.
+	 * @param gl Opengl context
+	 */
+	private void DrawMinimap(GL10 gl)
+	{
+		//Change to orthogonal projection
+		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glViewport(0,0,lastWidth,lastHeight);
+
+		gl.glOrthof(-lastWidth/2f, lastWidth/2f, -lastHeight/2f, lastHeight/2f, minZ, maxZ);
+		
+		//Draw the minimap
+		gl.glMatrixMode(GL10.GL_MODELVIEW);
+		gl.glLoadIdentity();
+		
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
+		
+		gl.glScalef(lastWidth/(Preferences.Get().mapWidth*3f), lastWidth/(Preferences.Get().mapWidth*3f), 1f);
+		gl.glTranslatef((Preferences.Get().mapWidth*3f/lastWidth)*lastWidth/2f-Preferences.Get().mapWidth,(Preferences.Get().mapWidth*3f/lastWidth)*lastHeight/2f-Preferences.Get().mapHeight,-minZ-2f);	
+		
+		DrawTexturedMap(gl);
+		
+		DrawCursors(gl);
+		
+		//Return to a perspective projection
+		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glViewport(0,0,lastWidth,lastHeight);
+
+		GLU.gluPerspective(gl, 45.0f, ((float)lastWidth)/lastHeight, minZ, maxZ);
 	}
 	
 	/**
