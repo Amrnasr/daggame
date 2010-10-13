@@ -10,16 +10,11 @@ import android.graphics.Bitmap;
  *
  */
 public class RenderInitData 
-{
+{	
 	/**
-	 * Map texture
+	 * Map reference
 	 */
-	private Bitmap mapImage;
-	
-	/**
-	 * Tilemap data
-	 */
-	private Vector<Tile> tileMap;
+	private Map map;
 	
 	/**
 	 * Player cursor vector
@@ -31,8 +26,7 @@ public class RenderInitData
 	 */
 	public RenderInitData()
 	{
-		this.mapImage = null;
-		this.tileMap = null;
+		this.map = null;
 		this.cursors = null;
 	}
 	
@@ -43,16 +37,10 @@ public class RenderInitData
 	public void SetCursors(Vector<Cursor> cursors) { this.cursors = cursors; }
 	
 	/**
-	 * Sets the tile vector
-	 * @param tileMap
+	 * Sets the map
+	 * @param map
 	 */
-	public void SetTileMap(Vector<Tile> tileMap) { this.tileMap = tileMap; }
-	
-	/**
-	 * Sets the map texture
-	 * @param mapImage
-	 */
-	public void SetMapImage(Bitmap mapImage) { this.mapImage = mapImage; }
+	public void SetMap(Map map) { this.map = map; }
 	
 	/**
 	 * Gets the cursor vector.
@@ -64,11 +52,11 @@ public class RenderInitData
 	 * Gets the vector of tiles
 	 * @return
 	 */
-	public Vector<Tile> GetTileMap() { return this.tileMap; }
+	public Vector<Tile> GetTileMap() { return this.map.getTileMap(); }
 	
 	/**
 	 * Gets the map texture
 	 * @return
 	 */
-	public Bitmap GetMapImage() { return this.mapImage; }
+	public Bitmap GetBitmap() { return this.map.getBitmap(); }
 }

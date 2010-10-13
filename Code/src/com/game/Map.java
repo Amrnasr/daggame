@@ -82,7 +82,7 @@ public class Map {
 	 * Returns the current bitmap
 	 * @return the related bitmap.
 	 */
-	public Bitmap getBitmap()
+	public synchronized Bitmap getBitmap()
 	{
 		return bitmap;
 	}
@@ -90,7 +90,7 @@ public class Map {
 	 * Returns the current tile map
 	 * @return the related tile map.
 	 */
-	public Vector<Tile> getTileMap(){
+	public synchronized Vector<Tile> getTileMap(){
 		return tileMap;
 	}
 	
@@ -98,7 +98,7 @@ public class Map {
 		// TODO Auto-generated method stub
 	}
 	
-	public void Update() 
+	public  synchronized void Update() 
 	{
 		// TODO Auto-generated method stub
 	}
