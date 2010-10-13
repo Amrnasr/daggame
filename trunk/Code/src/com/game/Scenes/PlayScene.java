@@ -93,6 +93,8 @@ public class PlayScene extends Scene
 	 */
 	private Regulator cameraZoomRegulator;
 	
+	private Regulator messageManagerRegulator;
+	
 	/**
 	 * Initializes and sets the handler callback.
 	 */
@@ -106,6 +108,7 @@ public class PlayScene extends Scene
 		this.touchEvent = null;
 		this.gameplayRegulator = new Regulator(60);
 		this.cameraZoomRegulator = new Regulator(1);
+		this.messageManagerRegulator = new Regulator(1);
 		
 		CreatePlayers();
 		
@@ -220,6 +223,12 @@ public class PlayScene extends Scene
 	{
 		// Logic not dependent on game state
 		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_PROFILER);
+		
+		// Update the message handler.
+		if(messageManagerRegulator.IsReady())
+		{
+			MessageHandler.Get().Update();
+		}
 		
 		// Logic only to run in playing (un-paused) mode
 		if(SceneReady())

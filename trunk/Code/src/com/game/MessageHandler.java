@@ -1,11 +1,16 @@
 package com.game;
 
+import java.util.Vector;
+
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 /**
  * Singleton message handler, to comunicate all the systems in the game.
  * @author Ying
+ * 
+ * TODO: Instead of 2 switches (send, trysend), do a lookup table
  *
  */
 public class MessageHandler 
@@ -50,9 +55,18 @@ public class MessageHandler
 	private Handler glSurfaceHandler = null;
 	
 	/**
+	 * List of queued messages that could not be delivered because 
+	 * the corresponding handler was null
+	 */
+	private Vector<QueuedMessage> queuedMessages;
+	
+	/**
 	 * Private constructor to avoid multiple copies.
 	 */
-	private MessageHandler() {}
+	private MessageHandler() 
+	{
+		queuedMessages = new Vector<QueuedMessage>();
+	}
 	
 	/**
 	 * Gets the global instance of the MessageHandler
@@ -63,6 +77,108 @@ public class MessageHandler
 		return instance;
 	}
 	
+	/**
+	 * Updates the list of queued messages, and sends any that it can.
+	 */
+	public void Update()
+	{
+		Vector<QueuedMessage> sentMsgs = null;
+		for(int i = 0; i < queuedMessages.size(); i++)
+		{
+			boolean sent = TrySend(queuedMessages.elementAt(i));
+			if(sent)
+			{
+				// Mark for removal
+				
+				// Lazy initialization
+				if(sentMsgs == null) 
+				{ 
+					sentMsgs = new Vector<QueuedMessage>();
+				}
+				
+				sentMsgs.add(queuedMessages.elementAt(i));				
+			}
+		}
+		
+		if(sentMsgs != null)
+		{
+			for(int i = 0; i < sentMsgs.size(); i++)
+			{
+				queuedMessages.remove(sentMsgs.elementAt(i));
+			}
+			
+			sentMsgs.clear();
+		}
+	}
+	
+	/**
+	 * Tries to send a queued message. Fails if the handler is still not set.
+	 * @param msg Message we want to send
+	 * @return True if it managed to send it, false otherwise
+	 */
+	private boolean TrySend(QueuedMessage msg) 
+	{
+		boolean sent = false;
+		switch (msg.GetReceiver()) 
+		{
+		case ACTIVITY:
+			if(this.activityHandler != null)
+			{
+				this.activityHandler.sendMessage(msg.GetMessage());
+				sent = true;
+			}
+			break;
+		case RENDERER:
+			if(this.rendererHandler != null)
+			{
+				this.rendererHandler.sendMessage(msg.GetMessage());
+				sent = true;
+			}
+			break;
+			
+		case LOGIC:
+			if(this.logicHandler != null)
+			{
+				this.logicHandler.sendMessage(msg.GetMessage());
+				sent = true;
+			}
+			break;
+			
+		case GLSURFACEVIEW:
+			if(this.glSurfaceHandler != null)
+			{
+				this.glSurfaceHandler.sendMessage(msg.GetMessage());
+				sent = true;
+			}
+			break;
+
+		default:
+			Log.e("MessageHandler", "Receiver not found");
+			break;
+		}
+		return sent;
+	}
+	
+	/**
+	 * Queues a message that could not get sent because the handler wasn't ready.
+	 * @param type Type of the message
+	 * @param arg1 User defined arg1
+	 * @param arg2 User defined arg2
+	 * @param object User defined data object
+	 * @param receiver MsgReceiver of who this message is for
+	 */
+	private void QueueMessage(MsgType type, int arg1, int arg2, Object object, MsgReceiver receiver)
+	{
+		// Queue the message
+		Message aux = new Message();
+		aux.what = type.ordinal();
+		aux.arg1 = arg1;
+		aux.arg2 = arg2;
+		aux.obj = object;
+		
+		queuedMessages.add(new QueuedMessage(aux, receiver));
+	}
+
 	/**
 	 * Sets the activity handler pointer.
 	 * @param activityHandler to pass messages to.
@@ -151,7 +267,9 @@ public class MessageHandler
 			}
 			else
 			{
+				// Queue
 				Log.e("MessageHandler", "Activity handler not initialized");
+				QueueMessage(type, arg1, arg2, object, receiver);
 			}
 			break;
 		case RENDERER:
@@ -162,6 +280,7 @@ public class MessageHandler
 			else
 			{
 				Log.e("MessageHandler", "Renderer handler not initialized");
+				QueueMessage(type, arg1, arg2, object, receiver);
 			}
 			break;
 		case LOGIC:
@@ -172,6 +291,7 @@ public class MessageHandler
 			else
 			{
 				Log.e("MessageHandler", "Logic handler not initialized");
+				QueueMessage(type, arg1, arg2, object, receiver);
 			}
 			break;
 		case GLSURFACEVIEW:
@@ -182,6 +302,7 @@ public class MessageHandler
 			else
 			{
 				Log.e("MessageHandler", "GL SurfaceHandler handler not initialized");
+				QueueMessage(type, arg1, arg2, object, receiver);
 			}
 			break;
 
