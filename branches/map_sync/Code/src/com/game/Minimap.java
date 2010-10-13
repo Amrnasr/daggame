@@ -8,14 +8,16 @@ package com.game;
 *
 */
 public class Minimap {
-	//Map used to create the minimap
-	private Map mMap;
 	/**
-	 * Initializes
+	 * Map used to create the minimap
+	 */
+	private Map map;
+	/**
+	 * Initializes the minimap
 	 */
 	public Minimap(Map map)
 	{
-		mMap=map;
+		this.map=map;
 	}
 	
 	public void Start() {

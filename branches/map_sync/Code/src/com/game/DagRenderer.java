@@ -219,7 +219,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		else
 		{
 			//Store the bitmap and its dimensions in pixels
-    		bitmap = initData.GetMapImage();
+    		bitmap = initData.GetBitmap();
 		}
 		
 		// The camZOffset is because the min/max z of the camera is the limits we can see
@@ -333,7 +333,17 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		}	
 
 		gl.glDisable(GL10.GL_LIGHTING);
-		DrawCursors(gl);							
+		DrawCursors(gl);
+
+		
+		gl.glLoadIdentity();
+		
+		gl.glScalef(0.33f, 0.33f, 1f);
+		gl.glTranslatef(2f/3f*lastWidht,2f/3f*lastHeight,minZ+1f);
+		DrawTexturedMap(gl);
+		
+		gl.glLoadIdentity();
+		gl.glTranslatef(-Camera.Get().X(),-Camera.Get().Y(),-Camera.Get().Z());	
     }
 	
 	/**
@@ -632,6 +642,16 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   Log.i("World Coords", "Move to point: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);			   
 	   
 	   return worldPos;	   
+   }
+   
+   //@Override
+   public void Update() 
+   {
+	   
+	   //int x,y,z;
+	   //x = A.x*a*a + B.x*2*a*b + C.x*b*b;
+	   //y = A.y*a*a + B.y*2*a*b + C.y*b*b;
+	   //z = A.z*a*a + B.z*2*a*b + C.z*b*b;
    }
 
 }

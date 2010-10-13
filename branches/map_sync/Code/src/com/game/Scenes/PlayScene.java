@@ -180,15 +180,8 @@ public class PlayScene extends Scene
             public void run() 
             {
             	map = new Map(refActivity,R.drawable.samplemap, R.raw.samplemaptilemap);
-
-            	if(Constants.DebugMode)
-            	{
-            		renderInitData.SetTileMap(map.getTileMap());
-        		}
-        		else
-        		{
-        			renderInitData.SetMapImage(map.getBitmap());
-        		}
+            	
+            	renderInitData.SetMap(map);
             	
             	// Set the initial pos for all the cursors
         		for(int i= 0; i < players.size(); i++)
