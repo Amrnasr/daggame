@@ -143,7 +143,9 @@ public class Player
 			Log.e("Player " + GetID(), "NOT FOUND INITIAL TILE!");
 		}
 		
-		initialTile.AddDensity(this, initialDensity);		
+		initialTile.AddDensity(this, initialDensity);	
+		this.tiles.add(initialTile);
+		
 		Log.i("Player" + GetID(), "Initial tile: " + initialTile.GetPos().X() + ", " + initialTile.GetPos().Y());
 	}
 	
@@ -163,7 +165,7 @@ public class Player
 	{
 		this.cursor.Update();
 		this.inputDevice.Update();
-		//UpdateTiles();
+		UpdateTiles();
 	}
 	
 	private void UpdateTiles()
@@ -173,6 +175,11 @@ public class Player
 		{
 			this.tiles.elementAt(i).Update();
 		}
+	}
+	
+	public void UnlinkTile(Tile tile)
+	{
+		this.tiles.remove(tile);
 	}
 	
 	/**
