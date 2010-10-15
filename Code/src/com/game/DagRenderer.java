@@ -5,11 +5,11 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.Iterator;
 import java.util.Vector;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
-import com.game.MessageHandler.MsgReceiver;
+
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
@@ -17,6 +17,8 @@ import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+
+import com.game.MessageHandler.MsgReceiver;
 
 /**
  * Renderer for the GLSurface
@@ -103,16 +105,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * Length of the tile map array
 	 */
 	private int bufferLength;	
-	
-	/**
-	 * Ambient light intensity
-	 */
-	private float LightAmbient[]= { 1.0f, 1.0f, 1.0f,1.0f};
-	
-	/**
-	 * Ambient light material reflection
-	 */
-	private float matAmbient[] = { 1.0f, 1.0f, 1.0f,1.0f};
 
 	/**
 	 * Specifies the current renderer state.
@@ -159,6 +151,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private float[] lastModelViewMat = null;
 	
 	/**
+	 * Vector of players to check for which tiles to render
+	 */
+	private Vector<Player> players;
+	
+	/**
 	 * Initializes the renderer and sets the handler callbacks.
 	 */
 	public DagRenderer()
@@ -170,6 +167,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		mapBitmap = null;
 		cursorBitmap = null;
 		cursorsRef = null;
+		players=null;
 	    texReady = false;	
 	    lastWidth = 0;
 	    lastHeight = 0;
@@ -228,6 +226,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		}
 		//Store the cursor bitmap
 		cursorBitmap = initData.GetCursorBitmap();
+		
+		//Store the players vector
+		players = initData.GetPlayers();
 		
 		// The camZOffset is because the min/max z of the camera is the limits we can see
 		// at, so we need to give ourselves a little margin to see just at the limits, where our stuff is.
@@ -342,8 +343,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexMapBuffer);		
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, bufferLength/3);
 		}	
-		
-		DrawDensities(gl);
+		gl.glDisable(GL10.GL_TEXTURE_2D);
+		DrawPlayers(gl);
+		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
 		DrawCursors(gl);	
 		
@@ -418,12 +420,69 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	}
 	
 	/**
-	 * Draws the density polygons.
+	 * Draws the density polygons of the players.
 	 * @param gl Opengl context
 	 */
-	private void DrawDensities(GL10 gl)
+	private void DrawPlayers(GL10 gl)
 	{
-		//TODO: complete it
+		int playersBufferLength = 0;
+		
+		
+		for(int i = 0; i < players.size(); i++)
+		{
+			playersBufferLength += this.players.elementAt(i).GetTiles().size()*18;
+		}
+		
+		// For each player
+		float[] floatArray= new float[playersBufferLength]; 
+		
+		int count = 0;
+		
+		for(int i = 0; i < players.size(); i++)
+		{	
+			Vector<Tile> playerTiles = this.players.elementAt(i).GetTiles();
+			// For each tile occupied by the player
+			for(int j = 0; j < playerTiles.size(); j++)
+			{
+				Tile curTile = playerTiles.elementAt(j);
+				
+				float tileX = ((float)curTile.GetPos().X());
+				float tileY = ((float)curTile.GetPos().Y());
+				
+				floatArray[count] = tileX*Constants.TileWidth; 
+				floatArray[count+1] = tileY*Constants.TileWidth;
+				floatArray[count+2] = 1.0f; 
+							
+				floatArray[count+3] = tileX*Constants.TileWidth+Constants.TileWidth; 
+				floatArray[count+4] = tileY*Constants.TileWidth;
+				floatArray[count+5] = 1.0f; 
+							
+				floatArray[count+6] = tileX*Constants.TileWidth; 
+				floatArray[count+7] = tileY*Constants.TileWidth+Constants.TileWidth;
+				floatArray[count+8] = 1.0f; 
+							
+				floatArray[count+9] = tileX*Constants.TileWidth+Constants.TileWidth; 
+				floatArray[count+10] = tileY*Constants.TileWidth;
+				floatArray[count+11] = 1.0f; 
+							
+				floatArray[count+12] = tileX*Constants.TileWidth+Constants.TileWidth; 
+				floatArray[count+13] = tileY*Constants.TileWidth+Constants.TileWidth;
+				floatArray[count+14] = 1.0f; 
+							
+				floatArray[count+15] = tileX*Constants.TileWidth; 
+				floatArray[count+16] = tileY*Constants.TileWidth+Constants.TileWidth;
+				floatArray[count+17] = 1.0f; 
+				
+				count += 18;
+			}
+		}
+		//store it in a float buffer
+		FloatBuffer floatBuffer = makeFloatBuffer(floatArray);
+		
+		// Draw tile map			
+		gl.glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, floatBuffer);		
+		gl.glDrawArrays(GL10.GL_TRIANGLES, 0, playersBufferLength/3);
 	}
 	
 	/**
@@ -449,6 +508,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glTranslatef((Preferences.Get().mapWidth*3f/lastWidth)*lastWidth/2f-Preferences.Get().mapWidth,(Preferences.Get().mapWidth*3f/lastWidth)*lastHeight/2f-Preferences.Get().mapHeight,-minZ-2f);	
 		
 		DrawTexturedMap(gl);
+		
+		gl.glDisable(GL10.GL_TEXTURE_2D);
+		DrawPlayers(gl);
+		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
 		DrawCursors(gl);
 		
