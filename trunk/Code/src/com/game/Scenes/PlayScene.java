@@ -155,7 +155,24 @@ public class PlayScene extends Scene
 	        	else if(msg.what == MsgType.RENDERER_INITIALIZATION_DONE.ordinal())
 	        	{
 	        		// The renderer is done, so start has been done as well.
-	        		gameState = LogicState.PLAYING;
+	        		if(gameState == LogicState.UNINITIALIZED)
+	        		{
+	        			gameState = LogicState.PLAYING;
+	        		}
+	        	}
+	        	else if(msg.what == MsgType.PAUSE_GAME.ordinal())
+	        	{
+	        		if(gameState == LogicState.PLAYING)
+	        		{
+	        			gameState = LogicState.PAUSED;
+	        		}
+	        	}
+	        	else if(msg.what == MsgType.UNPAUSE_GAME.ordinal())
+	        	{
+	        		if(gameState == LogicState.PAUSED)
+	        		{
+	        			gameState = LogicState.PLAYING;
+	        		}
 	        	}
 	        }
 	    };	  

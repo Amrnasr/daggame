@@ -59,6 +59,7 @@ public class DagActivity extends Activity
     public void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
+        Log.i("DagActivity", "======== onCreate");
 
         // I don't like it, but ORDER IS IMPORTANT! So don't change the order.
         // (Because the view uses the logic handler objects.)
@@ -80,6 +81,80 @@ public class DagActivity extends Activity
         // Start logic and set view
         gameLogic.start();
     	setContentView(gameView);
+    }
+    
+    /**
+     * Called when the activity starts.
+     * Should have all we put onCreate, but
+     * @see onStop hackhack
+     */
+    @Override protected void onStart()
+    {
+    	super.onStart();
+    	Log.i("DagActivity", "======== onStart");
+    }
+    
+    /**
+     * Called by the activity when restoring from onStop.
+     * Not called ever.
+     * @see onStop hackhack
+     */
+    @Override protected void onRestart()
+    {
+    	super.onRestart();
+    	Log.i("DagActivity", "======== onRestart");
+    }
+
+    /**
+     * Resumes the game if the activity requires it
+     */
+    @Override protected void onResume()
+    {
+    	super.onResume();
+    	Log.i("DagActivity", "======== onResume");
+    	
+    	// Unpause
+    	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
+    }
+
+    /**
+     * Pauses the game if the activity requires it
+     */
+    @Override protected void onPause()
+    {
+    	super.onPause();
+    	Log.i("DagActivity", "======== onPause");
+    	
+    	// Pause
+    	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.PAUSE_GAME);
+    }
+
+    /**
+     * Called when the activity stops, it also stops the thread.
+     * 
+     * TODO: The finish call is a HACKHACK to avoid dealing with
+     * shitty loading of textures onResume.
+     */
+    @Override protected void onStop()
+    {
+    	super.onStop();
+    	
+    	Log.i("DagActivity", "======== onStop");
+    	
+    	if(gameLogic.isAlive())
+    	{
+    		gameLogic.stopGame();
+    	}
+    	finish();
+    }
+
+    /**
+     * Called when the activity is destroyed.
+     */
+    @Override protected void onDestroy()
+    {
+    	super.onDestroy();
+    	Log.i("DagActivity", "======== onDestroy");
     }
     
     /**
@@ -251,20 +326,7 @@ public class DagActivity extends Activity
         Camera.Get().SetScreenSize(display.getWidth(), display.getHeight());
     }
     
-    /**
-     * Called when the activity stops, it also stops the thread.
-     * 
-     * TODO: This is just a temporary measure. All the basic onWhatever 
-     * methods must be overridden.
-     */
-    @Override protected void onStop()
-    {
-    	super.onStop();
-    	if(gameLogic.isAlive())
-    	{
-    		gameLogic.stopGame();
-    	}
-    }
     
-   
+    
+    
 }
