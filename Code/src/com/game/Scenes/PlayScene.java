@@ -186,6 +186,8 @@ public class PlayScene extends Scene
             	map = new Map(refActivity,R.drawable.samplemap, R.raw.samplemaptilemap);
         		renderInitData.SetMap(map);
         		
+        		renderInitData.SetPlayers(players);
+        		
         		Bitmap cursorBitmap=BitmapFactory.decodeResource(refActivity.getResources(), R.drawable.cursor);
         		renderInitData.SetCursorBitmap(cursorBitmap);
             	

@@ -27,13 +27,25 @@ public class RenderInitData
 	private Bitmap cursorBitmap;
 	
 	/**
+	 * Vector of players to check for which tiles to render
+	 */
+	private Vector<Player> players;
+	
+	/**
 	 * Creates a instance of the RenderInitData class
 	 */
 	public RenderInitData()
 	{
 		this.map = null;
 		this.cursors = null;
+		this.players = null;
 	}
+	
+	/**
+	 * Sets the player vector
+	 * @param players
+	 */
+	public void SetPlayers(Vector<Player> players) { this.players = players; }
 	
 	/**
 	 * Sets the cursors vector
@@ -52,6 +64,12 @@ public class RenderInitData
 	 * @param mapImage
 	 */
 	public void SetCursorBitmap(Bitmap cursorBitmap) { this.cursorBitmap = cursorBitmap; }
+	
+	/**
+	 * Gets the player vector
+	 * @return
+	 */
+	public Vector<Player> GetPlayers() { return this.players; }
 	
 	/**
 	 * Gets the cursor vector.
