@@ -204,6 +204,12 @@ public class Player
 	 * @return the id
 	 */
 	public int GetID() { return this.playerNumber; }
+	
+	/**
+	 * Gets the tiles occupied by the player.
+	 * @return the tiles occupied
+	 */
+	public Vector<Tile> GetTiles() { return this.tiles; }
 
 	/**
 	 * Gets a value indicating whether the player is human.
