@@ -146,8 +146,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private boolean surfaceUpdatePending;	
 	
+	/**
+	 * Keeps track of the Projection matrix calculated on the last draw frame
+	 */
 	private float[] lastProjectionMat = null;
 	
+	/**
+	 * Keeps track of the model view matrix calculated on the last frame
+	 */
 	private float[] lastModelViewMat = null;
 	
 	/**
@@ -188,7 +194,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        	// If asked to do a wcs to scs transform, do so and reply
 	        	if(msg.what == MsgType.REQUEST_WCS_TRANSFORM.ordinal())
 	        	{
-	        		// TODO: Camera syncronization check 
 	        		Vec2 reply = GetWorldCoords((Vec2)msg.obj, Camera.Get());
 	        		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.REPLY_WCS_TRANSFORM_REQUEST, reply);
 	        	}

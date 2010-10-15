@@ -124,6 +124,16 @@ public enum MsgType
 	 * 
 	 * obj: Render initialization data (As a RenderInitData object)
 	 */
-	INITIALIZE_RENDERER
+	INITIALIZE_RENDERER,
+	
+	/**
+	 * Sent from the activity when onPause is called
+	 */
+	PAUSE_GAME,
+	
+	/**
+	 * Sent from the activity when onResume is called
+	 */
+	UNPAUSE_GAME
 	
 }
