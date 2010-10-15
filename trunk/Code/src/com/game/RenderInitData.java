@@ -22,6 +22,11 @@ public class RenderInitData
 	private Vector<Cursor> cursors;
 	
 	/**
+	 * Cursor bitmap for rendering
+	 */
+	private Bitmap cursorBitmap;
+	
+	/**
 	 * Creates a instance of the RenderInitData class
 	 */
 	public RenderInitData()
@@ -43,6 +48,12 @@ public class RenderInitData
 	public void SetMap(Map map) { this.map = map; }
 	
 	/**
+	 * Sets the cursor bitmap
+	 * @param mapImage
+	 */
+	public void SetCursorBitmap(Bitmap cursorBitmap) { this.cursorBitmap = cursorBitmap; }
+	
+	/**
 	 * Gets the cursor vector.
 	 * @return
 	 */
@@ -52,11 +63,17 @@ public class RenderInitData
 	 * Gets the vector of tiles
 	 * @return
 	 */
-	public Vector<Tile> GetTileMap() { return this.map.getTileMap(); }
+	public Vector<Tile> GetMapTileMap() { return this.map.getTileMap(); }
 	
 	/**
-	 * Gets the map texture
+	 * Gets the map bitmap
 	 * @return
 	 */
-	public Bitmap GetBitmap() { return this.map.getBitmap(); }
+	public Bitmap GetMapBitmap() { return this.map.getBitmap(); }
+	
+	/**
+	 * Gets the cursor bitmap
+	 * @return
+	 */
+	public Bitmap GetCursorBitmap() { return this.cursorBitmap; }
 }
