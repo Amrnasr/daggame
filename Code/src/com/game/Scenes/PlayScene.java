@@ -2,15 +2,17 @@ package com.game.Scenes;
 
 import java.util.Vector;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
 import com.game.Camera;
-import com.game.Constants;
 import com.game.Cursor;
 import com.game.Map;
 import com.game.MessageHandler;
+import com.game.MessageHandler.MsgReceiver;
 import com.game.MsgType;
 import com.game.Player;
 import com.game.Preferences;
@@ -21,7 +23,6 @@ import com.game.InputDevice.AIInputDevice;
 import com.game.InputDevice.BallInputDevice;
 import com.game.InputDevice.InputDevice;
 import com.game.InputDevice.TouchInputDevice;
-import com.game.MessageHandler.MsgReceiver;
 
 /**
  * A specific scene for the "Play" screen.
@@ -183,9 +184,10 @@ public class PlayScene extends Scene
             public void run() 
             {
             	map = new Map(refActivity,R.drawable.samplemap, R.raw.samplemaptilemap);
-
         		renderInitData.SetMap(map);
         		
+        		Bitmap cursorBitmap=BitmapFactory.decodeResource(refActivity.getResources(), R.drawable.cursor);
+        		renderInitData.SetCursorBitmap(cursorBitmap);
             	
             	// Set the initial pos for all the cursors
         		for(int i= 0; i < players.size(); i++)

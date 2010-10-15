@@ -9,6 +9,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import com.game.MessageHandler.MsgReceiver;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
@@ -57,15 +58,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * OpenGl context copy
 	 */
 	GL10 gl = null;
-	
-	/**
-	 * Vertex Array of the cursors
-	 */
-	float[] cursorSquare = new float[] 
-	                              { 30f, 30f, 1.0f,
-									0f, 30f, 1.0f,
-									30f, 0f, 1.0f,
-									0f, 0f, 1.0f };
 
 	/**
 	 * Reference to the cursors
@@ -78,9 +70,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private Vector<Tile> tileMap;	
 	
 	/**
-	 * Bitmap rendered in release mode
+	 * Map's bitmap rendered in release mode
 	 */
-	private Bitmap bitmap;
+	private Bitmap mapBitmap;
+	
+	/**
+	 * Cursor's bitmap for rendering
+	 */
+	private Bitmap cursorBitmap;
 	
 	/**
 	 * Map's vertex buffer
@@ -93,14 +90,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private FloatBuffer textureMapBuffer;
 	
 	/**
-	 * Map's normal coordinates buffer
-	 */
-	private FloatBuffer normalMapBuffer;
-	
-	/**
 	 * Id of the texture of the map
 	 */
-	private int textureId;
+	private int mapTextureId;
+	
+	/**
+	 * Id of the texture of the cursor
+	 */
+	private int cursorTextureId;
 	
 	/**
 	 * Length of the tile map array
@@ -170,7 +167,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		Log.i("DagRenderer", "Started constructor");
 		
 		tileMap = null;
-		bitmap = null;
+		mapBitmap = null;
+		cursorBitmap = null;
 		cursorsRef = null;
 	    texReady = false;	
 	    lastWidth = 0;
@@ -220,14 +218,16 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		if(Constants.DebugMode)
 		{
-			// Create a debug tilemap
-    		LoadTileMap(initData.GetTileMap());
+			// Create a debug tile map
+    		LoadTileMap(initData.GetMapTileMap());
 		}
 		else
 		{
-			//Store the bitmap and its dimensions in pixels
-    		bitmap = initData.GetBitmap();
+			//Store the map bitmap
+			mapBitmap = initData.GetMapBitmap();
 		}
+		//Store the cursor bitmap
+		cursorBitmap = initData.GetCursorBitmap();
 		
 		// The camZOffset is because the min/max z of the camera is the limits we can see
 		// at, so we need to give ourselves a little margin to see just at the limits, where our stuff is.
@@ -240,6 +240,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	    MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG);
 	    MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.RENDERER_INITIALIZATION_DONE);		    
 		state = RenderState.RENDERING;
+		
+		
 		
 	    Log.i("DagRenderer", "Initialization done");
 	}
@@ -315,6 +317,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		
+		gl.glEnable(GL10.GL_TEXTURE_2D);
 		// Camera transform
 		gl.glTranslatef(-Camera.Get().X(),-Camera.Get().Y(),-Camera.Get().Z());	
 		
@@ -339,12 +342,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexMapBuffer);		
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, bufferLength/3);
 		}	
-
-		gl.glDisable(GL10.GL_LIGHTING);
+		
+		DrawDensities(gl);
+		
 		DrawCursors(gl);	
 		
-		getCurrentModelView(gl);
 		getCurrentProjection(gl);
+		getCurrentModelView(gl);
+		
 		
 		DrawMinimap(gl);
     }
@@ -354,29 +359,71 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * @param gl Opengl context
 	 */
 	private void DrawTexturedMap(GL10 gl)
-	{
+	{		
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, mapTextureId);
 		
 		//Set the vertices
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexMapBuffer);
 		
 		//Set the texture coordinates
-		
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glActiveTexture(GL10.GL_TEXTURE0); 
-		gl.glClientActiveTexture(GL10.GL_TEXTURE0);
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId); 
-		
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
 		
-		//Set the normals
-		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
-		gl.glNormalPointer(3, GL10.GL_FLOAT, normalMapBuffer);
-		
 		//Draw the bitmap
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		gl.glDisable(GL10.GL_TEXTURE_2D);
+	}
+	
+	/**
+	 * Draw the player cursors.
+	 * @param gl is the opengl context
+	 */
+	private void DrawCursors(GL10 gl)
+	{			
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
+		
+		//Set the texture coordinates
+		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
+		
+		for(int i = 0; i < cursorsRef.size(); i++ )
+		{
+			Cursor cursor = cursorsRef.elementAt(i);
+			//gl.glPushMatrix();
+			float x =(float)cursor.GetPosition().X();
+			float y = (float)cursor.GetPosition().Y();
+			
+			gl.glTranslatef(x,y,1);
+
+			if(cursor.IsFromHuman())
+			{
+				gl.glColor4f(0, 0, 1, 1);
+			}
+			else
+			{
+				gl.glColor4f(1, 0, 0, 1);
+			}
+			
+			//Set the vertices
+			gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursor.GetBuffer());
+			
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+			
+			gl.glTranslatef(-x,-y,-1);		
+			//gl.glPopMatrix();
+			
+			//cursorsRef.elementAt(i).DrawCursors(gl);
+		}
+	}
+	
+	/**
+	 * Draws the density polygons.
+	 * @param gl Opengl context
+	 */
+	private void DrawDensities(GL10 gl)
+	{
+		//TODO: complete it
 	}
 	
 	/**
@@ -418,44 +465,30 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * @param gl Opengl context.
 	 */
 	private void SetTextures(GL10 gl)
-	{
-		gl.glEnable(GL10.GL_LIGHTING);
-		
-		//Set the materials
-		gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, matAmbient,0);	
-		
-		//set the light
-		gl.glLightModelfv(GL10.GL_LIGHT_MODEL_AMBIENT, LightAmbient,0);
-		
+	{	
         gl.glEnable(GL10.GL_DEPTH_TEST);
         
         //Enable the use of textures and set the texture 0 as the current texture
 		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glClientActiveTexture(GL10.GL_TEXTURE0);
-		gl.glActiveTexture(GL10.GL_TEXTURE0); 
 		
 		//Generate the texture and bind it
-		int[] tmp_tex = new int[1];
-		gl.glGenTextures(1, tmp_tex, 0); 
-		textureId = tmp_tex[0];
+		int[] tmp_tex = new int[2];
+		gl.glGenTextures(2, tmp_tex, 0); 
+		mapTextureId = tmp_tex[0];
 		
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureId);
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, mapTextureId);
+		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, mapBitmap, 0);
 		
 		//Create the float buffers of the vertices, texture coordinates and normals
-		float vertexArray[] = {Preferences.Get().mapWidth,Preferences.Get().mapHeight,0.0f,
+		float VertexMapArray[] = {Preferences.Get().mapWidth,Preferences.Get().mapHeight,0.0f,
 				0f,Preferences.Get().mapHeight,0.0f,
 				Preferences.Get().mapWidth,0f,0.0f,
 				0f,0f,0.0f};
-		Log.i("DagRenderer","width: " + Preferences.Get().mapWidth + " height: " + Preferences.Get().mapHeight);
+		Log.i("DagRenderer","Map width: " + Preferences.Get().mapWidth + " height: " + Preferences.Get().mapHeight);
 		float textureArray[] = {1.0f,1.0f,0.0f,1.0f,1.0f,0.0f,0.0f,0.0f};
-		float normalArray[] = { 0.0f,0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f,0.0f,-1.0f, 0.0f,0.0f,-1.0f };
 		
-		vertexMapBuffer = makeFloatBuffer(vertexArray);
+		vertexMapBuffer = makeFloatBuffer(VertexMapArray);
 		textureMapBuffer = makeFloatBuffer(textureArray);
-		normalMapBuffer = makeFloatBuffer(normalArray);
-		
-		//Link the bitmap to the current texture
-		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
 		
 		//Set the texture parameters
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
@@ -468,6 +501,27 @@ public class DagRenderer implements GLSurfaceView.Renderer
 				GL10.GL_LINEAR);
 		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,
 				GL10.GL_MODULATE); 
+		
+		
+		//Generate the texture and bind it
+		cursorTextureId = tmp_tex[1];
+		
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
+		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, cursorBitmap, 0);
+		
+		Log.i("DagRenderer","Cursor width: " + cursorBitmap.getWidth() + " height: " + cursorBitmap.getHeight());
+		
+		//Set the texture parameters
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
+				GL10.GL_CLAMP_TO_EDGE);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
+				GL10.GL_CLAMP_TO_EDGE); 
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
+				GL10.GL_LINEAR);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
+				GL10.GL_LINEAR);
+		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,
+				GL10.GL_MODULATE);
 		
 		//Set the rendering parameters
 		gl.glEnable(GL10.GL_CULL_FACE);
@@ -544,39 +598,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		fb.put(arr);
 		fb.position(0);
 		return fb;
-	}
-	
-	/**
-	 * Draw the player cursors.
-	 * @param gl is the opengl context
-	 */
-	private void DrawCursors(GL10 gl)
-	{			
-		for(int i = 0; i < cursorsRef.size(); i++ )
-		{
-			Cursor cursor = cursorsRef.elementAt(i);
-			//gl.glPushMatrix();
-			float x =(float)cursor.GetPosition().X();
-			float y = (float)cursor.GetPosition().Y();
-			
-			gl.glTranslatef(x,y,1);		
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursor.GetBuffer());
-
-			if(cursor.IsFromHuman())
-			{
-				gl.glColor4f(0, 0, 1, 1);
-			}
-			else
-			{
-				gl.glColor4f(1, 0, 0, 1);
-			}
-			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-			
-			gl.glTranslatef(-x,-y,-1);		
-			//gl.glPopMatrix();
-			
-			//cursorsRef.elementAt(i).DrawCursors(gl);
-		}
 	}
 	
 	/**
