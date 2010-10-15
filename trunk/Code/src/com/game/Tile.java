@@ -1,10 +1,5 @@
 package com.game;
 
-import java.util.Vector;
-
-import android.graphics.Point;
-import android.util.Log;
-
 /**
  * Stub class for the logical map tile.
  * @author Ying
@@ -230,7 +225,7 @@ public class Tile
 	 * densities of all the players.
 	 * @return Total current density
 	 */
-	public int GetCurrentDensity() 
+	public synchronized int GetCurrentDensity() 
 	{
 		int sum = 0;
 		for(int i = 0; i < density.length; i++)
@@ -257,7 +252,7 @@ public class Tile
 	 * @param player Player that adds the capacity
 	 * @param density Quantity of density to add
 	 */
-	public void AddDensity(Player player, int density)
+	public synchronized void AddDensity(Player player, int density)
 	{
 		int playerPos = player.GetID();
 		if(this.players[playerPos] == null)
