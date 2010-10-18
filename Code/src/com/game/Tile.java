@@ -72,6 +72,8 @@ public class Tile
 	 */
 	public void Update()
 	{
+
+		//Log.i("Tile", "Updating: " + position.X() + ", " + position.Y());
 		if(dirty) 
 		{
 			// Already updated this cycle. Must skip
@@ -130,11 +132,14 @@ public class Tile
 					leftovers += TryMoveDensity(curPlay, dirX, 0, densityToMove, 0.25f);
 					
 					// If there is anything left, use the perpendiculars as well
-					int curLeftovers = leftovers;
-					leftovers = 0;
-					
-					leftovers += TryMoveDensity(curPlay, -dirX, dirY, curLeftovers, 0.5f);
-					leftovers += TryMoveDensity(curPlay, dirX, -dirY, curLeftovers, 0.5f);			
+					if(leftovers > 0)
+					{
+						int curLeftovers = leftovers;
+						leftovers = 0;
+						
+						leftovers += TryMoveDensity(curPlay, -dirX, dirY, curLeftovers, 0.5f);
+						leftovers += TryMoveDensity(curPlay, dirX, -dirY, curLeftovers, 0.5f);
+					}
 				}
 				
 				
@@ -147,6 +152,8 @@ public class Tile
 				{
 					Unlink(i);
 				}
+				
+				curPlay.AddToTotalDensityCount(density[i]);
 				
 			}
 		}
@@ -177,7 +184,10 @@ public class Tile
 			int maxCap = toMove.GetCurrentCapacity();
 			int toAdd = (int) Math.min(maxCap, requiredDensity);
 			
-			toMove.AddDensity(player, toAdd);
+			if(toAdd > 0)
+			{
+				toMove.AddDensity(player, toAdd);
+			}
 			
 			leftovers = (int) Math.max(0, requiredDensity-toAdd);
 		}

@@ -53,6 +53,13 @@ public class Player
 	private int initialDensity;
 	
 	/**
+	 * Regulates the update speed of the tiles
+	 */
+	private Regulator tileUpdateRegulator;
+	
+	private int totalDensity;
+	
+	/**
 	 * Creates a new instance of the Player class.
 	 * @param playerNumber Unique player identifier. If it's not unique you'll regret it later.
 	 * @param inputDevice Input device used by this player.
@@ -71,6 +78,8 @@ public class Player
 		
 		// Tiles
 		tiles = new Vector<Tile>();
+		tileUpdateRegulator = new Regulator(1); // TODO: Put a decent update speed.
+		totalDensity = 0;
 		
 		// TODO: Read from preferences!
 		this.initialDensity = 1000;
@@ -170,7 +179,11 @@ public class Player
 	{
 		this.cursor.Update();
 		this.inputDevice.Update();
-		UpdateTiles();
+		if(tileUpdateRegulator.IsReady())
+		{
+			UpdateTiles();
+			Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
+		}
 	}
 	
 	private void UpdateTiles()
@@ -180,6 +193,11 @@ public class Player
 		{
 			this.tiles.elementAt(i).Update();
 		}
+	}
+	
+	public void AddToTotalDensityCount(int density)
+	{
+		this.totalDensity += density;
 	}
 	
 	public void UnlinkTile(Tile tile)
@@ -192,6 +210,7 @@ public class Player
 	 */
 	public void Prepare()
 	{
+		this.totalDensity = 0;
 		for(int i = 0; i < this.tiles.size(); i++)
 		{
 			this.tiles.elementAt(i).Prepare();
