@@ -1,5 +1,7 @@
 package com.game;
 
+import android.util.Log;
+
 /**
  * Stub class for the logical map tile.
  * @author Ying
@@ -70,12 +72,13 @@ public class Tile
 	 */
 	public void Update()
 	{
-		
+		Log.i("Tile", "Updating: " + position.X() + ", " + position.Y());
 		if(dirty) 
 		{
 			// Already updated this cycle. Must skip
 			return;
 		}
+		dirty = true;
 		
 		for(int i = 0; i < players.length; i++)
 		{
@@ -258,6 +261,9 @@ public class Tile
 		if(this.players[playerPos] == null)
 		{
 			this.players[playerPos] = player;
+			this.dirty = true;
+			
+			player.LinkTile(this);
 		}
 		
 		this.density[playerPos] += density;

@@ -144,9 +144,14 @@ public class Player
 		}
 		
 		initialTile.AddDensity(this, initialDensity);	
-		this.tiles.add(initialTile);
+		//this.tiles.add(initialTile);
 		
 		Log.i("Player" + GetID(), "Initial tile: " + initialTile.GetPos().X() + ", " + initialTile.GetPos().Y());
+	}
+	
+	public void LinkTile(Tile tile)
+	{
+		this.tiles.add(tile);
 	}
 	
 	/**
