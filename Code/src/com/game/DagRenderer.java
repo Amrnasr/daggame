@@ -164,11 +164,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	/**
 	 * Length of the players array
 	 */
-	private int playersBufferLength;
+	private int[] playersBufferLength;
 	/**
 	 * Player armies vertex buffer
 	 */
-	private FloatBuffer playersBuffer;
+	private FloatBuffer[] playersBuffer;
 	
 	/**
 	 * Initializes the renderer and sets the handler callbacks.
@@ -186,6 +186,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	    texReady = false;	
 	    lastWidth = 0;
 	    lastHeight = 0;
+	    
+	    playersBuffer = new FloatBuffer[Constants.MaxPlayers];
+	    playersBufferLength = new int[Constants.MaxPlayers];
 	    
 	    lastProjectionMat = new float[16];
 	    lastModelViewMat = new float[16];
@@ -443,9 +446,18 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private void DrawPlayers(GL10 gl)
 	{
 		// Draw tile map			
-		gl.glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, playersBuffer);		
-		gl.glDrawArrays(GL10.GL_TRIANGLES, 0, playersBufferLength/3);
+		for(int i = 0; i < players.size(); i++){
+			if(cursorsRef.elementAt(i).IsFromHuman())
+			{
+				gl.glColor4f(0, 0, 1, 1);
+			}
+			else
+			{
+				gl.glColor4f(1, 0, 0, 1);
+			}
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, playersBuffer[i]);
+			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, playersBufferLength[i]/3);
+		}
 	}
 	
 	/**
@@ -486,34 +498,38 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		GLU.gluPerspective(gl, 45.0f, ((float)lastWidth)/lastHeight, minZ, maxZ);
 	}
 	
+	/**
+	 * Creates the players vertex buffer
+	 */
 	private void LoadPlayers(){
-		playersBufferLength = 0;
-		
-		float[] tilesPerPlayer = new float[players.size()];
+		//Calculate the size of the vertex array 
+		float[] tilesPerPlayer = new float[Constants.MaxPlayers];
 		for(int i = 0; i < players.size(); i++)
 		{
 			int size = this.players.elementAt(i).GetTiles().size();
-			playersBufferLength += size*18;
+			playersBufferLength[i] = size*18;
 			tilesPerPlayer[i]=size;
 			
 		}
 		
-		// For each player
-		float[] floatArray= new float[playersBufferLength]; 
+		int totalCount = 0;
 		
-		int count = 0;
-		
-		for(int i = 0; i < players.size() && count < playersBufferLength; i++)
+		// For each player	
+		for(int i = 0; i < players.size(); i++)
 		{	
+			float[] floatArray= new float[playersBufferLength[i]]; 
+			
+			int count = 0;
+			
 			Vector<Tile> playerTiles = this.players.elementAt(i).GetTiles();
 			// For each tile occupied by the player
- 			for(int j = 0; j < tilesPerPlayer[i] && j < this.players.elementAt(i).GetTiles().size() && count < playersBufferLength; j++)
+ 			for(int j = 0; j < tilesPerPlayer[i] && j < this.players.elementAt(i).GetTiles().size() && count < playersBufferLength[i]; j++)
 			{
 				Tile curTile = playerTiles.elementAt(j);
 				
 				float tileX = ((float)curTile.GetPos().X());
 				float tileY = ((float)curTile.GetPos().Y());
-				
+				//calculate the position of the vertices
 				floatArray[count] = tileX*Constants.TileWidth; 
 				floatArray[count+1] = tileY*Constants.TileWidth;
 				floatArray[count+2] = 1.0f; 
@@ -539,11 +555,31 @@ public class DagRenderer implements GLSurfaceView.Renderer
 				floatArray[count+17] = 1.0f; 
 				
 				count += 18;
+				totalCount += 18;
+			}
+ 			//Store it in a float buffer
+ 			playersBuffer[i] = makeFloatBuffer(floatArray);
+		}	
+	}
+	
+	/*private void LoadPlayers(){
+		
+		// For each player
+		for(int i = 0; i < players.size(); i++)
+		{	
+			Vector<Tile> playerTiles = this.players.elementAt(i).GetTiles();
+			// For each tile occupied by the player
+ 			for(int j = 0; j < this.players.elementAt(i).GetTiles().size(); j++)
+			{
+ 				
 			}
 		}
-		//store it in a float buffer
-		playersBuffer = makeFloatBuffer(floatArray);
-	}
+		
+		//int x = Ax*a*a + Bx*2*a*b + Cx*b*b;
+		//int y = Ay*a*a + By*2*a*b + Cy*b*b;
+		//int z = Az*a*a + Bz*2*a*b + Cz*b*b;
+
+	}*/
 	
 	/**
 	 * Loads the textures needed into Opengl
