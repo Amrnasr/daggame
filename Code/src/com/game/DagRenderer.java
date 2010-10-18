@@ -72,22 +72,22 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private Vector<Tile> tileMap;	
 	
 	/**
-	 * Map's bitmap rendered in release mode
+	 * Map bitmap rendered in release mode
 	 */
 	private Bitmap mapBitmap;
 	
 	/**
-	 * Cursor's bitmap for rendering
+	 * Cursor bitmap for rendering
 	 */
 	private Bitmap cursorBitmap;
 	
 	/**
-	 * Map's vertex buffer
+	 * Map vertex buffer
 	 */
 	private FloatBuffer vertexMapBuffer;
 	
 	/**
-	 * Map's texture coordinates buffer
+	 * Map texture coordinates buffer
 	 */
 	private FloatBuffer textureMapBuffer;
 	
@@ -104,7 +104,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	/**
 	 * Length of the tile map array
 	 */
-	private int bufferLength;	
+	private int tileMapBufferLength;	
 
 	/**
 	 * Specifies the current renderer state.
@@ -160,6 +160,15 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * Vector of players to check for which tiles to render
 	 */
 	private Vector<Player> players;
+	
+	/**
+	 * Length of the players array
+	 */
+	private int playersBufferLength;
+	/**
+	 * Player armies vertex buffer
+	 */
+	private FloatBuffer playersBuffer;
 	
 	/**
 	 * Initializes the renderer and sets the handler callbacks.
@@ -346,8 +355,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			// Draw tile map			
 			gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexMapBuffer);		
-			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, bufferLength/3);
+			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, tileMapBufferLength/3);
 		}	
+		
+		LoadPlayers();
+		
 		gl.glDisable(GL10.GL_TEXTURE_2D);
 		DrawPlayers(gl);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -430,7 +442,52 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private void DrawPlayers(GL10 gl)
 	{
-		int playersBufferLength = 0;
+		// Draw tile map			
+		gl.glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, playersBuffer);		
+		gl.glDrawArrays(GL10.GL_TRIANGLES, 0, playersBufferLength/3);
+	}
+	
+	/**
+	 * Draws the minimap.
+	 * @param gl Opengl context
+	 */
+	private void DrawMinimap(GL10 gl)
+	{
+		//Change to orthogonal projection
+		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glViewport(0,0,lastWidth,lastHeight);
+
+		gl.glOrthof(-lastWidth/2f, lastWidth/2f, -lastHeight/2f, lastHeight/2f, minZ, maxZ);
+		
+		//Draw the minimap
+		gl.glMatrixMode(GL10.GL_MODELVIEW);
+		gl.glLoadIdentity();
+		
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
+		
+		gl.glScalef(lastWidth/(Preferences.Get().mapWidth*3f), lastWidth/(Preferences.Get().mapWidth*3f), 1f);
+		gl.glTranslatef((Preferences.Get().mapWidth*3f/lastWidth)*lastWidth/2f-Preferences.Get().mapWidth,(Preferences.Get().mapWidth*3f/lastWidth)*lastHeight/2f-Preferences.Get().mapHeight,-minZ-2f);	
+		
+		DrawTexturedMap(gl);
+		
+		gl.glDisable(GL10.GL_TEXTURE_2D);
+		DrawPlayers(gl);
+		gl.glEnable(GL10.GL_TEXTURE_2D);
+		
+		DrawCursors(gl);
+		
+		//Return to a perspective projection
+		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glViewport(0,0,lastWidth,lastHeight);
+
+		GLU.gluPerspective(gl, 45.0f, ((float)lastWidth)/lastHeight, minZ, maxZ);
+	}
+	
+	private void LoadPlayers(){
+		playersBufferLength = 0;
 		
 		float[] tilesPerPlayer = new float[players.size()];
 		for(int i = 0; i < players.size(); i++)
@@ -485,50 +542,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			}
 		}
 		//store it in a float buffer
-		FloatBuffer floatBuffer = makeFloatBuffer(floatArray);
-		
-		// Draw tile map			
-		gl.glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, floatBuffer);		
-		gl.glDrawArrays(GL10.GL_TRIANGLES, 0, playersBufferLength/3);
-	}
-	
-	/**
-	 * Draws the minimap.
-	 * @param gl Opengl context
-	 */
-	private void DrawMinimap(GL10 gl)
-	{
-		//Change to orthogonal projection
-		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadIdentity();
-		gl.glViewport(0,0,lastWidth,lastHeight);
-
-		gl.glOrthof(-lastWidth/2f, lastWidth/2f, -lastHeight/2f, lastHeight/2f, minZ, maxZ);
-		
-		//Draw the minimap
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		gl.glLoadIdentity();
-		
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
-		
-		gl.glScalef(lastWidth/(Preferences.Get().mapWidth*3f), lastWidth/(Preferences.Get().mapWidth*3f), 1f);
-		gl.glTranslatef((Preferences.Get().mapWidth*3f/lastWidth)*lastWidth/2f-Preferences.Get().mapWidth,(Preferences.Get().mapWidth*3f/lastWidth)*lastHeight/2f-Preferences.Get().mapHeight,-minZ-2f);	
-		
-		DrawTexturedMap(gl);
-		
-		gl.glDisable(GL10.GL_TEXTURE_2D);
-		DrawPlayers(gl);
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		
-		DrawCursors(gl);
-		
-		//Return to a perspective projection
-		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadIdentity();
-		gl.glViewport(0,0,lastWidth,lastHeight);
-
-		GLU.gluPerspective(gl, 45.0f, ((float)lastWidth)/lastHeight, minZ, maxZ);
+		playersBuffer = makeFloatBuffer(floatArray);
 	}
 	
 	/**
@@ -615,38 +629,38 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		float[] floatArray= new float[rowTiles*columnTiles*6*3];        		
 		Iterator<Tile> it = tileMap.listIterator();
 		Tile tile = null;
-		bufferLength = 0;
+		tileMapBufferLength = 0;
 		
 		//Calculate the vertices of the tilemap
 		for(int j = 0; j < columnTiles; j++){
 			for(int i = 0; i < rowTiles; i++){			
 				tile = it.next();
 				if(tile.GetMaxCapacity() > 0){
-					floatArray[bufferLength] = i*Constants.TileWidth; 
-					floatArray[bufferLength+1] = j*Constants.TileWidth;
-					floatArray[bufferLength+2] = 0.0f; 
+					floatArray[tileMapBufferLength] = i*Constants.TileWidth; 
+					floatArray[tileMapBufferLength+1] = j*Constants.TileWidth;
+					floatArray[tileMapBufferLength+2] = 0.0f; 
 					
-					floatArray[bufferLength+3] = i*Constants.TileWidth+Constants.TileWidth; 
-					floatArray[bufferLength+4] = j*Constants.TileWidth;
-					floatArray[bufferLength+5] = 0.0f; 
+					floatArray[tileMapBufferLength+3] = i*Constants.TileWidth+Constants.TileWidth; 
+					floatArray[tileMapBufferLength+4] = j*Constants.TileWidth;
+					floatArray[tileMapBufferLength+5] = 0.0f; 
 					
-					floatArray[bufferLength+6] = i*Constants.TileWidth; 
-					floatArray[bufferLength+7] = j*Constants.TileWidth+Constants.TileWidth;
-					floatArray[bufferLength+8] = 0.0f; 
+					floatArray[tileMapBufferLength+6] = i*Constants.TileWidth; 
+					floatArray[tileMapBufferLength+7] = j*Constants.TileWidth+Constants.TileWidth;
+					floatArray[tileMapBufferLength+8] = 0.0f; 
 					
-					floatArray[bufferLength+9] = i*Constants.TileWidth+Constants.TileWidth; 
-					floatArray[bufferLength+10] = j*Constants.TileWidth;
-					floatArray[bufferLength+11] = 0.0f; 
+					floatArray[tileMapBufferLength+9] = i*Constants.TileWidth+Constants.TileWidth; 
+					floatArray[tileMapBufferLength+10] = j*Constants.TileWidth;
+					floatArray[tileMapBufferLength+11] = 0.0f; 
 					
-					floatArray[bufferLength+12] = i*Constants.TileWidth+Constants.TileWidth; 
-					floatArray[bufferLength+13] = j*Constants.TileWidth+Constants.TileWidth;
-					floatArray[bufferLength+14] = 0.0f; 
+					floatArray[tileMapBufferLength+12] = i*Constants.TileWidth+Constants.TileWidth; 
+					floatArray[tileMapBufferLength+13] = j*Constants.TileWidth+Constants.TileWidth;
+					floatArray[tileMapBufferLength+14] = 0.0f; 
 					
-					floatArray[bufferLength+15] = i*Constants.TileWidth; 
-					floatArray[bufferLength+16] = j*Constants.TileWidth+Constants.TileWidth;
-					floatArray[bufferLength+17] = 0.0f; 
+					floatArray[tileMapBufferLength+15] = i*Constants.TileWidth; 
+					floatArray[tileMapBufferLength+16] = j*Constants.TileWidth+Constants.TileWidth;
+					floatArray[tileMapBufferLength+17] = 0.0f; 
 					
-					bufferLength += 18;
+					tileMapBufferLength += 18;
 				}
 			}			
 		}
