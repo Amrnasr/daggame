@@ -72,7 +72,6 @@ public class Tile
 	 */
 	public void Update()
 	{
-		Log.i("Tile", "Updating: " + position.X() + ", " + position.Y());
 		if(dirty) 
 		{
 			// Already updated this cycle. Must skip
