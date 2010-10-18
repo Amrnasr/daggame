@@ -432,10 +432,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	{
 		int playersBufferLength = 0;
 		
-		
+		float[] tilesPerPlayer = new float[players.size()];
 		for(int i = 0; i < players.size(); i++)
 		{
-			playersBufferLength += this.players.elementAt(i).GetTiles().size()*18;
+			int size = this.players.elementAt(i).GetTiles().size();
+			playersBufferLength += size*18;
+			tilesPerPlayer[i]=size;
+			
 		}
 		
 		// For each player
@@ -443,11 +446,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		int count = 0;
 		
-		for(int i = 0; i < players.size(); i++)
+		for(int i = 0; i < players.size() && count < playersBufferLength; i++)
 		{	
 			Vector<Tile> playerTiles = this.players.elementAt(i).GetTiles();
 			// For each tile occupied by the player
-			for(int j = 0; j < playerTiles.size(); j++)
+ 			for(int j = 0; j < tilesPerPlayer[i] && j < this.players.elementAt(i).GetTiles().size() && count < playersBufferLength; j++)
 			{
 				Tile curTile = playerTiles.elementAt(j);
 				
