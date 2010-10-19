@@ -123,8 +123,8 @@ public class Tile
 				{
 					int leftoverToMove = leftovers;
 					leftovers = 0;
-					leftovers += TryMoveDensity(curPlay, 0, dirY, leftoverToMove, 0.5f);
-					leftovers += TryMoveDensity(curPlay, dirX, 0, leftoverToMove, 0.5f);
+					leftovers += TryMoveDensity(curPlay, 0, dirY, leftoverToMove/2, 1.0f);
+					leftovers += TryMoveDensity(curPlay, dirX, 0, (leftoverToMove/2) + (leftoverToMove%2), 1.0f);
 				}
 				
 				// Density left? Send it to the perpendiculars (3)
@@ -132,8 +132,8 @@ public class Tile
 				{
 					int leftoverToMove = leftovers;
 					leftovers = 0;
-					leftovers += TryMoveDensity(curPlay, -dirX, dirY, leftoverToMove, 0.5f);
-					leftovers += TryMoveDensity(curPlay, dirX, -dirY, leftoverToMove, 0.5f);
+					leftovers += TryMoveDensity(curPlay, -dirX, dirY, leftoverToMove/2, 1.0f);
+					leftovers += TryMoveDensity(curPlay, dirX, -dirY, (leftoverToMove/2) + (leftoverToMove%2), 1.0f);
 				}
 					
 				
@@ -176,7 +176,7 @@ public class Tile
 				// Remove total - leftovers
 				int densityMoved = densityToMove - leftovers;
 				density[i] -= densityMoved;
-				curPlay.AddToTotalDensityCount(density[i]);
+				//curPlay.AddToTotalDensityCount(density[i]);
 				
 				// If density[player] = 0, unlink player and tile
 				if(density[i] <= 0)
@@ -311,4 +311,9 @@ public class Tile
 	 * @return Tile position
 	 */
 	public Vec2 GetPos() { return this.position; }
+	
+	public int GetDensityFrom(int player)
+	{
+		return this.density[player];
+	}
 }
