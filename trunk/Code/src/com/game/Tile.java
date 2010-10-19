@@ -69,6 +69,12 @@ public class Tile
 	
 	/**
 	 * Updates the tile density flow.
+	 * Uses the following schema for choosing the next tile 
+	 * (Assuming the tile x wants to move density to top-right)
+	 * 
+	 * 000 001 021 321
+	 * 0x0 0x0 0x2 0x2
+	 * 000 000 000 003
 	 */
 	public void Update()
 	{
@@ -106,9 +112,32 @@ public class Tile
 				else {dirY = 1;}
 				
 				// Try to move it
-				int densityToMove = Math.min(density[i], GetMaxCapacity()/2);
+				int densityToMove = density[i]; //Math.min(density[i], GetMaxCapacity());
 				int leftovers = 0;
 				
+				// Try to send it in the diagonal (1)
+				leftovers = TryMoveDensity(curPlay, dirX, dirY, densityToMove, 1.0f);
+				
+				// Density left? Send it to the sides (2)
+				if(leftovers > 0)
+				{
+					int leftoverToMove = leftovers;
+					leftovers = 0;
+					leftovers += TryMoveDensity(curPlay, 0, dirY, leftoverToMove, 0.5f);
+					leftovers += TryMoveDensity(curPlay, dirX, 0, leftoverToMove, 0.5f);
+				}
+				
+				// Density left? Send it to the perpendiculars (3)
+				if(leftovers > 0)
+				{
+					int leftoverToMove = leftovers;
+					leftovers = 0;
+					leftovers += TryMoveDensity(curPlay, -dirX, dirY, leftoverToMove, 0.5f);
+					leftovers += TryMoveDensity(curPlay, dirX, -dirY, leftoverToMove, 0.5f);
+				}
+					
+				
+				/*
 				if(density[i] < DivideThreshold())
 				{
 					// If it's a small quantity, just move it all in the closest distance
@@ -141,20 +170,19 @@ public class Tile
 						leftovers += TryMoveDensity(curPlay, dirX, -dirY, curLeftovers, 0.5f);
 					}
 				}
+				*/
 				
 				
 				// Remove total - leftovers
 				int densityMoved = densityToMove - leftovers;
 				density[i] -= densityMoved;
+				curPlay.AddToTotalDensityCount(density[i]);
 				
 				// If density[player] = 0, unlink player and tile
 				if(density[i] <= 0)
 				{
 					Unlink(i);
 				}
-				
-				curPlay.AddToTotalDensityCount(density[i]);
-				
 			}
 		}
 	}

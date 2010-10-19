@@ -78,11 +78,11 @@ public class Player
 		
 		// Tiles
 		tiles = new Vector<Tile>();
-		tileUpdateRegulator = new Regulator(1); // TODO: Put a decent update speed.
+		tileUpdateRegulator = new Regulator(10); // TODO: Put a decent update speed.
 		totalDensity = 0;
 		
 		// TODO: Read from preferences!
-		this.initialDensity = 1000;
+		this.initialDensity = 10000;
 	}
 	
 	/**
@@ -181,8 +181,9 @@ public class Player
 		this.inputDevice.Update();
 		if(tileUpdateRegulator.IsReady())
 		{
+			this.totalDensity = 0;
 			UpdateTiles();
-			Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
+			//Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
 		}
 	}
 	
@@ -210,7 +211,6 @@ public class Player
 	 */
 	public void Prepare()
 	{
-		this.totalDensity = 0;
 		for(int i = 0; i < this.tiles.size(); i++)
 		{
 			this.tiles.elementAt(i).Prepare();
