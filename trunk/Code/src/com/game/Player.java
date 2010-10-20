@@ -82,7 +82,7 @@ public class Player
 		totalDensity = 0;
 		
 		// TODO: Read from preferences!
-		this.initialDensity = 1000;
+		this.initialDensity = 3000;
 	}
 	
 	/**
@@ -195,6 +195,15 @@ public class Player
 		for(int i = this.tiles.size()-1; i >= 0; i--)
 		{
 			this.tiles.elementAt(i).Update();
+		}
+		
+		// Once updated, eliminate those with no density
+		for(int i = 0; i < this.tiles.size(); i++)
+		{
+			if(tiles.elementAt(i).HasToUnlink(GetID()))
+			{
+				tiles.elementAt(i).Unlink(GetID());
+			}
 		}
 		
 		// DEBUG

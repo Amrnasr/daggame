@@ -116,15 +116,15 @@ public class Tile
 				int leftovers = 0;
 				
 				// Try to send it in the diagonal (1)
-				leftovers = TryMoveDensity(curPlay, dirX, dirY, densityToMove, 1.0f);
+				leftovers = TryMoveDensity(curPlay, dirX, dirY, densityToMove);
 				
 				// Density left? Send it to the sides (2)
 				if(leftovers > 0)
 				{
 					int leftoverToMove = leftovers;
 					leftovers = 0;
-					leftovers += TryMoveDensity(curPlay, 0, dirY, leftoverToMove/2, 1.0f);
-					leftovers += TryMoveDensity(curPlay, dirX, 0, (leftoverToMove/2) + (leftoverToMove%2), 1.0f);
+					leftovers += TryMoveDensity(curPlay, 0, dirY, leftoverToMove/2);
+					leftovers += TryMoveDensity(curPlay, dirX, 0, (leftoverToMove/2) + (leftoverToMove%2));
 				}
 				
 				// Density left? Send it to the perpendiculars (3)
@@ -132,8 +132,8 @@ public class Tile
 				{
 					int leftoverToMove = leftovers;
 					leftovers = 0;
-					leftovers += TryMoveDensity(curPlay, -dirX, dirY, leftoverToMove/2, 1.0f);
-					leftovers += TryMoveDensity(curPlay, dirX, -dirY, (leftoverToMove/2) + (leftoverToMove%2), 1.0f);
+					leftovers += TryMoveDensity(curPlay, -dirX, dirY, leftoverToMove/2);
+					leftovers += TryMoveDensity(curPlay, dirX, -dirY, (leftoverToMove/2) + (leftoverToMove%2));
 				}
 					
 				
@@ -179,45 +179,52 @@ public class Tile
 				//curPlay.AddToTotalDensityCount(density[i]);
 				
 				// If density[player] = 0, unlink player and tile
-				if(density[i] <= 0)
+				/*if(density[i] <= 0)
 				{
 					Unlink(i);
-				}
+				}*/
 			}
 		}
 	}
 	
-	private void Unlink(int player)
+	
+	public boolean HasToUnlink(int player)
+	{
+		return this.density[player] <= 0;
+	}
+	
+	public void Unlink(int player)
 	{
 		players[player].UnlinkTile(this);
 		players[player] = null;
 	}
 	
-	private int TryMoveDensity(Player player, int dirX, int dirY, int totalDensity, float percent)
+	private int TryMoveDensity(Player player, int dirX, int dirY, int totalDensity)
 	{
 		int leftovers = 0;
 		
-		float requiredDensity = totalDensity * percent;
 		
 		Tile toMove = this.mapRef.AtTile((int)(this.position.X() + dirX), (int)(this.position.Y()+dirY));
 		
 		if(toMove == null)
 		{
 			// No available tile, return all density
-			leftovers = (int) requiredDensity;
+			leftovers = (int) totalDensity;
 		}
 		else
 		{
 			// Put as much density as we can, return the rest
 			int maxCap = toMove.GetCurrentCapacity();
-			int toAdd = (int) Math.min(maxCap, requiredDensity);
+			maxCap = Math.max(0, maxCap);
+			int toAdd = (int) Math.min(maxCap, totalDensity);
 			
 			if(toAdd > 0)
 			{
 				toMove.AddDensity(player, toAdd);
 			}
 			
-			leftovers = (int) Math.max(0, requiredDensity-toAdd);
+			leftovers = (int) Math.max(0, totalDensity-toAdd);
+			//leftovers = totalDensity-toAdd;
 		}
 		
 		return leftovers;
