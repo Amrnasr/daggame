@@ -146,7 +146,7 @@ public class SingleViewData extends ViewData
         	}
 
         });
-        colorSpinner.setSelection(Preferences.Get().singlePlayer1Color);
+        colorSpinner.setSelection(Preferences.Get().player1Color);
         
         Spinner opponentsSpinner = (Spinner) xmlLayout.findViewById(R.id.op_single_spin);
         ArrayAdapter<CharSequence> opponentsAdapter = ArrayAdapter.createFromResource(

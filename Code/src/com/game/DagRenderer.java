@@ -160,13 +160,18 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private Vector<Player> players;
 	
 	/**
-	 * Length of the players array
+	 * Length of the player armies array
 	 */
 	private int[] playersBufferLength;
 	/**
 	 * Player armies vertex buffer
 	 */
-	private FloatBuffer[] playersBuffer;
+	private FloatBuffer[] playersVertexBuffer;
+	
+	/**
+	 * Player armies color buffer
+	 */
+	private FloatBuffer[] playersColorBuffer;
 	
 	/**
 	 * Initializes the renderer and sets the handler callbacks.
@@ -184,7 +189,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.lastWidth = 0;
 		this.lastHeight = 0;
 	    
-		this.playersBuffer = new FloatBuffer[Constants.MaxPlayers];
+		this.playersVertexBuffer = new FloatBuffer[Constants.MaxPlayers];
+		this.playersColorBuffer = new FloatBuffer[Constants.MaxPlayers];
 		this.playersBufferLength = new int[Constants.MaxPlayers];
 	    
 		this.lastProjectionMat = new float[16];
@@ -268,6 +274,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		//Enable blending
 		gl.glEnable (GL10.GL_BLEND);
 		gl.glBlendFunc (GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		
 		gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
     }
@@ -379,11 +388,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.mapTextureId);
 		
 		//Set the vertices
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexMapBuffer);
 		
 		//Set the texture coordinates
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, this.textureMapBuffer);
 		
 		//Draw the bitmap
@@ -399,7 +406,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
 		
 		//Set the texture coordinates
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
 		
 		for(int i = 0; i < this.cursorsRef.size(); i++ )
@@ -411,10 +417,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			
 			gl.glTranslatef(x,y,1);
 
-			SetPlayerColorIndex(gl,i);
+			SetCursorColor(gl,i);
 			
 			//Set the vertices
-			gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursor.GetBuffer());
 			
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
@@ -434,9 +439,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	{
 		// Draw tile map			
 		for(int i = 0; i < players.size(); i++){
-			SetPlayerColorIndex(gl,i);
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.playersBuffer[i]);
+			gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+			
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.playersVertexBuffer[i]);
+			gl.glColorPointer(4, GL10.GL_FLOAT, 0, this.playersColorBuffer[i]);
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.playersBufferLength[i]/3);
+			
+			gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 		}
 	}
 	
@@ -492,14 +501,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			
 		}
 		
-		int totalCount = 0;
-		
 		// For each player	
 		for(int i = 0; i < players.size(); i++)
 		{	
-			float[] floatArray= new float[playersBufferLength[i]]; 
+			float[] floatVertexArray= new float[playersBufferLength[i]]; 
+			float[] floatColorArray= new float[playersBufferLength[i] + playersBufferLength[i]/3]; 
 			
 			int count = 0;
+			
 			
 			Vector<Tile> playerTiles = this.players.elementAt(i).GetTiles();
 			// For each tile occupied by the player
@@ -510,98 +519,402 @@ public class DagRenderer implements GLSurfaceView.Renderer
 				float tileX = ((float)curTile.GetPos().X());
 				float tileY = ((float)curTile.GetPos().Y());
 				//calculate the position of the vertices
-				floatArray[count] = tileX*Constants.TileWidth; 
-				floatArray[count+1] = tileY*Constants.TileWidth;
-				floatArray[count+2] = 1.0f; 
+				floatVertexArray[count] = tileX*Constants.TileWidth; 
+				floatVertexArray[count+1] = tileY*Constants.TileWidth;
+				floatVertexArray[count+2] = 1.0f; 
 							
-				floatArray[count+3] = tileX*Constants.TileWidth+Constants.TileWidth; 
-				floatArray[count+4] = tileY*Constants.TileWidth;
-				floatArray[count+5] = 1.0f; 
+				floatVertexArray[count+3] = tileX*Constants.TileWidth+Constants.TileWidth; 
+				floatVertexArray[count+4] = tileY*Constants.TileWidth;
+				floatVertexArray[count+5] = 1.0f; 
 							
-				floatArray[count+6] = tileX*Constants.TileWidth; 
-				floatArray[count+7] = tileY*Constants.TileWidth+Constants.TileWidth;
-				floatArray[count+8] = 1.0f; 
+				floatVertexArray[count+6] = tileX*Constants.TileWidth; 
+				floatVertexArray[count+7] = tileY*Constants.TileWidth+Constants.TileWidth;
+				floatVertexArray[count+8] = 1.0f; 
 							
-				floatArray[count+9] = tileX*Constants.TileWidth+Constants.TileWidth; 
-				floatArray[count+10] = tileY*Constants.TileWidth;
-				floatArray[count+11] = 1.0f; 
+				floatVertexArray[count+9] = tileX*Constants.TileWidth+Constants.TileWidth; 
+				floatVertexArray[count+10] = tileY*Constants.TileWidth;
+				floatVertexArray[count+11] = 1.0f; 
 							
-				floatArray[count+12] = tileX*Constants.TileWidth+Constants.TileWidth; 
-				floatArray[count+13] = tileY*Constants.TileWidth+Constants.TileWidth;
-				floatArray[count+14] = 1.0f; 
+				floatVertexArray[count+12] = tileX*Constants.TileWidth+Constants.TileWidth; 
+				floatVertexArray[count+13] = tileY*Constants.TileWidth+Constants.TileWidth;
+				floatVertexArray[count+14] = 1.0f; 
 							
-				floatArray[count+15] = tileX*Constants.TileWidth; 
-				floatArray[count+16] = tileY*Constants.TileWidth+Constants.TileWidth;
-				floatArray[count+17] = 1.0f; 
+				floatVertexArray[count+15] = tileX*Constants.TileWidth; 
+				floatVertexArray[count+16] = tileY*Constants.TileWidth+Constants.TileWidth;
+				floatVertexArray[count+17] = 1.0f; 
+				
+				LoadPlayerColor(gl, curTile, count + count/3, floatColorArray);
 				
 				count += 18;
-				totalCount += 18;
 			}
  			//Store it in a float buffer
- 			this.playersBuffer[i] = makeFloatBuffer(floatArray);
+ 			this.playersVertexBuffer[i] = makeFloatBuffer(floatVertexArray);
+ 			this.playersColorBuffer[i] = makeFloatBuffer(floatColorArray);
 		}	
 	}
 	
 	/**
-	 * Sets the color index depending of which player is it and sets it to be used for rendering.
+	 * Sets the color used for rendering the cursor with the given player ID
 	 * @param gl Opengl context
-	 * @param playerNumber  The player ID
+	 * @param playerID  The player ID
 	 */
-	private void SetPlayerColorIndex(GL10 gl,int playerNumber)
-	{
-		//Determine which is the color of player 0
-		int colorPlayer1 = Preferences.Get().multiplayerGame ? Preferences.Get().multiPlayer1Color : Preferences.Get().singlePlayer1Color;
-		//If it's the player 0
-		if(playerNumber == 0){
-			SetPlayerColor(gl,colorPlayer1);
-		}
-		//If it's the player 1 and it's a multiplayer game
-		else if(playerNumber == 1 && Preferences.Get().multiplayerGame){
-			SetPlayerColor(gl,Preferences.Get().multiPlayer2Color);
-		}
-		else{
-			int i=0;
-			boolean done = false;
-			while(!done){
-				//If its not a color chosen by a real player
-				if(i != colorPlayer1 && !(i == Preferences.Get().multiPlayer2Color && Preferences.Get().multiplayerGame)){ 
-					SetPlayerColor(gl,i);
-					done = true;
-				}
-				i++;
-			}
-		}
-	}
-	
-	/**
-	 * Sets the color used for rendering with the given index
-	 * @param gl Opengl context
-	 * @param colorIndex  The color ID
-	 */
-	private void SetPlayerColor(GL10 gl,int colorIndex){
+	private void SetCursorColor(GL10 gl,int playerID){
+		int colorIndex = players.elementAt(playerID).GetColorIndex();
 		switch(colorIndex){
 			case 0: //Red
-				gl.glColor4f(0.8f, 0f, 0f, 1f);
+				gl.glColor4f(Constants.CursorColorIntensity, 0f, 0f, 1f);
 				break;
 			case 1: //Green
-				gl.glColor4f(0f, 0.8f, 0f, 1f);
+				gl.glColor4f(0f, Constants.CursorColorIntensity, 0f, 1f);
 				break;
 			case 2: //Blue
-				gl.glColor4f(0f, 0f, 0.8f, 1f);
+				gl.glColor4f(0f, 0f, Constants.CursorColorIntensity, 1f);
 				break;	
 			case 3: //Yellow
-				gl.glColor4f(0f, 0.8f, 0.8f, 1f);
+				gl.glColor4f(0f, Constants.CursorColorIntensity, Constants.CursorColorIntensity, 1f);
 				break;
 			case 4: //Purple
-				gl.glColor4f(0.8f, 0f, 0.8f, 1f);
+				gl.glColor4f(Constants.CursorColorIntensity, 0f, Constants.CursorColorIntensity, 1f);
 				break;
 			case 5: //Orange
-				gl.glColor4f(0.8f, 0.8f, 0f, 1f);
+				gl.glColor4f(Constants.CursorColorIntensity, Constants.CursorColorIntensity, 0f, 1f);
 				break;
 		}
 		
 	}
-	//Red Blue Green Yellow Purple Brown
+	
+	/**
+	 * Creates the color array used for rendering the players armies
+	 * @param gl Opengl context
+	 * @param tile The tile to be rendered
+	 * @param count Initial position to store values in the array
+	 * @param colorArray  The array to store the color values
+	 */
+	private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
+	{
+		float r = 0f, g = 0f, b = 0f, a=0f;
+		
+		//calculate the intensity of the color
+		for(int i=0; i < players.size(); i++){
+			int colorIndex = players.elementAt(i).GetColorIndex();
+			float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
+			switch(colorIndex){
+				case 0: //Red
+					r += intensityChange;
+					
+					a += intensityChange;
+					break;
+				case 1: //Green
+					g += intensityChange;
+					
+					a += intensityChange;
+					break;
+				case 2: //Blue
+					b += intensityChange;
+					
+					a += intensityChange;
+					break;	
+				case 3: //Yellow
+					g += intensityChange;
+					b += intensityChange;
+					
+					a += intensityChange;
+					break;
+				case 4: //Purple
+					r += intensityChange;
+					b += intensityChange;
+					
+					a += intensityChange;
+					break;
+				case 5: //Orange
+					r += intensityChange;
+					g += intensityChange;
+					
+					a += intensityChange;
+					break;
+				default:
+					r += intensityChange; 
+					g += intensityChange; 
+					b += intensityChange;
+					
+					a += intensityChange;
+			}		
+		}
+		//Add the base intensity if necessary
+		r = (r > 0f) ? (0.75f - r) : 0f; 
+		g = (g > 0f) ? (0.75f - g) : 0f;
+		b = (b > 0f) ? (0.75f - b) : 0f;
+		a = (r+g+b > 0f) ? 0.75f + a : 0f;
+		
+		//TODO: Check that the alpha doesn't accumulate because it's drawn one time per player with units in the tile
+		//Store the color values
+		colorArray[count] = r; 
+		colorArray[count+1] = g;
+		colorArray[count+2] = b; 
+		colorArray[count+3] = a; 
+		
+		colorArray[count+4] = r;
+		colorArray[count+5] = g; 
+		colorArray[count+6] = b; 
+		colorArray[count+7] = a;
+		
+		colorArray[count+8] = r; 
+		colorArray[count+9] = g; 
+		colorArray[count+10] = b;
+		colorArray[count+11] = a; 
+					
+		colorArray[count+12] = r; 
+		colorArray[count+13] = g;
+		colorArray[count+14] = b; 
+		colorArray[count+15] = a; 
+		
+		colorArray[count+16] = r;
+		colorArray[count+17] = g; 
+		colorArray[count+18] = b;
+		colorArray[count+19] = a; 
+		
+		colorArray[count+20] = r;
+		colorArray[count+21] = g; 
+		colorArray[count+22] = b;
+		colorArray[count+23] = a; 
+	}
+	
+	/*private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
+	{
+		float r = 0f, g = 0f, b = 0f;
+		
+		
+		//calculate the intensity of the color
+		for(int i=0; i < players.size(); i++){
+			int colorIndex = players.elementAt(i).GetColorIndex();
+			float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
+			switch(colorIndex){
+				case 0: //Red
+					r += intensityChange;
+					break;
+				case 1: //Green
+					g += intensityChange;
+					break;
+				case 2: //Blue
+					b += intensityChange;
+					break;	
+				case 3: //Yellow
+					g += intensityChange;
+					b += intensityChange;
+					break;
+				case 4: //Purple
+					r += intensityChange;
+					b += intensityChange;
+					break;
+				case 5: //Orange
+					r += intensityChange;
+					g += intensityChange;
+					break;
+				default:
+					r += intensityChange; 
+					g += intensityChange; 
+					b += intensityChange;
+			}		
+		}
+		//Add the base intensity if necessary
+		r = (r > 0f) ? (0.75f - r) : 0f; 
+		g = (g > 0f) ? (0.75f - g) : 0f;
+		b = (b > 0f) ? (0.75f - b) : 0f;
+		
+		//Store the color values
+		colorArray[count] = r; 
+		colorArray[count+1] = g;
+		colorArray[count+2] = b; 
+		colorArray[count+3] = 1f; 
+		
+		colorArray[count+4] = r;
+		colorArray[count+5] = g; 
+		colorArray[count+6] = b; 
+		colorArray[count+7] = 1f;
+		
+		colorArray[count+8] = r; 
+		colorArray[count+9] = g; 
+		colorArray[count+10] = b;
+		colorArray[count+11] = 1f; 
+					
+		colorArray[count+12] = r; 
+		colorArray[count+13] = g;
+		colorArray[count+14] = b; 
+		colorArray[count+15] = 1f; 
+		
+		colorArray[count+16] = r;
+		colorArray[count+17] = g; 
+		colorArray[count+18] = b;
+		colorArray[count+19] = 1f; 
+		
+		colorArray[count+20] = r;
+		colorArray[count+21] = g; 
+		colorArray[count+22] = b;
+		colorArray[count+23] = 1f; 
+	}*/
+
+	/*private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
+	{
+		float r = 0f, g = 0f, b = 0f, a=0f;
+		
+		//calculate the intensity of the color
+		for(int i=0; i < players.size(); i++){
+			int colorIndex = players.elementAt(i).GetColorIndex();
+			float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
+			switch(colorIndex){
+				case 0: //Red
+					r += intensityChange;
+					
+					a += intensityChange;
+					break;
+				case 1: //Green
+					g += intensityChange;
+					
+					a += intensityChange;
+					break;
+				case 2: //Blue
+					b += intensityChange;
+					
+					a += intensityChange;
+					break;	
+				case 3: //Yellow
+					g += intensityChange;
+					b += intensityChange;
+					
+					a += intensityChange;
+					break;
+				case 4: //Purple
+					r += intensityChange;
+					b += intensityChange;
+					
+					a += intensityChange;
+					break;
+				case 5: //Orange
+					r += intensityChange;
+					g += intensityChange;
+					
+					a += intensityChange;
+					break;
+				default:
+					r += intensityChange; 
+					g += intensityChange; 
+					b += intensityChange;
+					
+					a += intensityChange;
+			}		
+		}
+		//Add the base intensity if necessary
+		r = (r < 0f) ? (0.5f + r) : 0f; 
+		g = (g < 0f) ? (0.5f + g) : 0f;
+		b = (b < 0f) ? (0.5f + b) : 0f;
+		a = (r+g+b > 0f) ? 0.75f + a : 0f;
+		
+		//TODO: Check that the alpha doesn't accumulate because it's drawn one time per player with units in the tile
+		//Store the color values
+		colorArray[count] = r; 
+		colorArray[count+1] = g;
+		colorArray[count+2] = b; 
+		colorArray[count+3] = a; 
+		
+		colorArray[count+4] = r;
+		colorArray[count+5] = g; 
+		colorArray[count+6] = b; 
+		colorArray[count+7] = a;
+		
+		colorArray[count+8] = r; 
+		colorArray[count+9] = g; 
+		colorArray[count+10] = b;
+		colorArray[count+11] = a; 
+					
+		colorArray[count+12] = r; 
+		colorArray[count+13] = g;
+		colorArray[count+14] = b; 
+		colorArray[count+15] = a; 
+		
+		colorArray[count+16] = r;
+		colorArray[count+17] = g; 
+		colorArray[count+18] = b;
+		colorArray[count+19] = a; 
+		
+		colorArray[count+20] = r;
+		colorArray[count+21] = g; 
+		colorArray[count+22] = b;
+		colorArray[count+23] = a; 
+	}*/
+	
+	/*private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
+	{
+		float r = 0f, g = 0f, b = 0f;
+		
+		
+		//calculate the intensity of the color
+		for(int i=0; i < players.size(); i++){
+			int colorIndex = players.elementAt(i).GetColorIndex();
+			float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
+			switch(colorIndex){
+				case 0: //Red
+					r += intensityChange;
+					break;
+				case 1: //Green
+					g += intensityChange;
+					break;
+				case 2: //Blue
+					b += intensityChange;
+					break;	
+				case 3: //Yellow
+					g += intensityChange;
+					b += intensityChange;
+					break;
+				case 4: //Purple
+					r += intensityChange;
+					b += intensityChange;
+					break;
+				case 5: //Orange
+					r += intensityChange;
+					g += intensityChange;
+					break;
+				default:
+					r += intensityChange; 
+					g += intensityChange; 
+					b += intensityChange;
+			}		
+		}
+		//Add the base intensity if necessary
+		r = (r > 0f) ? (0.5f + r) : 0f; 
+		g = (g > 0f) ? (0.5f + g) : 0f;
+		b = (b > 0f) ? (0.5f + b) : 0f;
+		
+		//Store the color values
+		colorArray[count] = r; 
+		colorArray[count+1] = g;
+		colorArray[count+2] = b; 
+		colorArray[count+3] = 1f; 
+		
+		colorArray[count+4] = r;
+		colorArray[count+5] = g; 
+		colorArray[count+6] = b; 
+		colorArray[count+7] = 1f;
+		
+		colorArray[count+8] = r; 
+		colorArray[count+9] = g; 
+		colorArray[count+10] = b;
+		colorArray[count+11] = 1f; 
+					
+		colorArray[count+12] = r; 
+		colorArray[count+13] = g;
+		colorArray[count+14] = b; 
+		colorArray[count+15] = 1f; 
+		
+		colorArray[count+16] = r;
+		colorArray[count+17] = g; 
+		colorArray[count+18] = b;
+		colorArray[count+19] = 1f; 
+		
+		colorArray[count+20] = r;
+		colorArray[count+21] = g; 
+		colorArray[count+22] = b;
+		colorArray[count+23] = 1f; 
+	}*/
 	
 	/**
 	 * Loads the textures needed into Opengl
@@ -621,6 +934,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.mapTextureId);
 		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.map.getBitmap(), 0);
+		
+		//this.map.getBitmap().recycle();
 		
 		//Create the float buffers of the vertices, texture coordinates and normals
 		float VertexMapArray[] = {Preferences.Get().mapWidth,Preferences.Get().mapHeight,0.0f,
@@ -652,7 +967,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.cursorTextureId);
 		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.cursorBitmap, 0);
 		
-		Log.i("DagRenderer","Cursor width: " + this.cursorBitmap.getWidth() + " height: " + this.cursorBitmap.getHeight());
+		//this.cursorBitmap.recycle();
 		
 		//Set the texture parameters
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
@@ -674,12 +989,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	}
 	
 	/**
-	 * Creates the tilemap render from a list of tiles
+	 * Creates the tile map render from a list of tiles
 	 * @param tilemap Vector of reference tiles.
 	 */
 	private void LoadTileMap(Vector<Tile> tilemap)
 	{
-		//Store the tilemap and its dimensions in pixels
+		//Store the tile map and its dimensions in pixels
 		int rowTiles = Preferences.Get().mapWidth/Constants.TileWidth;
 		int columnTiles = Preferences.Get().mapHeight/Constants.TileWidth;
 		
@@ -689,7 +1004,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		Tile tile = null;
 		tileMapBufferLength = 0;
 		
-		//Calculate the vertices of the tilemap
+		//Calculate the vertices of the tile map
 		for(int j = 0; j < columnTiles; j++){
 			for(int i = 0; i < rowTiles; i++){			
 				tile = it.next();

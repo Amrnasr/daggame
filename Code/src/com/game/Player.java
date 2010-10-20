@@ -60,12 +60,17 @@ public class Player
 	private int totalDensity;
 	
 	/**
+	 * Index of the color to be used to render this player's army
+	 */
+	private int colorIndex;
+	
+	/**
 	 * Creates a new instance of the Player class.
 	 * @param playerNumber Unique player identifier. If it's not unique you'll regret it later.
 	 * @param inputDevice Input device used by this player.
 	 * @param humanPlayer true if it's a human player, false if it's IA
 	 */
-	public Player(int playerNumber, InputDevice inputDevice, boolean humanPlayer)
+	public Player(int playerNumber, InputDevice inputDevice, boolean humanPlayer , int colorIndex)
 	{
 		this.playerNumber = playerNumber;
 		this.humanPlayer = humanPlayer;
@@ -83,6 +88,9 @@ public class Player
 		
 		// TODO: Read from preferences!
 		this.initialDensity = 3000;
+		
+		// Color
+		this.colorIndex = colorIndex;
 	}
 	
 	/**
@@ -184,7 +192,7 @@ public class Player
 			UpdateTiles();
 			if(GetID() == 0)
 			{
-				Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
+				//Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
 			}
 		}
 	}
@@ -252,6 +260,12 @@ public class Player
 	 * @return the tiles occupied
 	 */
 	public Vector<Tile> GetTiles() { return this.tiles; }
+	
+	/**
+	 * Gets color index of the player.
+	 * @return the color index
+	 */
+	public int GetColorIndex() { return this.colorIndex; }
 
 	/**
 	 * Gets a value indicating whether the player is human.
