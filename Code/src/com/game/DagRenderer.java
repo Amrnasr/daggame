@@ -411,14 +411,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			
 			gl.glTranslatef(x,y,1);
 
-			if(cursor.IsFromHuman())
-			{
-				gl.glColor4f(0, 0, 1, 1);
-			}
-			else
-			{
-				gl.glColor4f(1, 0, 0, 1);
-			}
+			SetPlayerColorIndex(gl,i);
 			
 			//Set the vertices
 			gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -441,14 +434,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	{
 		// Draw tile map			
 		for(int i = 0; i < players.size(); i++){
-			if(this.cursorsRef.elementAt(i).IsFromHuman())
-			{
-				gl.glColor4f(0, 0, 1, 1);
-			}
-			else
-			{
-				gl.glColor4f(1, 0, 0, 1);
-			}
+			SetPlayerColorIndex(gl,i);
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.playersBuffer[i]);
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.playersBufferLength[i]/3);
 		}
@@ -556,72 +542,66 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		}	
 	}
 	
-	/*private void LoadPlayers(){
-		
-		//Queue<Tile> borderTiles = new LinkedList<Tile>();
-		Vector<Vec2> bezierControlPoints = new Vector<Vec2>();
-		
-		// For each player
-		for(int i = 0; i < players.size(); i++)
-		{	
-			Vector<Tile> playerTiles = this.players.elementAt(i).GetTiles();
-			//Initialize the stack used by the DFS algorithm
- 			Stack<Tile> toSearch = new Stack<Tile>();
- 			toSearch.push(playerTiles.elementAt(i));
- 				
- 			while(!toSearch.isEmpty())
- 			{
- 				//Get the current tile and it's position
- 				Tile curTile = toSearch.pop();
- 				Vec2 curPos = curTile.GetPos();
- 				
- 				//Initialize the variables used for checking if the tile it's a border tile
- 				int noUp = 1; 
- 				int noLeft = 1;
- 				int noDown = 1;
- 				int noRight = 1;
- 				
- 				//If there's a tile containing units of this player on top of this tile
- 				if(map.AtTile( (int) curPos.X(), ((int) curPos.Y()) + 1).IsPlayerThere(i) == true){
- 					noUp = 0;
- 					toSearch.push(map.AtTile( (int) curPos.X(), ((int) curPos.Y()) + 1));
- 				}
- 				
- 				//If there's a tile containing units of this player on the left of this tile
- 				if(map.AtTile( ((int) curPos.X()) - 1,(int) curPos.Y() ).IsPlayerThere(i) == true){
- 					noLeft = 0;
- 					toSearch.push(map.AtTile( ((int) curPos.X()) - 1,(int) curPos.Y() ));
- 				}
- 				
- 				//If there's a tile containing units of this player below this tile
- 				if(map.AtTile( (int) curPos.X(), ((int) curPos.Y()) - 1 ).IsPlayerThere(i) == true){
- 					noDown = 0;
- 					toSearch.push(map.AtTile( (int) curPos.X(), ((int) curPos.Y()) - 1 ));
- 				}
- 				
- 				//If there's a tile containing units of this player on the right of this tile
- 				if(map.AtTile( ((int) curPos.X()) + 1, (int) curPos.Y() ).IsPlayerThere(i) == true){
- 					noRight = 0;
- 					toSearch.push(map.AtTile( ((int) curPos.X()) + 1, (int) curPos.Y() ));
- 				}
- 				
- 				//Create the control points for the bezier curves
-
- 				//If it's a border tile by only one side
- 				if(noUp+noLeft+noDown+noRight == 1){ 
- 					bezierControlPoints.add(new Vec2(curPos.X() * Constants.TileWidth + noUp*Constants.TileWidth + noLeft*Constants.TileWidth/3 + noRight*2*Constants.TileWidth/3, curPos.Y() * Constants.TileWidth + noUp*2*Constants.TileWidth/3 + noLeft*Constants.TileWidth + noDown*Constants.TileWidth/3));
- 				}
- 				else if((noUp == 1 && noLeft + noRight == 1 && noDown == 0) || (noDown == 1 && noLeft + noRight == 1 && noUp == 0) || (noLeft == 1 && noUp + noDown == 1 && noRight == 0) || (noRight == 1 && noUp + noDown == 1 && noLeft == 0)){
- 					
- 				}
- 			}
+	/**
+	 * Sets the color index depending of which player is it and sets it to be used for rendering.
+	 * @param gl Opengl context
+	 * @param playerNumber  The player ID
+	 */
+	private void SetPlayerColorIndex(GL10 gl,int playerNumber)
+	{
+		//Determine which is the color of player 0
+		int colorPlayer1 = Preferences.Get().multiplayerGame ? Preferences.Get().multiPlayer1Color : Preferences.Get().singlePlayer1Color;
+		//If it's the player 0
+		if(playerNumber == 0){
+			SetPlayerColor(gl,colorPlayer1);
+		}
+		//If it's the player 1 and it's a multiplayer game
+		else if(playerNumber == 1 && Preferences.Get().multiplayerGame){
+			SetPlayerColor(gl,Preferences.Get().multiPlayer2Color);
+		}
+		else{
+			int i=0;
+			boolean done = false;
+			while(!done){
+				//If its not a color chosen by a real player
+				if(i != colorPlayer1 && !(i == Preferences.Get().multiPlayer2Color && Preferences.Get().multiplayerGame)){ 
+					SetPlayerColor(gl,i);
+					done = true;
+				}
+				i++;
+			}
+		}
+	}
+	
+	/**
+	 * Sets the color used for rendering with the given index
+	 * @param gl Opengl context
+	 * @param colorIndex  The color ID
+	 */
+	private void SetPlayerColor(GL10 gl,int colorIndex){
+		switch(colorIndex){
+			case 0: //Red
+				gl.glColor4f(0.8f, 0f, 0f, 1f);
+				break;
+			case 1: //Green
+				gl.glColor4f(0f, 0.8f, 0f, 1f);
+				break;
+			case 2: //Blue
+				gl.glColor4f(0f, 0f, 0.8f, 1f);
+				break;	
+			case 3: //Yellow
+				gl.glColor4f(0f, 0.8f, 0.8f, 1f);
+				break;
+			case 4: //Purple
+				gl.glColor4f(0.8f, 0f, 0.8f, 1f);
+				break;
+			case 5: //Orange
+				gl.glColor4f(0.8f, 0.8f, 0f, 1f);
+				break;
 		}
 		
-		//int x = Ax*a*a + Bx*2*a*b + Cx*b*b;
-		//int y = Ay*a*a + By*2*a*b + Cy*b*b;
-		//int z = Az*a*a + Bz*2*a*b + Cz*b*b;
-
-	}*/
+	}
+	//Red Blue Green Yellow Purple Brown
 	
 	/**
 	 * Loads the textures needed into Opengl
