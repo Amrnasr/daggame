@@ -9,6 +9,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.game.Camera;
+import com.game.Constants;
 import com.game.Cursor;
 import com.game.Map;
 import com.game.MessageHandler;
@@ -323,19 +324,27 @@ public class PlayScene extends Scene
 					Log.e("PlayScene", "Input device requested for player not implemented yet!");				
 					break;
 			}
-			player1 = new Player(0, player1ID, true);
+			player1 = new Player(0, player1ID, true, Preferences.Get().player1Color);
 			this.players.add(player1);
 			
 			// Player 2 gets stuck with trackball.
-			Player player2 = new Player(1, new BallInputDevice(this), true);
+
+			Player player2 = new Player(1, new BallInputDevice(this), true, Preferences.Get().player2Color);
 			this.players.add(player2);
 			
 			// Add all the opponents
 			Player newPlayer = null;
+			int j = 0;
 			for(int i = 0; i < Preferences.Get().multiNumberOpponents; i++ )
 			{
-				newPlayer = new Player(i+2, new AIInputDevice(this), false);
-				this.players.add(newPlayer);
+				boolean done = false;
+				for(; j < Constants.MaxPlayers && !done; j++){
+					if(j != Preferences.Get().player1Color && j != Preferences.Get().player2Color){
+						newPlayer = new Player(i+2, new AIInputDevice(this), false, j);
+						this.players.add(newPlayer);
+						done = true;
+					}	
+				}
 			}
 			
 		}
@@ -363,15 +372,23 @@ public class PlayScene extends Scene
 					Log.e("PlayScene", "Input device requested for player not implemented yet!");				
 					break;
 			}
-			newPlayer = new Player(0, inputDevice, true);
+			newPlayer = new Player(0, inputDevice, true , Preferences.Get().player1Color);
 			this.players.add(newPlayer);
 			
-			// Add all the opponents
+			boolean done = false;
+			int j = 0;
 			for(int i = 0; i < Preferences.Get().singleNumberOpponents; i++ )
 			{
-				newPlayer = new Player(i+1, new AIInputDevice(this), false);
-				this.players.add(newPlayer);
-			}			
+				done = false;
+				for(; j < Constants.MaxPlayers && !done; j++){
+					if(j != Preferences.Get().player1Color){
+						newPlayer = new Player(i+1, new AIInputDevice(this), false, j);
+						this.players.add(newPlayer);
+						done = true;
+					}	
+				}
+			}		
+			
 		}
 	}
 	

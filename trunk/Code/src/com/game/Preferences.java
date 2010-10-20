@@ -53,7 +53,6 @@ public class Preferences
 		
 		// Single preferences
 		singleCurrentMap = settings.getInt("singleCurrentMap", 0);
-		singlePlayer1Color = settings.getInt("singlePlayer1Color", 0);
 		singleNumberOpponents = settings.getInt("singleNumberOpponents", 2);
 		singleControlMode = settings.getInt("singleControlMode", 0);
 		singleShowMinmap = settings.getBoolean("singleShowMinmap", true);
@@ -61,12 +60,14 @@ public class Preferences
 		
 		// Multi preferences
 		multiCurrentMap = settings.getInt("multiCurrentMap", 0);
-		multiPlayer1Color = settings.getInt("multiPlayer1Color", 0);
-		multiPlayer2Color = settings.getInt("multiPlayer2Color", 0);
 		multiNumberOpponents = settings.getInt("multiNumberOpponents", 1);
 		multiControlMode = settings.getInt("multiControlMode", 0);
 		multiShowMinimap = settings.getBoolean("multiShowMinimap", true);
 		multiPowerups = settings.getBoolean("multiPowerups", true);
+		
+		// Color preferences
+		player1Color = settings.getInt("player1Color", 0);
+		player2Color = settings.getInt("player2Color", 1);
 	}
 	
 	/**
@@ -85,8 +86,7 @@ public class Preferences
 	    editor.putInt("optionsUnitCuantity", optionsUnitCuantity);	    
 	    
 	    // Single player preferences
-	    editor.putInt("singleCurrentMap", singleCurrentMap);	 
-	    editor.putInt("singlePlayer1Color", singlePlayer1Color);	 
+	    editor.putInt("singleCurrentMap", singleCurrentMap);	 	 
 	    editor.putInt("singleNumberOpponents", singleNumberOpponents);	 
 	    editor.putInt("singleControlMode", singleControlMode);	
 	    editor.putBoolean("singleShowMinmap", singleShowMinmap);
@@ -94,12 +94,14 @@ public class Preferences
 	    
 	    // Multiplayer preferences
 	    editor.putInt("multiCurrentMap", multiCurrentMap);
-	    editor.putInt("multiPlayer1Color", multiPlayer1Color);
-	    editor.putInt("multiPlayer2Color", multiPlayer2Color);
 	    editor.putInt("multiNumberOpponents", multiNumberOpponents);
 	    editor.putInt("multiControlMode", multiControlMode);
 	    editor.putBoolean("multiShowMinimap", multiShowMinimap);
 	    editor.putBoolean("multiPowerups", multiPowerups);
+	    
+	    // Color preferences
+	    editor.putInt("player1Color", player1Color);
+	    editor.putInt("player2Color", player2Color);
 	    
 	    // Commit the edits!
 	    editor.commit();
@@ -158,11 +160,6 @@ public class Preferences
 	public int singleCurrentMap;
 	
 	/**
-	 * Color of the human player in single player mode.
-	 */
-	public int singlePlayer1Color;
-	
-	/**
 	 * Number of opponents in singleplayer.
 	 */
 	public int singleNumberOpponents;
@@ -189,14 +186,14 @@ public class Preferences
 	public int multiCurrentMap;
 	
 	/**
-	 * Player 1 color in multiplayer mode
+	 * Player 1 color 
 	 */
-	public int multiPlayer1Color;
+	public int player1Color;
 	
 	/**
-	 * Player 2 color in multiplayer mode
+	 * Player 2 color 
 	 */
-	public int multiPlayer2Color;
+	public int player2Color;
 	
 	/**
 	 * Number of AI opponents in multiplayer mode

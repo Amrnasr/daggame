@@ -146,8 +146,8 @@ public class MultiViewData extends ViewData {
         	}
 
         });
-        color1Spinner.setSelection(Preferences.Get().multiPlayer1Color);
-        
+        color1Spinner.setSelection(Preferences.Get().player1Color);
+        //TODO: disabling the color used by the other color spinner
         Spinner color2Spinner = (Spinner) xmlLayout.findViewById(R.id.color2_multi_spin);
         ArrayAdapter<CharSequence> color2Adapter = ArrayAdapter.createFromResource(
         		activity, R.array.color_array, android.R.layout.simple_spinner_item);
@@ -164,7 +164,7 @@ public class MultiViewData extends ViewData {
         		Log.i("MultiViewData", "No color 2 spinner item has been selected");
         	}
         });
-        color2Spinner.setSelection(Preferences.Get().multiPlayer2Color);
+        color2Spinner.setSelection(Preferences.Get().player2Color);
         
         Spinner opponentsSpinner = (Spinner) xmlLayout.findViewById(R.id.op_multi_spin);
         ArrayAdapter<CharSequence> opponentsAdapter = ArrayAdapter.createFromResource(

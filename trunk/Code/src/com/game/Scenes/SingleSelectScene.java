@@ -140,7 +140,7 @@ public class SingleSelectScene extends Scene {
     	{	
 		case R.id.color_single_spin:
 			Log.i("SingleSelectScene", "Color spinner handler called");
-			Preferences.Get().singlePlayer1Color = position;
+			Preferences.Get().player1Color = position;
 			break;
 		case R.id.op_single_spin:
 			Log.i("SingleSelectScene", "Opponents spinner handler called");

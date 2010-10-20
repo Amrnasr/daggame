@@ -122,11 +122,11 @@ public class MultiSelectScene extends Scene {
     	{	
 		case R.id.color1_multi_spin:
 			Log.i("MultiSelectScene", "Color 1 spinner handler called");
-			Preferences.Get().multiPlayer1Color = position;
+			Preferences.Get().player1Color = position;
 			break;
 		case R.id.color2_multi_spin:
 			Log.i("MultiSelectScene", "Color 2 spinner handler called");
-			Preferences.Get().multiPlayer2Color = position;
+			Preferences.Get().player2Color = position;
 			break;
 		case R.id.op_multi_spin:
 			Log.i("MultiSelectScene", "Opponents spinner handler called");
