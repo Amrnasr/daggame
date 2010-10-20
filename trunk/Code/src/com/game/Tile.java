@@ -312,6 +312,16 @@ public class Tile
 	 */
 	public Vec2 GetPos() { return this.position; }
 	
+	/**
+	 * Returns whether the player has units in this tile or not
+	 * @param player The player whose presence on the tile is going to be checked
+	 * @return The player has units there or not
+	 */
+	public boolean IsPlayerThere(int player) 
+	{ 
+		return (density[player] > 0) ? true : false;
+	}
+	
 	public int GetDensityFrom(int player)
 	{
 		return this.density[player];

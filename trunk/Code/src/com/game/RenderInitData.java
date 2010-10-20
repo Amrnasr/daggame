@@ -78,16 +78,10 @@ public class RenderInitData
 	public Vector<Cursor> GetCursors() { return this.cursors; }
 	
 	/**
-	 * Gets the vector of tiles
-	 * @return
-	 */
-	public Vector<Tile> GetMapTileMap() { return this.map.getTileMap(); }
-	
-	/**
 	 * Gets the map bitmap
 	 * @return
 	 */
-	public Bitmap GetMapBitmap() { return this.map.getBitmap(); }
+	public Map GetMap() { return this.map; }
 	
 	/**
 	 * Gets the cursor bitmap
