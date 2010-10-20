@@ -78,7 +78,7 @@ public class Player
 		
 		// Tiles
 		tiles = new Vector<Tile>();
-		tileUpdateRegulator = new Regulator(1); // TODO: Put a decent update speed.
+		tileUpdateRegulator = new Regulator(5); // TODO: Put a decent update speed.
 		totalDensity = 0;
 		
 		// TODO: Read from preferences!
@@ -192,7 +192,7 @@ public class Player
 	private void UpdateTiles()
 	{
 		// For every tile
-		for(int i = 0; i < this.tiles.size(); i++)
+		for(int i = this.tiles.size()-1; i >= 0; i--)
 		{
 			this.tiles.elementAt(i).Update();
 		}
