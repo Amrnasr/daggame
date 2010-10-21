@@ -40,14 +40,14 @@ public class Map {
 	/**
 	 * Initializes the map
 	 * @param activity Activity that created the map manager
-	 * @param bitmapRef Reference to the bitmap to load.
-	 * @param tileMapRef Reference to the tile map to load.
+	 * @param bitmapID Reference to the bitmap to load.
+	 * @param tileMapID Reference to the tile map to load.
 	 */
-	public Map(Activity activity, int bitmapRef,int tileMapRef)
+	public Map(Activity activity, int bitmapID,int tileMapID)
 	{	
 		//Load the image
 		Log.i("Map", "Started constructor");
-		bitmap=BitmapFactory.decodeResource(activity.getResources(), bitmapRef);
+		bitmap=BitmapFactory.decodeResource(activity.getResources(), bitmapID);
 
 		tilesPerRow = bitmap.getWidth() / Constants.TileWidth;
 		tilesPerColumn = bitmap.getHeight() / Constants.TileWidth;		
@@ -59,7 +59,7 @@ public class Map {
 		Preferences.Get().mapHeight=bitmap.getHeight();
 		
 		//open the tile map text file
-		BufferedReader tileMapReader = new  BufferedReader(new InputStreamReader(activity.getResources().openRawResource(tileMapRef)));
+		BufferedReader tileMapReader = new  BufferedReader(new InputStreamReader(activity.getResources().openRawResource(tileMapID)));
 		
 		//Initialize the matrix
 		tileMap = new Vector<Tile>();
@@ -70,7 +70,7 @@ public class Map {
 			try {
 				line = tileMapReader.readLine().split(" ");
 			} catch(IOException ioe) {
-			   Log.e("Map","Error reading from " + tileMapRef);
+			   Log.e("Map","Error reading from " + tileMapID);
 			} 
 			
 			
@@ -81,7 +81,7 @@ public class Map {
 				try {
 					value = Integer.parseInt(line[i].trim());
 				} catch(NumberFormatException nfe) {
-				   Log.e("Map","Error converting into an integer a value from " + tileMapRef);
+				   Log.e("Map","Error converting into an integer a value from " + tileMapID);
 				} 
 				
 				

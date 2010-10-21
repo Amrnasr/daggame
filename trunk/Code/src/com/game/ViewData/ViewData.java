@@ -2,7 +2,6 @@ package com.game.ViewData;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;

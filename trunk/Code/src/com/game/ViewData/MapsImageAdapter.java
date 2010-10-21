@@ -17,27 +17,27 @@ import android.widget.ImageView;
  */
 
 public class MapsImageAdapter extends BaseAdapter {
-	int mGalleryItemBackground;
-	private Context mContext;
+	int galleryItemBackground;
+	private Context context;
 	
-	private Integer[] mImageIds = {
-            R.drawable.sample_1,
-            R.drawable.sample_2,
-            R.drawable.sample_3,
-            R.drawable.sample_4,
-            R.drawable.sample_5,
-            R.drawable.sample_6,
-            R.drawable.sample_7
+	private static Integer[] imageIDs = {
+        R.drawable.samplemap,
+        R.drawable.map_size800_1
     };
+	
+	private static Integer[] tilemapIDs = {
+        R.raw.samplemaptilemap,
+        R.raw.map_size800_1tilemap
+	};
 
 	/**
 	 * Initializes the adapter
 	 */
 	public MapsImageAdapter(Context c) {
-		mContext = c;
+		context = c;
         TypedArray a = c.obtainStyledAttributes(R.styleable.mapsGallery);
 
-        mGalleryItemBackground = a.getResourceId(
+        galleryItemBackground = a.getResourceId(
                 R.styleable.mapsGallery_android_galleryItemBackground, 0);
         a.recycle();
 	}
@@ -47,12 +47,12 @@ public class MapsImageAdapter extends BaseAdapter {
 	 */
 	@Override
 	public int getCount() {
-		return mImageIds.length;
+		return imageIDs.length;
 	}
 	
 	@Override
-	public Object getItem(int position) {
-		return position;
+	public Integer getItem(int position) {
+		return imageIDs[position];
 	}
 
 	@Override
@@ -65,15 +65,23 @@ public class MapsImageAdapter extends BaseAdapter {
 	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ImageView i = new ImageView(mContext);
+		ImageView i = new ImageView(context);
 		
-		i.setImageResource(mImageIds[position]);
+		i.setImageResource(imageIDs[position]);
         i.setLayoutParams(new Gallery.LayoutParams(150, 100));
         i.setScaleType(ImageView.ScaleType.FIT_XY);
-        i.setBackgroundResource(mGalleryItemBackground);
+        i.setBackgroundResource(galleryItemBackground);
 
 		
 		return i;
+	}
+	
+	public static int getImageID(int position){
+		return imageIDs[position];
+	}
+	
+	public static int getTilemapID(int position){
+		return tilemapIDs[position];
 	}
 
 }

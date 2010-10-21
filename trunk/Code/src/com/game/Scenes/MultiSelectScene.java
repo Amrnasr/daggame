@@ -32,18 +32,22 @@ public class MultiSelectScene extends Scene {
 				// If a menu button is clicked, find out which and do something about it.
 	        	if(msg.what == MsgType.BUTTON_CLICK.ordinal())
 	        	{
+	        		Log.i("Multi", "Handle button");
 	        		handleButtonClick(msg.arg1);
 	        	}
 	        	// If a checkbox is clicked, find out which and do something about it.
 	        	else if(msg.what == MsgType.CHECKBOX_CLICK.ordinal()){
+	        		Log.i("Multi", "Handle checkbox");
 	        		handleCheckBoxClick(msg.arg1,msg.arg2);
 	        	}
 	        	// If a gallery item is clicked, find out which gallery and gallery item and do something about it.
 	        	else if(msg.what == MsgType.GALLERY_ITEM_CLICK.ordinal()){
+	        		Log.i("Multi", "Handler gallery");
 	        		handleGalleryItemClick(msg.arg1,msg.arg2);
 	        	}
 	        	// If a spinner item is clicked, find out which spinner and spinner item and do something about it.
 	        	else if(msg.what == MsgType.SPINNER_ITEM_CLICK.ordinal()){
+	        		Log.i("Multi", "Handle spinner");
 	        		handleSpinnerItemClick(msg.arg1,msg.arg2);
 	        	}
 	        	// If the activity tells us to stop, we stop.
@@ -122,11 +126,11 @@ public class MultiSelectScene extends Scene {
     	{	
 		case R.id.color1_multi_spin:
 			Log.i("MultiSelectScene", "Color 1 spinner handler called");
-			Preferences.Get().player1Color = position;
+			Preferences.Get().multiPlayer1Color = position;
 			break;
 		case R.id.color2_multi_spin:
 			Log.i("MultiSelectScene", "Color 2 spinner handler called");
-			Preferences.Get().player2Color = position;
+			Preferences.Get().multiPlayer2Color = position;
 			break;
 		case R.id.op_multi_spin:
 			Log.i("MultiSelectScene", "Opponents spinner handler called");
