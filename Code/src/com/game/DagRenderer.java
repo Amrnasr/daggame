@@ -173,6 +173,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private FloatBuffer[] playersColorBuffer;
 	
+	private boolean showMinimap;
+	
 	/**
 	 * Initializes the renderer and sets the handler callbacks.
 	 */
@@ -188,7 +190,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.texReady = false;	
 		this.lastWidth = 0;
 		this.lastHeight = 0;
-	    
+	    this.showMinimap = false;
+		
 		this.playersVertexBuffer = new FloatBuffer[Constants.MaxPlayers];
 		this.playersColorBuffer = new FloatBuffer[Constants.MaxPlayers];
 		this.playersBufferLength = new int[Constants.MaxPlayers];
@@ -244,6 +247,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		//Store the cursor bitmap
 		this.cursorBitmap = initData.GetCursorBitmap();
 		
+		showMinimap = (!Preferences.Get().multiplayerGame && Preferences.Get().singleShowMinimap) || (Preferences.Get().multiplayerGame && Preferences.Get().multiShowMinimap);
+		Log.i("DagRenderer","multiplayerGame: " + Preferences.Get().multiplayerGame + ", singleShowMinimap: " + Preferences.Get().singleShowMinimap + ", multiShowMinimap:" + Preferences.Get().multiShowMinimap);
 		//Store the players vector
 		this.players = initData.GetPlayers();
 		
@@ -375,8 +380,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		getCurrentProjection(gl);
 		getCurrentModelView(gl);
 		
-		
-		DrawMinimap(gl);
+		if(showMinimap){
+			DrawMinimap(gl);
+		}
     }
 	
 	/**

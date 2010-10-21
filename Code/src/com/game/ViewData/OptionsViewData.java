@@ -76,7 +76,7 @@ public class OptionsViewData extends ViewData
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.num_units_spin, position);
         	}
 
-        	public void onNothingSelected(AdapterView parent) {
+        	public void onNothingSelected(AdapterView<?> parent) {
         		Log.i("OptionsViewData", "No number units spinner item has been selected");
         	}
 
@@ -96,7 +96,7 @@ public class OptionsViewData extends ViewData
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.move_speed_spin, position);
         	}
 
-        	public void onNothingSelected(AdapterView parent) {
+        	public void onNothingSelected(AdapterView<?> parent) {
         		Log.i("OptionsViewData", "No eat speed spinner item has been selected");
         	}
 
@@ -116,7 +116,7 @@ public class OptionsViewData extends ViewData
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.eat_speed_spin, position);
         	}
 
-        	public void onNothingSelected(AdapterView parent) {
+        	public void onNothingSelected(AdapterView<?> parent) {
         		Log.i("OptionsViewData", "No eat speed spinner item has been selected");
         	}
 

@@ -31,7 +31,8 @@ import com.game.MessageHandler.MsgReceiver;
 
 public class SingleViewData extends ViewData 
 {
-	private View auxView;
+	private View minimapCheckBoxView;
+	private View powerupsCheckBoxView;
 
 	/**
 	 * @see ViewData createXMLView(Activity activity) 
@@ -72,37 +73,35 @@ public class SingleViewData extends ViewData
         
         // Callback for the checkboxes
         CheckBox minimapCheckBox = (CheckBox) xmlLayout.findViewById(R.id.minimap_single_check);
-        minimapCheckBox.setChecked(Preferences.Get().singleShowMinmap);
-        this.auxView = minimapCheckBox;
+        minimapCheckBox.setChecked(Preferences.Get().singleShowMinimap);
+        this.minimapCheckBoxView = minimapCheckBox;
         minimapCheckBox.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) 
 			{
 				Log.i("SingleViewData", "Clicked minimap checkbox");
+				
 				int checked = 0;
-				if(((CheckBox) SingleViewData.this.auxView).isChecked() == true)
+				if(((CheckBox) SingleViewData.this.minimapCheckBoxView).isChecked() == true)
 				{
 					checked = 1;
 				}
-				else
-				{
-					checked = 0;
-				}
+
 				MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.CHECKBOX_CLICK, R.id.minimap_single_check, checked);	
 			}
 		});
         
         CheckBox powerupsCheckBox = (CheckBox) xmlLayout.findViewById(R.id.powerups_single_check);
         powerupsCheckBox.setChecked(Preferences.Get().singlePowerups);
-        this.auxView = powerupsCheckBox;
+        this.powerupsCheckBoxView = powerupsCheckBox;
         powerupsCheckBox.setOnClickListener(new OnClickListener() 
         {			
 			@Override
 			public void onClick(View v) {
 				Log.i("SingleViewData", "Clicked power-ups checkbox");
 				int checked = 0;
-				if(((CheckBox) SingleViewData.this.auxView).isChecked() == true)
+				if(((CheckBox) SingleViewData.this.powerupsCheckBoxView).isChecked() == true)
 				{
 					checked = 1;
 				}
@@ -120,7 +119,7 @@ public class SingleViewData extends ViewData
         mapsGallery.setSelection(Preferences.Get().singleCurrentMap);
         mapsGallery.setOnItemClickListener(new OnItemClickListener() 
         {
-            public void onItemClick(AdapterView parent, View v, int position, long id) 
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) 
             {
             	Log.i("SingleViewData", "Clicked maps gallery item");
             	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.GALLERY_ITEM_CLICK, R.id.maps_single_gal, position);
@@ -133,6 +132,7 @@ public class SingleViewData extends ViewData
         		activity, R.array.color_array, android.R.layout.simple_spinner_item);
         colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colorSpinner.setAdapter(colorAdapter);
+        colorSpinner.setSelection(Preferences.Get().singlePlayer1Color);
         colorSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
         {
         	public void onItemSelected(AdapterView<?> parent,
@@ -141,12 +141,11 @@ public class SingleViewData extends ViewData
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.color_single_spin, position);
         	}
 
-        	public void onNothingSelected(AdapterView parent) {
+        	public void onNothingSelected(AdapterView<?> parent) {
         		Log.i("SingleViewData", "No color spinner item has been selected");
         	}
 
         });
-        colorSpinner.setSelection(Preferences.Get().player1Color);
         
         Spinner opponentsSpinner = (Spinner) xmlLayout.findViewById(R.id.op_single_spin);
         ArrayAdapter<CharSequence> opponentsAdapter = ArrayAdapter.createFromResource(
@@ -160,7 +159,7 @@ public class SingleViewData extends ViewData
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.op_single_spin, position);
         	}
 
-        	public void onNothingSelected(AdapterView parent) {
+        	public void onNothingSelected(AdapterView<?> parent) {
         		Log.i("SingleViewData", "No opponents spinner item has been selected");
         	}
 
@@ -179,7 +178,7 @@ public class SingleViewData extends ViewData
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.control_single_spin, position);
         	}
 
-        	public void onNothingSelected(AdapterView parent) {
+        	public void onNothingSelected(AdapterView<?> parent) {
         		Log.i("SingleViewData", "No control spinner item has been selected");
         	}
 

@@ -100,7 +100,7 @@ public class SingleSelectScene extends Scene {
     	{	
 		case R.id.minimap_single_check:
 			Log.i("SingleSelectScene", "Minimap checkbox handler called");
-			Preferences.Get().singleShowMinmap = (checked != 0);
+			Preferences.Get().singleShowMinimap = (checked != 0);
 			break;
 		case R.id.powerups_single_check:
 			Log.i("SingleSelectScene", "Power-ups checkbox handler called");
@@ -140,7 +140,7 @@ public class SingleSelectScene extends Scene {
     	{	
 		case R.id.color_single_spin:
 			Log.i("SingleSelectScene", "Color spinner handler called");
-			Preferences.Get().player1Color = position;
+			Preferences.Get().singlePlayer1Color = position;
 			break;
 		case R.id.op_single_spin:
 			Log.i("SingleSelectScene", "Opponents spinner handler called");

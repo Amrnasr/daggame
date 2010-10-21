@@ -2,7 +2,6 @@ package com.game;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 /**
  * Simple singleton for storing game options
@@ -53,21 +52,23 @@ public class Preferences
 		
 		// Single preferences
 		singleCurrentMap = settings.getInt("singleCurrentMap", 0);
+		singlePlayer1Color = settings.getInt("singlePlayer1Color", 0);
 		singleNumberOpponents = settings.getInt("singleNumberOpponents", 2);
 		singleControlMode = settings.getInt("singleControlMode", 0);
-		singleShowMinmap = settings.getBoolean("singleShowMinmap", true);
+		singleShowMinimap = settings.getBoolean("singleShowMinimap", true);
 		singlePowerups = settings.getBoolean("singlePowerups", true);
 		
 		// Multi preferences
 		multiCurrentMap = settings.getInt("multiCurrentMap", 0);
+		multiPlayer1Color = settings.getInt("multiPlayer1Color", 0);
+		multiPlayer2Color = settings.getInt("multiPlayer2Color", 1);
 		multiNumberOpponents = settings.getInt("multiNumberOpponents", 1);
 		multiControlMode = settings.getInt("multiControlMode", 0);
 		multiShowMinimap = settings.getBoolean("multiShowMinimap", true);
 		multiPowerups = settings.getBoolean("multiPowerups", true);
 		
 		// Color preferences
-		player1Color = settings.getInt("player1Color", 0);
-		player2Color = settings.getInt("player2Color", 1);
+
 	}
 	
 	/**
@@ -86,22 +87,21 @@ public class Preferences
 	    editor.putInt("optionsUnitCuantity", optionsUnitCuantity);	    
 	    
 	    // Single player preferences
-	    editor.putInt("singleCurrentMap", singleCurrentMap);	 	 
+	    editor.putInt("singleCurrentMap", singleCurrentMap);
+	    editor.putInt("singlePlayer1Color", singlePlayer1Color);
 	    editor.putInt("singleNumberOpponents", singleNumberOpponents);	 
 	    editor.putInt("singleControlMode", singleControlMode);	
-	    editor.putBoolean("singleShowMinmap", singleShowMinmap);
+	    editor.putBoolean("singleShowMinimap", singleShowMinimap);
 	    editor.putBoolean("singlePowerups", singlePowerups);
 	    
 	    // Multiplayer preferences
 	    editor.putInt("multiCurrentMap", multiCurrentMap);
+	    editor.putInt("multiPlayer1Color", multiPlayer1Color);
+	    editor.putInt("multiPlayer2Color", multiPlayer2Color);
 	    editor.putInt("multiNumberOpponents", multiNumberOpponents);
 	    editor.putInt("multiControlMode", multiControlMode);
 	    editor.putBoolean("multiShowMinimap", multiShowMinimap);
 	    editor.putBoolean("multiPowerups", multiPowerups);
-	    
-	    // Color preferences
-	    editor.putInt("player1Color", player1Color);
-	    editor.putInt("player2Color", player2Color);
 	    
 	    // Commit the edits!
 	    editor.commit();
@@ -160,6 +160,11 @@ public class Preferences
 	public int singleCurrentMap;
 	
 	/**
+	 * Player 1 color in single player
+	 */
+	public int singlePlayer1Color;
+	
+	/**
 	 * Number of opponents in singleplayer.
 	 */
 	public int singleNumberOpponents;
@@ -172,7 +177,7 @@ public class Preferences
 	/**
 	 * Indicates whether to show the minimap in the corner.
 	 */
-	public boolean singleShowMinmap;
+	public boolean singleShowMinimap;
 	
 	/**
 	 * Indicates whether there will be powerups in this game.
@@ -186,14 +191,14 @@ public class Preferences
 	public int multiCurrentMap;
 	
 	/**
-	 * Player 1 color 
+	 * Player 1 color in multiplayer
 	 */
-	public int player1Color;
+	public int multiPlayer1Color;
 	
 	/**
-	 * Player 2 color 
+	 * Player 2 color  in multiplayer
 	 */
-	public int player2Color;
+	public int multiPlayer2Color;
 	
 	/**
 	 * Number of AI opponents in multiplayer mode

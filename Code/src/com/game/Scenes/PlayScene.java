@@ -24,6 +24,7 @@ import com.game.InputDevice.AIInputDevice;
 import com.game.InputDevice.BallInputDevice;
 import com.game.InputDevice.InputDevice;
 import com.game.InputDevice.TouchInputDevice;
+import com.game.ViewData.MapsImageAdapter;
 
 /**
  * A specific scene for the "Play" screen.
@@ -98,6 +99,16 @@ public class PlayScene extends Scene
 	private Regulator messageManagerRegulator;
 	
 	/**
+	 * Current map file ID
+	 */
+	private int mapFile;
+	
+	/**
+	 * Current tile map file ID
+	 */
+	private int tileMapFile;
+	
+	/**
 	 * Initializes and sets the handler callback.
 	 */
 	public PlayScene()
@@ -111,10 +122,12 @@ public class PlayScene extends Scene
 		this.gameplayRegulator = new Regulator(60);
 		this.cameraZoomRegulator = new Regulator(1);
 		this.messageManagerRegulator = new Regulator(1);
+		this.mapFile =  MapsImageAdapter.getImageID(Preferences.Get().singleCurrentMap);
+		this.tileMapFile = MapsImageAdapter.getTilemapID(Preferences.Get().singleCurrentMap);
 		
 		CreatePlayers();
 		
-		map = null;
+		this.map = null;
 
 		this.handler = new Handler() 
 		{
@@ -201,7 +214,7 @@ public class PlayScene extends Scene
 		{
             public void run() 
             {
-            	map = new Map(refActivity,R.drawable.samplemap, R.raw.samplemaptilemap);
+            	map = new Map(refActivity,mapFile, tileMapFile);
         		renderInitData.SetMap(map);
         		
         		renderInitData.SetPlayers(players);
@@ -309,7 +322,7 @@ public class PlayScene extends Scene
 			InputDevice player1ID = null;
 			
 			switch (Preferences.Get().multiControlMode) 
-			{
+			{ 
 				case 0:
 					// Touch mode
 					player1ID = new TouchInputDevice(this);
@@ -324,12 +337,12 @@ public class PlayScene extends Scene
 					Log.e("PlayScene", "Input device requested for player not implemented yet!");				
 					break;
 			}
-			player1 = new Player(0, player1ID, true, Preferences.Get().player1Color);
+			player1 = new Player(0, player1ID, true, Preferences.Get().multiPlayer1Color);
 			this.players.add(player1);
 			
 			// Player 2 gets stuck with trackball.
 
-			Player player2 = new Player(1, new BallInputDevice(this), true, Preferences.Get().player2Color);
+			Player player2 = new Player(1, new BallInputDevice(this), true, Preferences.Get().multiPlayer2Color);
 			this.players.add(player2);
 			
 			// Add all the opponents
@@ -339,7 +352,7 @@ public class PlayScene extends Scene
 			{
 				boolean done = false;
 				for(; j < Constants.MaxPlayers && !done; j++){
-					if(j != Preferences.Get().player1Color && j != Preferences.Get().player2Color){
+					if(j != Preferences.Get().multiPlayer1Color && j != Preferences.Get().multiPlayer2Color){
 						newPlayer = new Player(i+2, new AIInputDevice(this), false, j);
 						this.players.add(newPlayer);
 						done = true;
@@ -372,7 +385,7 @@ public class PlayScene extends Scene
 					Log.e("PlayScene", "Input device requested for player not implemented yet!");				
 					break;
 			}
-			newPlayer = new Player(0, inputDevice, true , Preferences.Get().player1Color);
+			newPlayer = new Player(0, inputDevice, true , Preferences.Get().singlePlayer1Color);
 			this.players.add(newPlayer);
 			
 			boolean done = false;
@@ -381,7 +394,7 @@ public class PlayScene extends Scene
 			{
 				done = false;
 				for(; j < Constants.MaxPlayers && !done; j++){
-					if(j != Preferences.Get().player1Color){
+					if(j != Preferences.Get().singlePlayer1Color){
 						newPlayer = new Player(i+1, new AIInputDevice(this), false, j);
 						this.players.add(newPlayer);
 						done = true;

@@ -17,10 +17,13 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.game.MessageHandler;
+import com.game.InputDevice.AIInputDevice;
+import com.game.MessageHandler.MsgReceiver;
+import com.game.Constants;
 import com.game.MsgType;
+import com.game.Player;
 import com.game.Preferences;
 import com.game.R;
-import com.game.MessageHandler.MsgReceiver;
 
 /**
  * ViewData for the Multiplayer scene.
@@ -31,7 +34,10 @@ import com.game.MessageHandler.MsgReceiver;
 
 public class MultiViewData extends ViewData {
 
-	private View auxView;
+	private View minimapCheckBoxView;
+	private View powerupsCheckBoxView;
+	private View color1SpinnerView;
+	private View color2SpinnerView;
 	
 	/**
 	 * @see ViewData createXMLView(Activity activity) 
@@ -73,37 +79,35 @@ public class MultiViewData extends ViewData {
         // Callback for the checkboxes
         CheckBox minimapCheckBox = (CheckBox) xmlLayout.findViewById(R.id.minimap_multi_check);
         minimapCheckBox.setChecked(Preferences.Get().multiShowMinimap);
-        this.auxView = minimapCheckBox;
+        this.minimapCheckBoxView = minimapCheckBox;
         minimapCheckBox.setOnClickListener(new OnClickListener() 
         {			
 			@Override
 			public void onClick(View v) 
 			{
+				Log.i("MultiViewData", "Clicked minimap checkbox");
+				
 				int checked = 0;
-				if(((CheckBox) MultiViewData.this.auxView).isChecked() == true)
+				if(((CheckBox) MultiViewData.this.minimapCheckBoxView).isChecked() == true)
 				{
 					checked = 1;
 				}
-				else
-				{
-					checked = 0;
-				}
 				
-				Log.i("MultiViewData", "Clicked minimap checkbox");
+				
 				MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.CHECKBOX_CLICK, R.id.minimap_multi_check, checked);	
 			}
 		});
         
         CheckBox powerupsCheckBox = (CheckBox) xmlLayout.findViewById(R.id.powerups_multi_check);
         powerupsCheckBox.setChecked(Preferences.Get().multiPowerups);
-        this.auxView = powerupsCheckBox;
+        this.powerupsCheckBoxView = powerupsCheckBox;
         powerupsCheckBox.setOnClickListener(new OnClickListener() 
         {			
 			@Override
 			public void onClick(View v) 
 			{
 				int checked = 0;
-				if(((CheckBox) MultiViewData.this.auxView).isChecked() == true)
+				if(((CheckBox) MultiViewData.this.powerupsCheckBoxView).isChecked() == true)
 				{
 					checked = 1;
 				}
@@ -122,7 +126,7 @@ public class MultiViewData extends ViewData {
         mapsGallery.setSelection(Preferences.Get().multiCurrentMap);
         mapsGallery.setOnItemClickListener(new OnItemClickListener() 
         {
-            public void onItemClick(AdapterView parent, View v, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
             	Log.i("MultiViewData", "Clicked maps gallery item");
             	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.GALLERY_ITEM_CLICK, R.id.maps_multi_gal, position);
             }
@@ -134,37 +138,67 @@ public class MultiViewData extends ViewData {
         		activity, R.array.color_array, android.R.layout.simple_spinner_item);
         color1Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         color1Spinner.setAdapter(color1Adapter);
+        color1Spinner.setSelection(Preferences.Get().multiPlayer1Color);
+        this.color1SpinnerView = color1Spinner;
         color1Spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
         		Log.i("MultiViewData", "Selected color 1 spinner item");
+        		long color2SpinnerIndex = ((Spinner) MultiViewData.this.color2SpinnerView).getSelectedItemId();
+        		//If the color has already been chosen
+        		if(color2SpinnerIndex == position){
+        			//Choose a different color
+        			for(int i = 0; i < Constants.MaxPlayers; i++){
+        				if(i != color2SpinnerIndex){
+        					((Spinner) MultiViewData.this.color1SpinnerView).setSelection(i);
+        					MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.color1_multi_spin, i);
+        					return;
+        				}	
+        			}		
+        		}
+        		
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.color1_multi_spin, position);
         	}
 
-        	public void onNothingSelected(AdapterView parent) {
+        	public void onNothingSelected(AdapterView<?> parent) {
         		Log.i("MultiViewData", "No color 1 spinner item has been selected");
         	}
 
         });
-        color1Spinner.setSelection(Preferences.Get().player1Color);
+        
         //TODO: disabling the color used by the other color spinner
         Spinner color2Spinner = (Spinner) xmlLayout.findViewById(R.id.color2_multi_spin);
         ArrayAdapter<CharSequence> color2Adapter = ArrayAdapter.createFromResource(
         		activity, R.array.color_array, android.R.layout.simple_spinner_item);
         color2Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         color2Spinner.setAdapter(color2Adapter);
+        color2Spinner.setSelection(Preferences.Get().multiPlayer2Color);
+        this.color2SpinnerView = color2Spinner;
         color2Spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
         		Log.i("MultiViewData", "Selected color 2 spinner item");
+        		long color1SpinnerIndex = ((Spinner) MultiViewData.this.color1SpinnerView).getSelectedItemId();
+        		//If the color has already been chosen
+        		if(color1SpinnerIndex == position){
+        			//Choose a different color
+        			for(int i = 0; i < Constants.MaxPlayers; i++){
+        				if(i != color1SpinnerIndex){
+        					((Spinner) MultiViewData.this.color2SpinnerView).setSelection(i);
+        					MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.color2_multi_spin, i);
+        					return;
+        				}
+        			}		
+        		}
+        		
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.color2_multi_spin, position);
         	}
 
-        	public void onNothingSelected(AdapterView parent) {
+        	public void onNothingSelected(AdapterView<?> parent) {
         		Log.i("MultiViewData", "No color 2 spinner item has been selected");
         	}
         });
-        color2Spinner.setSelection(Preferences.Get().player2Color);
+        
         
         Spinner opponentsSpinner = (Spinner) xmlLayout.findViewById(R.id.op_multi_spin);
         ArrayAdapter<CharSequence> opponentsAdapter = ArrayAdapter.createFromResource(
@@ -178,7 +212,7 @@ public class MultiViewData extends ViewData {
         		MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.SPINNER_ITEM_CLICK, R.id.op_multi_spin, position);
         	}
 
-        	public void onNothingSelected(AdapterView parent) {
+        	public void onNothingSelected(AdapterView<?> parent) {
         		Log.i("MultiViewData", "No opponents spinner item has been selected");
         	}
         });
@@ -196,7 +230,7 @@ public class MultiViewData extends ViewData {
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.control_multi_spin, position);
         	}
 
-        	public void onNothingSelected(AdapterView parent) {
+        	public void onNothingSelected(AdapterView<?> parent) {
         		Log.i("MultiViewData", "No control spinner item has been selected");
         	}
         });

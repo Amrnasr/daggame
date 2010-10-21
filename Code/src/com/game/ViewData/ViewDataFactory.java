@@ -1,7 +1,6 @@
 package com.game.ViewData;
 
 import com.game.DagActivity.SceneType;
-import com.game.Scenes.SingleSelectScene;
 
 /**
  * Factory used to create the correct kind of ViewData.
