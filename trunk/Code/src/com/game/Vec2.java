@@ -144,5 +144,35 @@ public class Vec2
 	{
 		Log.i(tag, msg + ": " + this.x + ", " + this.y);
 	}
+	
+	/**
+	 * Calculates the dot product of this Vec2 with another
+	 * @param vec Vec2 to do the product with
+	 * @return the dot product
+	 */
+	public float Dot(Vec2 vec)
+	{
+		return (float) (this.x * vec.X() + this.y * vec.Y());
+	}
+	
+	/**
+	 * Adds to this Vec2 the values of another
+	 * @param vec Vec2 to add
+	 */
+	public void Add(Vec2 vec)
+	{
+		this.x += vec.X();
+		this.y += vec.Y();
+	}
+	
+	/**
+	 * Multiplies the x and y components by the value
+	 * @param val Multiplier for the components
+	 */
+	public void Scale(float val)
+	{
+		this.x *= val;
+		this.y *= val;
+	}
 
 }
