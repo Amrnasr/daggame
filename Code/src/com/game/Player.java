@@ -192,17 +192,23 @@ public class Player
 			UpdateTiles();
 			if(GetID() == 0)
 			{
-				//Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
+				Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
 			}
 		}
 	}
 	
 	private void UpdateTiles()
 	{
-		// For every tile
+		// For every tile move the density
 		for(int i = this.tiles.size()-1; i >= 0; i--)
 		{
-			this.tiles.elementAt(i).Update();
+			this.tiles.elementAt(i).MoveDensity();
+		}
+		
+		// Fight the density
+		for(int i = 0; i < this.tiles.size(); i++)
+		{
+			tiles.elementAt(i).DensityFight();
 		}
 		
 		// Once updated, eliminate those with no density
@@ -213,7 +219,7 @@ public class Player
 				tiles.elementAt(i).Unlink(GetID());
 			}
 		}
-		
+
 		// DEBUG
 		this.totalDensity = 0;
 		for(int i = 0; i < this.tiles.size(); i++)

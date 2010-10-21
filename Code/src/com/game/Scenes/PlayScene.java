@@ -413,5 +413,8 @@ public class PlayScene extends Scene
 	{
 		return (gameState == LogicState.PLAYING); 
 	}
+	
+	
+	public Vector<Player> GetPlayers() { return this.players; }
 
 }
