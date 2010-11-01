@@ -2,7 +2,6 @@ package com.game;
 
 import java.util.Vector;
 
-import android.util.Log;
 
 /**
  * Stub class for the logical map tile.
@@ -155,6 +154,9 @@ public class Tile
 		}
 	}
 	
+	/**
+	 * Makes the combat logic update in the tile.
+	 */
 	public void DensityFight()
 	{
 		if(densityFought)
@@ -163,10 +165,21 @@ public class Tile
 		}
 		densityFought = true;
 
-		MovementDensityFigth();
+		DummyDensityFight();
 		
 	}
 	
+	/**
+	 * Empty fight algorithm.
+	 */
+	private void DummyDensityFight()
+	{
+		
+	}
+	
+	/**
+	 * Trivial fight algorithim for densities
+	 */
 	private void BasicDensityFight()
 	{
 		int maxDensity = 0;
@@ -347,14 +360,31 @@ public class Tile
 		}
 	}
 	
-	
-	private void StealDensity(int from, int to, int cuantity)
+	/**
+	 * Steals density from the specified player to another player in the same tile.
+	 * It only steals up to the total the attacked player has.
+	 * 
+	 * @param from Player to steal from
+	 * @param to Player to give the stolen density
+	 * @param cuantity How much density we want to try and steal
+	 * @return How much we didn't manage to steal.
+	 */
+	private int StealDensity(int from, int to, int cuantity)
 	{
 		int realDensity = Math.min(cuantity, density[from]);
 		density[from] -= realDensity;
 		density[to] += realDensity;
+		
+		return cuantity - realDensity;
 	}
 	
+	/**
+	 * Trivial fight for two players. The one who has more density steals
+	 * from the one who has less.
+	 * 
+	 * @param player1 The id of one of the players who fights
+	 * @param player2 The id of the other player who fights
+	 */
 	private void SameDensityFight(int player1, int player2)
 	{
 		if(density[player1] > density[player2])
@@ -367,19 +397,54 @@ public class Tile
 		}
 	}
 	
-	
+	/**
+	 * Checks if the player has to unlink from this tile.
+	 * 
+	 * @param player ID of the player we are checking against
+	 * @return True if it has to unlink, false otherwise.
+	 */
 	public boolean HasToUnlink(int player)
 	{
 		return this.density[player] <= 0;
 	}
 	
+	/**
+	 * Unlinks a player from this tile. Cuts connections on both pointers
+	 * (player -> tile and tile -> player)
+	 * @param player Player to unlink
+	 */
 	public void Unlink(int player)
 	{
 		players[player].UnlinkTile(this);
 		players[player] = null;
 	}
 	
+	/**
+	 * Tries to move the specified density to an adjacent tile.
+	 * 
+	 * @param player Player who owns the density we are trying to move.
+	 * @param dirX X direction regarding where to move the density. [1,0,-1]
+	 * @param dirY Y direction regarding where to move the density. [1,0,-1]
+	 * @param totalDensity We want to attempt to move
+	 * @return The leftovers we weren't able to move to the specified tile.
+	 */
 	private int TryMoveDensity(Player player, int dirX, int dirY, int totalDensity)
+	{
+		return TryAgressiveMoveDensity(player, dirX, dirY, totalDensity);
+	}
+	
+	/**
+	 * Tries to move the density if it fits.
+	 * 
+	 * @param player Player who owns the density we are trying to move.
+	 * @param dirX X direction regarding where to move the density. [1,0,-1]
+	 * @param dirY Y direction regarding where to move the density. [1,0,-1]
+	 * @param totalDensity We want to attempt to move
+	 * @return The leftovers we weren't able to move to the specified tile.
+	 * @return
+	 */
+	
+	private int TryPassiveMoveDensity(Player player, int dirX, int dirY, int totalDensity)
 	{
 		int leftovers = 0;
 		
@@ -407,6 +472,98 @@ public class Tile
 		}
 		
 		return leftovers;
+	}
+	
+	/**
+	 * Tries to move the density and steal density from the tile it's moving to, 
+	 * if there is any enemy there.
+	 * 
+	 * @param player Player who owns the density we are trying to move.
+	 * @param dirX X direction regarding where to move the density. [1,0,-1]
+	 * @param dirY Y direction regarding where to move the density. [1,0,-1]
+	 * @param totalDensity We want to attempt to move
+	 * @return The leftovers we weren't able to move to the specified tile.
+	 * @return
+	 */
+	private int TryAgressiveMoveDensity(Player player, int dirX, int dirY, int totalDensity)
+	{
+		int leftovers = 0;
+		
+		Tile toMove = this.mapRef.AtTile((int)(this.position.X() + dirX), (int)(this.position.Y()+dirY));
+		
+		if(toMove == null)
+		{
+			// No available tile, return all density
+			leftovers = (int) totalDensity;
+		}
+		else
+		{
+			// Steal from the enemy first
+			if(toMove.HasEnemyDensity(player.GetID()))
+			{
+				int enemyPlayer = toMove.GetFirstEnemy(player.GetID());
+				
+				toMove.Link(player);
+				toMove.StealDensity(enemyPlayer, player.GetID(), totalDensity);	
+
+			}
+
+			// Put as much density as we can, return the rest
+			int maxCap = toMove.GetCurrentCapacity();
+			maxCap = Math.max(0, maxCap);
+			int toAdd = (int) Math.min(maxCap, totalDensity);
+			
+			if(toAdd > 0)
+			{
+				toMove.AddDensity(player, toAdd);
+			}
+			
+			leftovers = (int) Math.max(0, totalDensity-toAdd);
+
+		}
+		
+		return leftovers;
+	}
+	
+
+	/**
+	 * Checks to see if the tile has any density from any other player
+	 * @param player ID of the player who checks
+	 * @return True if it does, false if it doesn't
+	 */
+	public boolean HasEnemyDensity(int player)
+	{
+		boolean enemyFound = false;
+		
+		for(int i = 0; i < density.length; i++)
+		{
+			if(density[i] > 0 && i != player)
+			{
+				enemyFound = true; 
+				break;
+			}
+		}
+		
+		return enemyFound;
+	}
+	
+	/**
+	 * Gets the first enemy it finds for the specified player
+	 * @param player ID of the player looking for enemies
+	 * @return the ID of the enemy player
+	 */
+	private int GetFirstEnemy(int player)
+	{
+		int enemy = -1;
+		for(int i = 0; i < density.length; i++)
+		{
+			if(density[i] > 0 && i != player)
+			{
+				enemy = i;
+				break;
+			}
+		}
+		return enemy;
 	}
 	
 	/**
@@ -482,6 +639,18 @@ public class Tile
 	public synchronized void AddDensity(Player player, int density)
 	{
 		int playerPos = player.GetID();
+		Link(player);
+		
+		this.density[playerPos] += density;
+	}
+	
+	/**
+	 * Links the tile with a specified player if they weren't linked yet.
+	 * @param player Player to link with.
+	 */
+	public void Link(Player player)
+	{
+		int playerPos = player.GetID();
 		if(this.players[playerPos] == null)
 		{
 			this.players[playerPos] = player;
@@ -489,8 +658,6 @@ public class Tile
 			
 			player.LinkTile(this);
 		}
-		
-		this.density[playerPos] += density;
 	}
 	
 	/**
@@ -509,8 +676,14 @@ public class Tile
 		return (density[player] > 0) ? true : false;
 	}
 	
+	/**
+	 * Gets the density that player has in the tile
+	 * @param player From whom we want the density
+	 * @return The density of player
+	 */
 	public int GetDensityFrom(int player)
 	{
 		return this.density[player];
 	}
 }
+
