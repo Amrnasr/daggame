@@ -190,7 +190,8 @@ public class Player
 		if(tileUpdateRegulator.IsReady())
 		{
 			UpdateTiles();
-			if(GetID() == 0)
+			
+			//if(GetID() == 0)
 			{
 				Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
 			}
