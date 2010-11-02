@@ -127,15 +127,15 @@ public class Tile
 				int leftovers = 0;
 				
 				// Try to send it in the diagonal (1)
-				leftovers = TryMoveDensity(curPlay, dirX, dirY, densityToMove);
+				leftovers = TryMoveDensity(curPlay, dirX, dirY, densityToMove, true);
 				
 				// Density left? Send it to the sides (2)
 				if(leftovers > 0)
 				{
 					int leftoverToMove = leftovers;
 					leftovers = 0;
-					leftovers += TryMoveDensity(curPlay, 0, dirY, leftoverToMove/2);
-					leftovers += TryMoveDensity(curPlay, dirX, 0, (leftoverToMove/2) + (leftoverToMove%2));
+					leftovers += TryMoveDensity(curPlay, 0, dirY, leftoverToMove/2,false);
+					leftovers += TryMoveDensity(curPlay, dirX, 0, (leftoverToMove/2) + (leftoverToMove%2),false);
 				}
 				
 				// Density left? Send it to the perpendiculars (3)
@@ -143,8 +143,8 @@ public class Tile
 				{
 					int leftoverToMove = leftovers;
 					leftovers = 0;
-					leftovers += TryMoveDensity(curPlay, -dirX, dirY, leftoverToMove/2);
-					leftovers += TryMoveDensity(curPlay, dirX, -dirY, (leftoverToMove/2) + (leftoverToMove%2));
+					leftovers += TryMoveDensity(curPlay, -dirX, dirY, leftoverToMove/2,false);
+					leftovers += TryMoveDensity(curPlay, dirX, -dirY, (leftoverToMove/2) + (leftoverToMove%2),false);
 				}
 				
 				// Remove total - leftovers
@@ -428,9 +428,9 @@ public class Tile
 	 * @param totalDensity We want to attempt to move
 	 * @return The leftovers we weren't able to move to the specified tile.
 	 */
-	private int TryMoveDensity(Player player, int dirX, int dirY, int totalDensity)
+	private int TryMoveDensity(Player player, int dirX, int dirY, int totalDensity, boolean isAttackDir)
 	{
-		return TryAgressiveMoveDensity(player, dirX, dirY, totalDensity);
+		return TryAgressiveMoveDensity(player, dirX, dirY, totalDensity, isAttackDir);
 	}
 	
 	/**
@@ -478,14 +478,19 @@ public class Tile
 	 * Tries to move the density and steal density from the tile it's moving to, 
 	 * if there is any enemy there.
 	 * 
+	 * TODO: Turn isAttackDir into a fuzzy instead of a hard decision. Add:
+	 * - How near the cursor is
+	 * - Lateral also eat, but less.
+	 * 
 	 * @param player Player who owns the density we are trying to move.
 	 * @param dirX X direction regarding where to move the density. [1,0,-1]
 	 * @param dirY Y direction regarding where to move the density. [1,0,-1]
 	 * @param totalDensity We want to attempt to move
+	 * @param isAttackDir Indicates whether we are attacking in the straight line. 
+	 * 	If so we eat enemies, if not we don't
 	 * @return The leftovers we weren't able to move to the specified tile.
-	 * @return
 	 */
-	private int TryAgressiveMoveDensity(Player player, int dirX, int dirY, int totalDensity)
+	private int TryAgressiveMoveDensity(Player player, int dirX, int dirY, int totalDensity, boolean isAttackDir)
 	{
 		int leftovers = 0;
 		
@@ -499,7 +504,7 @@ public class Tile
 		else
 		{
 			// Steal from the enemy first
-			if(toMove.HasEnemyDensity(player.GetID()))
+			if(toMove.HasEnemyDensity(player.GetID()) && isAttackDir)
 			{
 				int enemyPlayer = toMove.GetFirstEnemy(player.GetID());
 				
