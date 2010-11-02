@@ -20,6 +20,7 @@ import com.game.Preferences;
 import com.game.R;
 import com.game.Regulator;
 import com.game.RenderInitData;
+import com.game.DagActivity.SceneType;
 import com.game.InputDevice.AIInputDevice;
 import com.game.InputDevice.BallInputDevice;
 import com.game.InputDevice.InputDevice;
@@ -197,7 +198,6 @@ public class PlayScene extends Scene
 	@Override
 	public void End() 
 	{
-		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -294,6 +294,11 @@ public class PlayScene extends Scene
 			}
 			
 			Camera.Get().Update();
+		}
+		
+		if(GameHasBeenWon())
+		{
+			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.GAMEOVER_SCENE.ordinal());
 		}
 	}
 	
@@ -414,7 +419,42 @@ public class PlayScene extends Scene
 		return (gameState == LogicState.PLAYING); 
 	}
 	
-	
+	/**
+	 * Gets the vector of players
+	 * @return The player vector
+	 */
 	public Vector<Player> GetPlayers() { return this.players; }
 
+	/**
+	 * Determines if the game is over now
+	 * @return True if the game is over, false if it isn't
+	 */
+	private boolean GameHasBeenWon()
+	{
+		boolean gameWon = false;
+		int playersWithNullPoints = 0;
+		int winnerPlayer = -1;
+		
+		// Check everyone's points
+		for(int i= 0; i < this.players.size(); i++)
+		{
+			if(players.elementAt(i).GetTotalDensity() == 0)
+			{
+				playersWithNullPoints++;
+			}
+			else
+			{
+				winnerPlayer = players.elementAt(i).GetID();
+			}
+		}
+		
+		// Everyone has 0 points except 1 player, game over
+		if(playersWithNullPoints == (this.players.size() - 1))
+		{
+			Preferences.Get().winnerPlayer = winnerPlayer;
+			gameWon = true;
+		}
+		
+		return gameWon;
+	}
 }

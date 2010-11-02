@@ -25,6 +25,7 @@ public class Preferences
 		// Made up default map size
 		this.mapHeight = 0;
 		this.mapWidth = 0;
+		this.winnerPlayer = -1;
 	}
 	
 	/**
@@ -235,5 +236,10 @@ public class Preferences
 	 * Map height in WCS
 	 */
 	public int mapHeight;
+	
+	/**
+	 * Player that has won this round
+	 */
+	public int winnerPlayer;
 
 }
