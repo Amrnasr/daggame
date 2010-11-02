@@ -57,6 +57,9 @@ public class Player
 	 */
 	private Regulator tileUpdateRegulator;
 	
+	/**
+	 * Total density owned by the player at this point
+	 */
 	private int totalDensity;
 	
 	/**
@@ -166,9 +169,22 @@ public class Player
 		Log.i("Player" + GetID(), "Initial tile: " + initialTile.GetPos().X() + ", " + initialTile.GetPos().Y());
 	}
 	
+	/**
+	 * Links the player with the provided tile by adding it to it's tile vector
+	 * @param tile Tile to link
+	 */
 	public void LinkTile(Tile tile)
 	{
 		this.tiles.add(tile);
+	}
+	
+	/**
+	 * Unlinks the player with the provided tile by removing it from its tile vector
+	 * @param tile Tile to unlink
+	 */
+	public void UnlinkTile(Tile tile)
+	{
+		this.tiles.remove(tile);
 	}
 	
 	/**
@@ -176,12 +192,11 @@ public class Player
 	 */
 	public void Start()
 	{
-		
 	}
 	
 	/**
 	 * Updates the player logic. 
-	 * Requires cursor and input decice active and working
+	 * Requires cursor and input decide active and working
 	 */
 	public void Update()
 	{
@@ -189,15 +204,14 @@ public class Player
 		this.inputDevice.Update();
 		if(tileUpdateRegulator.IsReady())
 		{
-			UpdateTiles();
-			
-			//if(GetID() == 0)
-			{
-				Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
-			}
+			UpdateTiles();			
+			Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
 		}
 	}
 	
+	/**
+	 * Updates all the tiles the player has.
+	 */
 	private void UpdateTiles()
 	{
 		// For every tile move the density
@@ -207,6 +221,7 @@ public class Player
 		}
 		
 		// Fight the density
+		// TODO: Remove if not needed in the final version (fighting in movement)
 		for(int i = 0; i < this.tiles.size(); i++)
 		{
 			tiles.elementAt(i).DensityFight();
@@ -229,14 +244,13 @@ public class Player
 		}
 	}
 	
+	/**
+	 * Adds the specified density to the total density the player has
+	 * @param density
+	 */
 	public void AddToTotalDensityCount(int density)
 	{
 		this.totalDensity += density;
-	}
-	
-	public void UnlinkTile(Tile tile)
-	{
-		this.tiles.remove(tile);
 	}
 	
 	/**
@@ -279,4 +293,10 @@ public class Player
 	 * @return if is human.
 	 */
 	public boolean IsHuman() { return this.humanPlayer; }
+	
+	/**
+	 * Gets the total density the player has
+	 * @return The total density.
+	 */
+	public int GetTotalDensity() {return this.totalDensity; }
 }

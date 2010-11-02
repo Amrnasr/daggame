@@ -1,27 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-	android:id="@+id/widget28"
+	android:id="@+id/gameover_layout"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
+	android:orientation="vertical"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	>
 	<TextView
-		android:id="@+id/widget29"
+		android:id="@+id/gameover_title"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Game Over"
-		android:textSize="24sp"
+		android:layout_marginTop="20px"
+		android:text="@string/about_title"
+		android:textSize="18sp"
+		android:layout_centerHorizontal="true"		
 		android:layout_alignParentTop="true"
-		android:layout_centerHorizontal="true"
+		
 		>
 	</TextView>
+	<ScrollView
+		android:id="@+id/gameover_layout_scroll"
+		android:layout_marginTop="10px"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@+id/gameover_title"	
+		android:gravity="center_horizontal"
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		>
+		<LinearLayout
+			android:id="@+id/gameover_layout_inner_scroll"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:orientation="vertical"
+			xmlns:android="http://schemas.android.com/apk/res/android"
+			>
+			
+			<TextView
+				android:id="@+id/gameover_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Mother fucka winner:"
+				android:layout_gravity="center_horizontal"
+				>
+			</TextView>
+		</LinearLayout>
+	</ScrollView>
 	<Button
 		android:id="@+id/ok_gameover_but"
-		android:layout_width="wrap_content"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="100px"
 		android:text="OK"
-		android:layout_gravity="center_horizontal"
+		android:gravity="center_horizontal"
+		android:layout_alignParentBottom="true"		
 		>
 	</Button>
 </RelativeLayout>
