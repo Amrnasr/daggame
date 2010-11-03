@@ -1,22 +1,51 @@
 package com.game.InputDevice;
 
+import AIBehaviours.ChaseClosestCursorStrategy;
+import AIBehaviours.Strategy;
+
 import com.game.Preferences;
 import com.game.Regulator;
 import com.game.Vec2;
 import com.game.Scenes.PlayScene;
-
+/**
+ * Input device from a AI. Outputs the expected results, but takes the stimulus from
+ * internal logic, rather than user input.
+ * 
+ * @author Ying
+ *
+ */
 public class AIInputDevice extends InputDevice 
 {
+	/**
+	 * Regulator for keeping track of when we have to check if we change strategy.
+	 */
 	Regulator redecideRegulator;
+	
+	/**
+	 * Reference to the PlayScene, to access data.
+	 */
 	PlayScene sceneRef;
 	
+	/**
+	 * Current strategy the AIInputDevice is following. 
+	 */
+	Strategy currentStrategy;
+	
+	/**
+	 * Creates a new instance of the AIInputDevice
+	 * @param playScene Reference to the playScene
+	 */
 	public AIInputDevice(PlayScene playScene)
 	{
 		super(playScene);
 		sceneRef = playScene;
-		redecideRegulator = new Regulator(0.5f);
+		redecideRegulator = new Regulator(2f);
+		currentStrategy = new ChaseClosestCursorStrategy(sceneRef, parent);
 	}
 
+	/**
+	 * Start logic.
+	 */
 	@Override
 	public void Start() 
 	{
@@ -24,6 +53,9 @@ public class AIInputDevice extends InputDevice
 
 	}
 
+	/**
+	 * Update the AIInputDevice
+	 */
 	@Override
 	public void Update() 
 	{
@@ -31,6 +63,15 @@ public class AIInputDevice extends InputDevice
 		{
 			NaiveChaseClosestCursor();
 		}
+	}
+	
+	/**
+	 * Checks if the current strategy is goign well, 
+	 * if not, choose another one
+	 */
+	private void ChooseBestStrategy()
+	{
+		
 	}
 	
 	/**
