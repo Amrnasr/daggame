@@ -25,25 +25,27 @@ public class ChaseClosestCursorStrategy extends Strategy
 	/**
 	 * Updates the strategy
 	 */
-	@Override
-	protected void Update() 
+	@Override protected void Update() 
 	{
 		Vec2 cursorPos = playerRef.GetCursor().GetPosition();
 		Vec2 enemyPos = null;
-		Vec2 destination = new Vec2();
-		
+		Vec2 destination = new Vec2();		
 		Vec2 vecToEnemy = new Vec2();
+		
 		float minLenght = Preferences.Get().mapWidth*2; // Really large number
 		for(int i= 0; i < sceneRef.GetPlayers().size(); i++)
 		{
 			if(sceneRef.GetPlayers().elementAt(i).GetID() != this.playerRef.GetID())
 			{
-				enemyPos = sceneRef.GetPlayers().elementAt(i).GetCursor().GetPosition();
-				vecToEnemy.Set(enemyPos.X()-cursorPos.X(), enemyPos.Y()-cursorPos.Y());
-				if(vecToEnemy.Length() < minLenght)
+				if(sceneRef.GetPlayers().elementAt(i).GetTotalDensity() > 0)
 				{
-					minLenght = (float) vecToEnemy.Length();
-					destination.Set(vecToEnemy.X(), vecToEnemy.Y());
+					enemyPos = sceneRef.GetPlayers().elementAt(i).GetCursor().GetPosition();
+					vecToEnemy.Set(enemyPos.X()-cursorPos.X(), enemyPos.Y()-cursorPos.Y());
+					if(vecToEnemy.Length() < minLenght)
+					{
+						minLenght = (float) vecToEnemy.Length();
+						destination.Set(vecToEnemy.X(), vecToEnemy.Y());
+					}
 				}
 			}			
 		}

@@ -63,6 +63,22 @@ public class Player
 	private int totalDensity;
 	
 	/**
+	 * Density the player had in the previous update. 
+	 * Used to calculate the "improvement" of density
+	 */
+	private int previousDensity;
+	
+	/**
+	 * Keeps a record of the latest rounds wins/losses
+	 */
+	private CircularBuffer fightRecord;
+	
+	/**
+	 * Length of the record of fightRecord
+	 */
+	private final static int fightRecordLength = 60;
+	
+	/**
 	 * Index of the color to be used to render this player's army
 	 */
 	private int colorIndex;
@@ -83,14 +99,18 @@ public class Player
 		
 		this.inputDevice = inputDevice;
 		this.inputDevice.SetParent(this);
+		this.inputDevice.Start();
 		
 		// Tiles
 		tiles = new Vector<Tile>();
 		tileUpdateRegulator = new Regulator(5); // TODO: Put a decent update speed.
-		totalDensity = 0;
 		
 		// TODO: Read from preferences!
 		this.initialDensity = 3000;
+		
+		this.totalDensity = 0;
+		this.previousDensity = initialDensity;
+		this.fightRecord = new CircularBuffer(fightRecordLength, 1);
 		
 		// Color
 		this.colorIndex = colorIndex;
@@ -205,7 +225,7 @@ public class Player
 		if(tileUpdateRegulator.IsReady())
 		{
 			UpdateTiles();			
-			Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
+			//Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
 		}
 	}
 	
@@ -236,11 +256,16 @@ public class Player
 			}
 		}
 
-		// DEBUG
+		this.previousDensity = this.totalDensity;
 		this.totalDensity = 0;
 		for(int i = 0; i < this.tiles.size(); i++)
 		{
 			AddToTotalDensityCount( this.tiles.elementAt(i).GetDensityFrom(GetID()));
+		}
+		
+		if(previousDensity > 0)
+		{
+			fightRecord.Store((float)((float)(totalDensity)/(float)(previousDensity)));
 		}
 	}
 	
@@ -299,4 +324,10 @@ public class Player
 	 * @return The total density.
 	 */
 	public int GetTotalDensity() {return this.totalDensity; }
+	
+	/**
+	 * Gets the average of the fight record
+	 * @return The average fight record of the player
+	 */
+	public float GetAverageFightRecord() {return this.fightRecord.GetAverage(); }
 }
