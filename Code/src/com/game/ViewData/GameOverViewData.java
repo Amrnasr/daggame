@@ -2,16 +2,21 @@ package com.game.ViewData;
 
 import com.game.MessageHandler;
 import com.game.MsgType;
+import com.game.Preferences;
 import com.game.R;
 import com.game.MessageHandler.MsgReceiver;
 
 import android.app.Activity;
 import android.content.Context;
+import android.hardware.Camera.Parameters;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * Specific view data class for the "About Us" screen.
@@ -42,6 +47,12 @@ public class GameOverViewData extends ViewData {
             MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.ok_gameover_but);
           }
         });
+        
+        TextView winner = new TextView(activity);
+        winner.setText("Player " + Preferences.Get().winnerPlayer );
+        winner.setGravity(Gravity.CENTER_HORIZONTAL);
+        LinearLayout textHolder = (LinearLayout) xmlLayout.findViewById(R.id.gameover_layout_inner_scroll);
+        textHolder.addView(winner);
         
 		return xmlLayout;
 	}
