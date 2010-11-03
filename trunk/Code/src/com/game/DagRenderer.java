@@ -278,6 +278,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		//Enable blending
 		gl.glEnable (GL10.GL_BLEND);
+		
 		gl.glBlendFunc (GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -348,16 +349,29 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glTranslatef(-Camera.Get().X(),-Camera.Get().Y(),-Camera.Get().Z());	
 		
 		// If the bitmap hasn't been received don't do anything
-		if(this.state != RenderState.RENDERING) return;		
-
+		if(this.state != RenderState.RENDERING) return;	
+		
+		//Load the texture if it hasn't been loaded and it's necessary
+		if(!Constants.DebugMode && !this.texReady) SetTextures(gl);
+		
+		// Draw background rectangle	
+		gl.glDisable(GL10.GL_TEXTURE_2D);
+		gl.glTranslatef(0f,0f,-1f);
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexMapBuffer);		
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		gl.glTranslatef(0f,0f,1f);
+		
+		LoadPlayers();
+		
+		DrawPlayers(gl);
+		gl.glEnable(GL10.GL_TEXTURE_2D);
+		
+		DrawCursors(gl);	
+		
 		// Draw the corresponding data, debug or not.
 		if(!Constants.DebugMode )
 		{
-			//Load the texture if it hasn't been loaded
-			if(!this.texReady)
-			{
-        		SetTextures(gl);
-			}
 			gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			DrawTexturedMap(gl);
 		}
@@ -368,14 +382,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexMapBuffer);		
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.tileMapBufferLength/3);
 		}	
-		
-		LoadPlayers();
-		
-		gl.glDisable(GL10.GL_TEXTURE_2D);
-		DrawPlayers(gl);
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		
-		DrawCursors(gl);	
 		
 		getCurrentProjection(gl);
 		getCurrentModelView(gl);
@@ -390,7 +396,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * @param gl Opengl context
 	 */
 	private void DrawTexturedMap(GL10 gl)
-	{		
+	{	
+		
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.mapTextureId);
 		
 		//Set the vertices
@@ -472,18 +479,17 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
-		
 		gl.glScalef(this.lastWidth/(Preferences.Get().mapWidth*3f), this.lastWidth/(Preferences.Get().mapWidth*3f), 1f);
 		gl.glTranslatef((Preferences.Get().mapWidth*3f/this.lastWidth)*this.lastWidth/2f-Preferences.Get().mapWidth,(Preferences.Get().mapWidth*3f/this.lastWidth)*this.lastHeight/2f-Preferences.Get().mapHeight,-this.minZ-2f);	
-		
-		DrawTexturedMap(gl);
 		
 		gl.glDisable(GL10.GL_TEXTURE_2D);
 		DrawPlayers(gl);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
 		DrawCursors(gl);
+		
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
+		DrawTexturedMap(gl);
 		
 		//Return to a perspective projection
 		gl.glMatrixMode(GL10.GL_PROJECTION);
@@ -527,27 +533,27 @@ public class DagRenderer implements GLSurfaceView.Renderer
 				//calculate the position of the vertices
 				floatVertexArray[count] = tileX*Constants.TileWidth; 
 				floatVertexArray[count+1] = tileY*Constants.TileWidth;
-				floatVertexArray[count+2] = 1.0f; 
+				floatVertexArray[count+2] = 0.5f; 
 							
 				floatVertexArray[count+3] = tileX*Constants.TileWidth+Constants.TileWidth; 
 				floatVertexArray[count+4] = tileY*Constants.TileWidth;
-				floatVertexArray[count+5] = 1.0f; 
+				floatVertexArray[count+5] = 0.5f; 
 							
 				floatVertexArray[count+6] = tileX*Constants.TileWidth; 
 				floatVertexArray[count+7] = tileY*Constants.TileWidth+Constants.TileWidth;
-				floatVertexArray[count+8] = 1.0f; 
+				floatVertexArray[count+8] = 0.5f; 
 							
 				floatVertexArray[count+9] = tileX*Constants.TileWidth+Constants.TileWidth; 
 				floatVertexArray[count+10] = tileY*Constants.TileWidth;
-				floatVertexArray[count+11] = 1.0f; 
+				floatVertexArray[count+11] = 0.5f; 
 							
 				floatVertexArray[count+12] = tileX*Constants.TileWidth+Constants.TileWidth; 
 				floatVertexArray[count+13] = tileY*Constants.TileWidth+Constants.TileWidth;
-				floatVertexArray[count+14] = 1.0f; 
+				floatVertexArray[count+14] = 0.5f; 
 							
 				floatVertexArray[count+15] = tileX*Constants.TileWidth; 
 				floatVertexArray[count+16] = tileY*Constants.TileWidth+Constants.TileWidth;
-				floatVertexArray[count+17] = 1.0f; 
+				floatVertexArray[count+17] = 0.5f; 
 				
 				LoadPlayerColor(gl, curTile, count + count/3, floatColorArray);
 				
@@ -928,7 +934,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private void SetTextures(GL10 gl)
 	{	
-        gl.glEnable(GL10.GL_DEPTH_TEST);
+		gl.glEnable(GL10.GL_DEPTH_TEST);
         
         //Enable the use of textures and set the texture 0 as the current texture
 		gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -941,13 +947,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.mapTextureId);
 		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.map.getBitmap(), 0);
 		
-		//this.map.getBitmap().recycle();
+		this.map.getBitmap().recycle();
 		
 		//Create the float buffers of the vertices, texture coordinates and normals
-		float VertexMapArray[] = {Preferences.Get().mapWidth,Preferences.Get().mapHeight,0.0f,
-				0f,Preferences.Get().mapHeight,0.0f,
-				Preferences.Get().mapWidth,0f,0.0f,
-				0f,0f,0.0f};
+		float VertexMapArray[] = {Preferences.Get().mapWidth,Preferences.Get().mapHeight,1.0f,
+				0f,Preferences.Get().mapHeight,1.0f,
+				Preferences.Get().mapWidth,0f,1.0f,
+				0f,0f,1.0f};
 		Log.i("DagRenderer","Map width: " + Preferences.Get().mapWidth + " height: " + Preferences.Get().mapHeight);
 		float textureArray[] = {1.0f,1.0f,0.0f,1.0f,1.0f,0.0f,0.0f,0.0f};
 		
@@ -973,7 +979,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.cursorTextureId);
 		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.cursorBitmap, 0);
 		
-		//this.cursorBitmap.recycle();
+		this.cursorBitmap.recycle();
 		
 		//Set the texture parameters
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
