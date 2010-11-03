@@ -1,12 +1,11 @@
 package com.game.InputDevice;
 
 import AIBehaviours.ChaseClosestCursorStrategy;
+import AIBehaviours.FleeStrategy;
 import AIBehaviours.Strategy;
-
-import com.game.Preferences;
 import com.game.Regulator;
-import com.game.Vec2;
 import com.game.Scenes.PlayScene;
+
 /**
  * Input device from a AI. Outputs the expected results, but takes the stimulus from
  * internal logic, rather than user input.
@@ -40,7 +39,7 @@ public class AIInputDevice extends InputDevice
 		super(playScene);
 		sceneRef = playScene;
 		redecideRegulator = new Regulator(2f);
-		currentStrategy = new ChaseClosestCursorStrategy(sceneRef, parent);
+		currentStrategy = null;
 	}
 
 	/**
@@ -49,57 +48,50 @@ public class AIInputDevice extends InputDevice
 	@Override
 	public void Start() 
 	{
-		// TODO Auto-generated method stub
-
+		currentStrategy = new ChaseClosestCursorStrategy(sceneRef, parent);
 	}
 
 	/**
 	 * Update the AIInputDevice
 	 */
-	@Override
-	public void Update() 
+	@Override public void Update() 
 	{
+		if(parent.GetTotalDensity() <= 0)
+		{
+			// This AI has lost, nothing else to do here.
+			return;
+		}
+		
 		if(redecideRegulator.IsReady())
 		{
-			NaiveChaseClosestCursor();
+			ChooseBestStrategy();
 		}
+		
+		currentStrategy.TimedUpdate();
 	}
 	
 	/**
-	 * Checks if the current strategy is goign well, 
+	 * Checks if the current strategy is going well, 
 	 * if not, choose another one
 	 */
 	private void ChooseBestStrategy()
 	{
-		
-	}
-	
-	/**
-	 * The AI just tries to find the closest enemy and follows it's cursor
-	 */
-	private void NaiveChaseClosestCursor()
-	{
-		Vec2 cursorPos = parent.GetCursor().GetPosition();
-		Vec2 enemyPos = null;
-		Vec2 destination = new Vec2();
-		
-		Vec2 vecToEnemy = new Vec2();
-		float minLenght = Preferences.Get().mapWidth*2; // Really large number
-		for(int i= 0; i < sceneRef.GetPlayers().size(); i++)
+		if(parent.GetAverageFightRecord() > 0.95)
 		{
-			if(sceneRef.GetPlayers().elementAt(i).GetID() != this.parent.GetID())
+			// Wining streak
+			if(currentStrategy.getClass() != ChaseClosestCursorStrategy.class)
 			{
-				enemyPos = sceneRef.GetPlayers().elementAt(i).GetCursor().GetPosition();
-				vecToEnemy.Set(enemyPos.X()-cursorPos.X(), enemyPos.Y()-cursorPos.Y());
-				if(vecToEnemy.Length() < minLenght)
-				{
-					minLenght = (float) vecToEnemy.Length();
-					destination.Set(vecToEnemy.X(), vecToEnemy.Y());
-				}
-			}			
+				currentStrategy = new ChaseClosestCursorStrategy(sceneRef, parent);
+			}
 		}
-		
-		this.parent.GetCursor().MoveInDirection(destination);
+		else
+		{
+			// Loosing here!
+			if(currentStrategy.getClass() != FleeStrategy.class)
+			{
+				currentStrategy = new FleeStrategy(sceneRef, parent);
+			}
+		}
 	}
 
 }
