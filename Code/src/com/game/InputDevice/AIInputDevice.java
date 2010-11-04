@@ -3,6 +3,8 @@ package com.game.InputDevice;
 import AIBehaviours.ChaseClosestCursorStrategy;
 import AIBehaviours.FleeStrategy;
 import AIBehaviours.Strategy;
+import android.util.Log;
+
 import com.game.Regulator;
 import com.game.Scenes.PlayScene;
 
@@ -76,12 +78,15 @@ public class AIInputDevice extends InputDevice
 	 */
 	private void ChooseBestStrategy()
 	{
-		if(parent.GetAverageFightRecord() > 0.95)
+		float averageFightRecord = parent.GetAverageFightRecord();
+		String decided = new String("doing the same");
+		if(averageFightRecord >= 1)
 		{
 			// Wining streak
 			if(currentStrategy.getClass() != ChaseClosestCursorStrategy.class)
 			{
 				currentStrategy = new ChaseClosestCursorStrategy(sceneRef, parent);
+				decided = new String("chasing");
 			}
 		}
 		else
@@ -90,8 +95,11 @@ public class AIInputDevice extends InputDevice
 			if(currentStrategy.getClass() != FleeStrategy.class)
 			{
 				currentStrategy = new FleeStrategy(sceneRef, parent);
+				decided = new String("fleeing");
 			}
 		}
+		
+		Log.i("Player " + parent.GetID(), "Is "+ decided+"! AvFiRe: " + averageFightRecord);
 	}
 
 }

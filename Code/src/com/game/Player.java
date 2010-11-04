@@ -76,7 +76,7 @@ public class Player
 	/**
 	 * Length of the record of fightRecord
 	 */
-	private final static int fightRecordLength = 60;
+	private final static int fightRecordLength = 5;
 	
 	/**
 	 * Index of the color to be used to render this player's army
