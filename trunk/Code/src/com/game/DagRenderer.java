@@ -1134,7 +1134,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
     */
    public Vec2 GetWorldCoords( Vec2 touch, Camera cam)
    {
-	   Log.i("World Coords", "-------------- ");
+	  // Log.i("World Coords", "-------------- ");
 	   
 	   // Initialize auxiliary variables.
 	   Vec2 worldPos = new Vec2();
@@ -1143,10 +1143,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   float screenW = cam.GetScreenWidth();
 	   float screenH = cam.GetScreenHeight();
 	   
-	   Camera.Get().Position().Print("World Coords", "Camera");
-	   touch.Print("World Coords", "Screen touch");
-	   Log.i("World Coords", "Screen: " + screenW + ", " + screenH);
-	   Log.i("World Coords", "World: " + Preferences.Get().mapWidth + ", " + Preferences.Get().mapHeight);
+	   //Camera.Get().Position().Print("World Coords", "Camera");
+	   //touch.Print("World Coords", "Screen touch");
+	   //Log.i("World Coords", "Screen: " + screenW + ", " + screenH);
+	   //Log.i("World Coords", "World: " + Preferences.Get().mapWidth + ", " + Preferences.Get().mapHeight);
 	   
 	   // Auxiliary matrix and vectors to deal with ogl.
 	   float[] invertedMatrix, transformMatrix, normalizedInPoint, outPoint;
@@ -1173,7 +1173,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 
 	   /* Apply the inverse to the point in clip space */
 	   Matrix.multiplyMV(outPoint, 0, invertedMatrix, 0, normalizedInPoint, 0);
-	   Print("Out ", outPoint);
+	   //Print("Out ", outPoint);
 	   
 	   if (outPoint[3] == 0.0)
 	   {
@@ -1186,9 +1186,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   worldPos.Set(outPoint[0] / outPoint[3], outPoint[1] / outPoint[3]);
 	   
 	   // Unnecesary, but here for log purposes.
-	   float worldZ = outPoint[2] / outPoint[3];
+	   //float worldZ = outPoint[2] / outPoint[3];
 	   
-	   Log.i("World Coords", "Move to point: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);			   
+	   //Log.i("World Coords", "Move to point: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);			   
 	   
 	   return worldPos;	   
    }
