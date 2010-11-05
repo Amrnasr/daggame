@@ -2,11 +2,11 @@
 <resources>
     <string name="color_prompt">Choose a color</string>
     <string-array name="color_array">
-        <item>Red</item>
+        <item>Brown</item>
         <item>Green</item>
         <item>Blue</item>
-        <item>Yellow</item>
+        <item>Cyan</item>
         <item>Purple</item>
-        <item>Orange</item>
+        <item>Yellow</item>
     </string-array>
 </resources>

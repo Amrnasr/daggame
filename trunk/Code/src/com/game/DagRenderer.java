@@ -418,9 +418,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	{			
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
 		
-		//Set the texture coordinates
-		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
-		
 		for(int i = 0; i < this.cursorsRef.size(); i++ )
 		{
 			Cursor cursor = this.cursorsRef.elementAt(i);
@@ -434,6 +431,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			
 			//Set the vertices
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursor.GetBuffer());
+			
+			//Set the texture coordinates
+			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
 			
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 			
@@ -450,16 +450,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private void DrawPlayers(GL10 gl)
 	{
+		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 		// Draw tile map			
-		for(int i = 0; i < players.size(); i++){
-			gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-			
+		for(int i = 0; i < players.size(); i++){		
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.playersVertexBuffer[i]);
 			gl.glColorPointer(4, GL10.GL_FLOAT, 0, this.playersColorBuffer[i]);
-			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.playersBufferLength[i]/3);
-			
-			gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.playersBufferLength[i]/3);		
 		}
+		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 	}
 	
 	/**
@@ -573,8 +571,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private void SetCursorColor(GL10 gl,int playerID){
 		int colorIndex = players.elementAt(playerID).GetColorIndex();
 		switch(colorIndex){
-			case 0: //Red
-				gl.glColor4f(Constants.CursorColorIntensity, 0f, 0f, 1f);
+			case 0: //Brown
+				gl.glColor4f(0.65f*Constants.CursorColorIntensity, 0.32f*Constants.CursorColorIntensity, 0.13f*Constants.CursorColorIntensity, 1f);
 				break;
 			case 1: //Green
 				gl.glColor4f(0f, Constants.CursorColorIntensity, 0f, 1f);
@@ -582,13 +580,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			case 2: //Blue
 				gl.glColor4f(0f, 0f, Constants.CursorColorIntensity, 1f);
 				break;	
-			case 3: //Yellow
+			case 3: //Cyan
 				gl.glColor4f(0f, Constants.CursorColorIntensity, Constants.CursorColorIntensity, 1f);
 				break;
 			case 4: //Purple
 				gl.glColor4f(Constants.CursorColorIntensity, 0f, Constants.CursorColorIntensity, 1f);
 				break;
-			case 5: //Orange
+			case 5: //Yellow
 				gl.glColor4f(Constants.CursorColorIntensity, Constants.CursorColorIntensity, 0f, 1f);
 				break;
 		}
@@ -606,52 +604,67 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	{
 		float r = 0f, g = 0f, b = 0f, a=0f;
 		
+		int playersCount = 0;
+		int playerWithDensity = -1;
+		int totalDensity = 0;
 		//calculate the intensity of the color
 		for(int i=0; i < players.size(); i++){
-			int colorIndex = players.elementAt(i).GetColorIndex();
-			float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
-			switch(colorIndex){
-				case 0: //Red
-					r += intensityChange;
-					
-					a += intensityChange;
-					break;
-				case 1: //Green
-					g += intensityChange;
-					
-					a += intensityChange;
-					break;
-				case 2: //Blue
-					b += intensityChange;
-					
-					a += intensityChange;
-					break;	
-				case 3: //Yellow
-					g += intensityChange;
-					b += intensityChange;
-					
-					a += intensityChange;
-					break;
-				case 4: //Purple
-					r += intensityChange;
-					b += intensityChange;
-					
-					a += intensityChange;
-					break;
-				case 5: //Orange
-					r += intensityChange;
-					g += intensityChange;
-					
-					a += intensityChange;
-					break;
-				default:
-					r += intensityChange; 
-					g += intensityChange; 
-					b += intensityChange;
-					
-					a += intensityChange;
-			}		
+			if(tile.GetDensityFrom(i) > 0){
+				playersCount++;
+				totalDensity += tile.GetDensityFrom(i);
+				playerWithDensity = i;
+			}
 		}
+		
+		if(playersCount > 1){
+			r += 0.25f;
+			
+			a += 0.25f;
+		}
+		else if(playersCount == 1){
+			int colorIndex = players.elementAt(playerWithDensity).GetColorIndex();
+			float intensityChange = tile.GetDensityFrom(playerWithDensity) * 0.25f / tile.GetMaxCapacity();
+			if(intensityChange > 0f){
+				switch(colorIndex){
+					case 0: //Brown
+						r += intensityChange + 0.1f;
+						g += intensityChange + 0.43f;
+						b += intensityChange + 0.62f;
+						
+						a += intensityChange;
+						break;
+					case 1: //Green
+						g += intensityChange;
+						
+						a += intensityChange;
+						break;
+					case 2: //Blue
+						b += intensityChange;
+						
+						a += intensityChange;
+						break;	
+					case 3: //Cyan
+						g += intensityChange;
+						b += intensityChange;
+						
+						a += intensityChange;
+						break;
+					case 4: //Purple
+						r += intensityChange;
+						b += intensityChange;
+						
+						a += intensityChange;
+						break;
+					case 5: //Yellow
+						r += intensityChange;
+						g += intensityChange;
+						
+						a += intensityChange;
+						break;
+				}		
+			}
+		}
+		
 		//Add the base intensity if necessary
 		r = (r > 0f) ? (0.75f - r) : 0f; 
 		g = (g > 0f) ? (0.75f - g) : 0f;
@@ -1134,7 +1147,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
     */
    public Vec2 GetWorldCoords( Vec2 touch, Camera cam)
    {
-	  // Log.i("World Coords", "-------------- ");
+	   Log.i("World Coords", "-------------- ");
 	   
 	   // Initialize auxiliary variables.
 	   Vec2 worldPos = new Vec2();
@@ -1143,10 +1156,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   float screenW = cam.GetScreenWidth();
 	   float screenH = cam.GetScreenHeight();
 	   
-	   //Camera.Get().Position().Print("World Coords", "Camera");
-	   //touch.Print("World Coords", "Screen touch");
-	   //Log.i("World Coords", "Screen: " + screenW + ", " + screenH);
-	   //Log.i("World Coords", "World: " + Preferences.Get().mapWidth + ", " + Preferences.Get().mapHeight);
+	   Camera.Get().Position().Print("World Coords", "Camera");
+	   touch.Print("World Coords", "Screen touch");
+	   Log.i("World Coords", "Screen: " + screenW + ", " + screenH);
+	   Log.i("World Coords", "World: " + Preferences.Get().mapWidth + ", " + Preferences.Get().mapHeight);
 	   
 	   // Auxiliary matrix and vectors to deal with ogl.
 	   float[] invertedMatrix, transformMatrix, normalizedInPoint, outPoint;
@@ -1173,7 +1186,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 
 	   /* Apply the inverse to the point in clip space */
 	   Matrix.multiplyMV(outPoint, 0, invertedMatrix, 0, normalizedInPoint, 0);
-	   //Print("Out ", outPoint);
+	   Print("Out ", outPoint);
 	   
 	   if (outPoint[3] == 0.0)
 	   {
@@ -1186,9 +1199,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   worldPos.Set(outPoint[0] / outPoint[3], outPoint[1] / outPoint[3]);
 	   
 	   // Unnecesary, but here for log purposes.
-	   //float worldZ = outPoint[2] / outPoint[3];
+	   float worldZ = outPoint[2] / outPoint[3];
 	   
-	   //Log.i("World Coords", "Move to point: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);			   
+	   Log.i("World Coords", "Move to point: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);			   
 	   
 	   return worldPos;	   
    }
