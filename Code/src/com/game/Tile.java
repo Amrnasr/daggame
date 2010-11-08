@@ -123,7 +123,18 @@ public class Tile
 				else {dirY = 1;}
 				
 				// Try to move it
-				int densityToMove = density[i]; //Math.min(density[i], GetMaxCapacity());
+				float requestedDensityToMove = density[i]* players[i].GetDensitySpeed() ; //Math.min(density[i], GetMaxCapacity());
+				int densityToMove = 0;
+				if(requestedDensityToMove < 1.0f && requestedDensityToMove > 0.0f )
+				{
+					densityToMove = 1;
+				}
+				else
+				{
+					densityToMove = Math.min(density[i], (int)requestedDensityToMove);
+				}
+				
+				//int densityToMove = density[i]; 
 				int leftovers = 0;
 				
 				// Try to send it in the diagonal (1)

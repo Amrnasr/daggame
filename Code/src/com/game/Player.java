@@ -84,6 +84,14 @@ public class Player
 	private int colorIndex;
 	
 	/**
+	 * The speed of the density movement of this player.
+	 * From 0 to 1.
+	 * 
+	 * TODO: Initialize from preferences
+	 */
+	private float densitySpeed;
+	
+	/**
 	 * Creates a new instance of the Player class.
 	 * @param playerNumber Unique player identifier. If it's not unique you'll regret it later.
 	 * @param inputDevice Input device used by this player.
@@ -107,6 +115,7 @@ public class Player
 		
 		// TODO: Read from preferences!
 		this.initialDensity = 3000;
+		this.densitySpeed = 0.5f;
 		
 		this.totalDensity = 0;
 		this.previousDensity = initialDensity;
@@ -330,4 +339,24 @@ public class Player
 	 * @return The average fight record of the player
 	 */
 	public float GetAverageFightRecord() {return this.fightRecord.GetAverage(); }
+	
+	/**
+	 * Gets the density speed of the player, clamped between 1.0 and 0.0
+	 * @return The clamped density speed of the player
+	 */
+	public float GetDensitySpeed() 
+	{ 
+		float top = (float) Math.min(this.densitySpeed, 1.0);
+		float bottom = (float) Math.max(top, 0.0f);
+		return bottom; 
+	}
+	
+	/**
+	 * Adds a quantity to the current density speed.
+	 * @param quantity
+	 */
+	public void EditDensitySpeed(float quantity)
+	{
+		this.densitySpeed += quantity;
+	}
 }
