@@ -1,8 +1,11 @@
 package com.game.PowerUp;
 
+import com.game.MessageHandler;
+import com.game.MsgType;
 import com.game.Player;
 import com.game.Regulator;
 import com.game.Vec2;
+import com.game.MessageHandler.MsgReceiver;
 
 /**
  * A object that gives some kind of special property to a player
@@ -57,6 +60,7 @@ public  abstract class PowerUp
 	{
 		this.parent = parent;
 		this.doneTimer = new Regulator(1/duration);
+		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.STOP_DISPLAYING_POWERUP, this);
 	}
 	
 	/**

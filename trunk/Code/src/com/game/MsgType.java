@@ -134,6 +134,18 @@ public enum MsgType
 	/**
 	 * Sent from the activity when onResume is called
 	 */
-	UNPAUSE_GAME
+	UNPAUSE_GAME,
+	
+	/**
+	 * Sent when the PowerUp manager wants to set a new PowerUp on screen^
+	 * obj: The PowerUp to display
+	 */
+	DISPLAY_NEW_POWERUP,
+	
+	/**
+	 * Sent when a PowerUp is not to be displayed anymore on screen
+	 * obj: The PowerUp to stop displaying
+	 */
+	STOP_DISPLAYING_POWERUP
 	
 }

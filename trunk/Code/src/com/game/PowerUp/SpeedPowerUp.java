@@ -4,28 +4,29 @@ import com.game.Vec2;
 
 public class SpeedPowerUp extends PowerUp 
 {
+	float speedIncrement;
 
 	public SpeedPowerUp(Vec2 startingPos)
 	{
 		super(startingPos);
+		this.speedIncrement = 0.3f;
 	}
 	
 	@Override
-	public void ApplyEffect() {
-		// TODO Auto-generated method stub
+	public void ApplyEffect() 
+	{		
+		parent.EditDensitySpeed(speedIncrement);
+	}
+
+	@Override
+	public void RemoveEffect() 
+	{
+		parent.EditDensitySpeed(-speedIncrement);
 
 	}
 
 	@Override
-	public void RemoveEffect() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void Update() {
-		// TODO Auto-generated method stub
-
-	}
+	public void Update() 
+	{	}
 
 }

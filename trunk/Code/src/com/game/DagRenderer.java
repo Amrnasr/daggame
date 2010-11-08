@@ -22,6 +22,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.game.MessageHandler.MsgReceiver;
+import com.game.PowerUp.PowerUp;
 
 /**
  * Renderer for the GLSurface
@@ -173,7 +174,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private FloatBuffer[] playersColorBuffer;
 	
+	/**
+	 * Indicates whether to show the minimap or not
+	 */
 	private boolean showMinimap;
+	
+	private Vector<PowerUp> powerUps;
 	
 	/**
 	 * Initializes the renderer and sets the handler callbacks.
@@ -185,7 +191,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		this.map = null;
 		this.cursorBitmap = null;
-		this.cursorsRef = null;
+		this.cursorsRef = new Vector<Cursor>();
+		this.powerUps = null;
 		this.players=null;
 		this.texReady = false;	
 		this.lastWidth = 0;
