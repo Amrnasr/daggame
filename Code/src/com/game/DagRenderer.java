@@ -348,6 +348,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		// Save context for matrix retrieval
 		this.gl = gl;
 		
+		// Logic not dependent on game state
+		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_RENDER_PROFILER);
+		
 		// Update the view if needed.
 		if(this.surfaceUpdatePending)
 		{

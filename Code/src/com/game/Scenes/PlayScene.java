@@ -271,7 +271,7 @@ public class PlayScene extends Scene
 	public void Update() 
 	{
 		// Logic not dependent on game state
-		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_PROFILER);
+		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_LOGIC_PROFILER);
 		
 		// Update the message handler.
 		if(messageManagerRegulator.IsReady())

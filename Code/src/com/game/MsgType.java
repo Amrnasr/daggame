@@ -61,10 +61,16 @@ public enum MsgType
 	ACTIVITY_CHANGE_SCENE,
 	
 	/**
-	 * Sent each update loop from the current scene. 
+	 * Sent each update loop from the current logic scene. 
 	 * Tells the activity to update the profiler
 	 */
-	UPDATE_PROFILER,
+	UPDATE_LOGIC_PROFILER,
+	
+	/**
+	 * Sent each update loop from the renderer. 
+	 * Tells the activity to update the profiler
+	 */
+	UPDATE_RENDER_PROFILER,
 	
 	/**
 	 * Sent by the Activity to request a Scene to stop running. 

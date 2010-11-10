@@ -20,7 +20,12 @@ public class Profiler
 	/**
 	 * Fps time from last update
 	 */
-	private long previousFpsTime;
+	private long previousLogicFPSTime;
+	
+	/**
+	 * Fps time from last update
+	 */
+	private long previousRenderFPSTime;
 	
 	/**
 	 * Ram time from last update
@@ -28,9 +33,14 @@ public class Profiler
 	private long previousRamTime;
 	
 	/**
-	 * Current frames per second
+	 * Current frames per second in the logic
 	 */
-	private int fps;
+	private int logicFPS;
+	
+	/**
+	 * Current frames per second in the renderer
+	 */
+	private int renderFPS;
 	
 	/**
 	 * Current RAM count in bytes
@@ -48,9 +58,14 @@ public class Profiler
 	private int ramRefresh;
 	
 	/**
-	 * Text view for displaying FPS
+	 * Text view for displaying logic FPS
 	 */
-	private TextView fpsView;
+	private TextView logicFPSView;
+	
+	/**
+	 * Text view for displaying render FPS
+	 */
+	private TextView renderFPSView;
 	
 	/**
 	 * Text view for displaying RAM
@@ -63,10 +78,12 @@ public class Profiler
 	public Profiler()
 	{
 		// Initialize variables	
-		previousFpsTime = 0;
+		previousLogicFPSTime = 0;
+		previousRenderFPSTime = 0;
 		previousRamTime = 0;
 		
-		fps = 0;
+		logicFPS = 0;
+		renderFPS = 0;
 		bytesRam = 0;
 		
 		fpsRefresh = 1000; // 1 second
@@ -89,45 +106,75 @@ public class Profiler
         		LayoutParams.FILL_PARENT, 
         		LayoutParams.WRAP_CONTENT );
         
-        // Create the fps view
-        fpsView = new TextView(act);
-        fpsView.setText("Fps: ");
-        fpsView.setPadding(0, 0, 10, 0);        
-        containerLayout.addView(fpsView, 0); // Add to the layout
+        // Create the logic fps view
+        logicFPSView = new TextView(act);
+        logicFPSView.setText("L.Fps: ");
+        logicFPSView.setPadding(0, 0, 10, 0);        
+        containerLayout.addView(logicFPSView, 0); // Add to the layout
+        
+        // Create the render fps view
+        renderFPSView = new TextView(act);
+        renderFPSView.setText("R.Fps: ");
+        renderFPSView.setPadding(0, 0, 10, 0);        
+        containerLayout.addView(renderFPSView, 1); // Add to the layout
         
         // Create the ram view
         ramView = new TextView(act);
         ramView.setText("Mem: ");
         ramView.setPadding(0, 0, 10, 0);
-        containerLayout.addView(ramView, 1); // Add to the layout
+        containerLayout.addView(ramView, 2); // Add to the layout
         
         // Add our view to the provided relative layout.
         rl.addView(containerLayout,tlp);
 	}
 	
 	/**
-	 * Updates the fps and ram values. Must be called in the main loop of the app. 
+	 * Updates the logic FPS and RAM values. Must be called in the main loop of the app. 
 	 */
-	public void Update()
+	public void LogicUpdate()
 	{
 		// Update Fps and Mem
-		calculateFPS();
+		calculateLogicFPS();
 		calculateRAM();
 	}
+	
+	/**
+	 * Updates the render FPS values.
+	 */
+	public void RenderUpdate()
+	{
+		calculateRenderFPS();
+	}
+	
+	/**
+	 * Calculates & updates the current render fps if fpsRefresh time has been 
+	 * reached (usually 1 sec), to avoid cpu overload.
+	 */
+	private void calculateRenderFPS()
+	{
+		renderFPS++;
+		if(System.currentTimeMillis() - previousRenderFPSTime >= fpsRefresh)
+		{
+			renderFPSView.setText("R.FPS: " + renderFPS ); 
+			
+			renderFPS = 0;
+			previousRenderFPSTime = System.currentTimeMillis();			
+		}
+	}	
 	
 	/**
 	 * Calculates & updates the current fps if fpsRefresh time has been 
 	 * reached (usually 1 sec), to avoid cpu overload.
 	 */
-	private void calculateFPS()
+	private void calculateLogicFPS()
 	{
-		fps++;
-		if(System.currentTimeMillis() - previousFpsTime >= fpsRefresh)
+		logicFPS++;
+		if(System.currentTimeMillis() - previousLogicFPSTime >= fpsRefresh)
 		{
-			fpsView.setText("FPS: " + fps ); 
+			logicFPSView.setText("L.FPS: " + logicFPS ); 
 			
-			fps = 0;
-			previousFpsTime = System.currentTimeMillis();			
+			logicFPS = 0;
+			previousLogicFPSTime = System.currentTimeMillis();			
 		}
 	}
 	
