@@ -8,6 +8,7 @@ import java.util.Vector;
 import android.util.Log;
 
 import com.game.InputDevice.InputDevice;
+import com.game.PowerUp.PowerUp;
 
 /**
  * Player class, a player has a Input mode and a Cursor to controll it's army.
@@ -91,6 +92,8 @@ public class Player
 	 */
 	private float densitySpeed;
 	
+	private Vector<PowerUp> powerUps;
+	
 	/**
 	 * Creates a new instance of the Player class.
 	 * @param playerNumber Unique player identifier. If it's not unique you'll regret it later.
@@ -123,6 +126,9 @@ public class Player
 		
 		// Color
 		this.colorIndex = colorIndex;
+		
+		// PowerUps
+		this.powerUps = new Vector<PowerUp>();
 	}
 	
 	/**
@@ -152,11 +158,11 @@ public class Player
 		this.mapRef = mapRef;
 		
 		Queue<Tile> toSearch = new LinkedList<Tile>();
-		toSearch.add(mapRef.AtWorld((int)this.cursor.GetPosition().X(), (int)this.cursor.GetPosition().Y()));
+		//toSearch.add(mapRef.AtWorld((int)this.cursor.GetPosition().X(), (int)this.cursor.GetPosition().Y()));
 		
-		Tile initialTile = null;
+		Tile initialTile = this.mapRef.GetClosestEmptyTile((int)this.cursor.GetPosition().X(), (int)this.cursor.GetPosition().Y());
 		
-		while(!toSearch.isEmpty())
+		/*while(!toSearch.isEmpty())
 		{
 			Tile aux = toSearch.remove();
 			
@@ -185,7 +191,7 @@ public class Player
 					}
 				}
 			}
-		}
+		}*/
 		
 		if(initialTile == null)
 		{
@@ -193,7 +199,6 @@ public class Player
 		}
 		
 		initialTile.AddDensity(this, initialDensity);	
-		//this.tiles.add(initialTile);
 		
 		Log.i("Player" + GetID(), "Initial tile: " + initialTile.GetPos().X() + ", " + initialTile.GetPos().Y());
 	}
@@ -217,6 +222,24 @@ public class Player
 	}
 	
 	/**
+	 * Links the player with the provided PowerUp by adding it to it's PowerUp vector
+	 * @param powerUp PowerUp to link
+	 */
+	public void LinkPowerUp(PowerUp powerUp)
+	{
+		this.powerUps.add(powerUp);
+	}
+	
+	/**
+	 * Unlinks the player with the provided PowerUp by removing it from it's PowerUp vector.
+	 * @param powerUp
+	 */
+	public void UnlinkPowerUp(PowerUp powerUp)
+	{
+		this.powerUps.remove(powerUp);
+	}
+	
+	/**
 	 * Does naught
 	 */
 	public void Start()
@@ -236,8 +259,17 @@ public class Player
 			UpdateTiles();			
 			//Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
 		}
+		UpdatePowerUps();
 	}
 	
+	private void UpdatePowerUps() 
+	{
+		for(int i= 0; i < powerUps.size(); i++)
+		{
+			powerUps.elementAt(i).PlayerUpdate();
+		}		
+	}
+
 	/**
 	 * Updates all the tiles the player has.
 	 */

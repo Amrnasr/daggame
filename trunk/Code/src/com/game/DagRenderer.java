@@ -179,6 +179,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private boolean showMinimap;
 	
+	/**
+	 * List of PowerUps to draw
+	 */
 	private Vector<PowerUp> powerUps;
 	
 	/**
@@ -192,8 +195,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.map = null;
 		this.cursorBitmap = null;
 		this.cursorsRef = new Vector<Cursor>();
-		this.powerUps = null;
-		this.players=null;
+		this.powerUps = new Vector<PowerUp>();
+		this.players = null;
 		this.texReady = false;	
 		this.lastWidth = 0;
 		this.lastHeight = 0;
@@ -228,6 +231,19 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        	{
 	        		Start((RenderInitData)msg.obj);
 	        	}
+	        	
+	        	else if(msg.what == MsgType.DISPLAY_NEW_POWERUP.ordinal())
+	        	{
+	        		Log.i("DagRenderer", "Add new powerup!");
+	        		powerUps.add((PowerUp)msg.obj);
+	        	}
+	        	
+	        	else if(msg.what == MsgType.STOP_DISPLAYING_POWERUP.ordinal())
+	        	{
+	        		Log.i("DagRenderer", "Remove powerup!");
+	        		powerUps.remove((PowerUp)msg.obj);
+	        	}
+	        	
 	        }
 	    };
 	    
@@ -374,6 +390,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		DrawPlayers(gl);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
+		DrawPowerUps(gl);
+		
 		DrawCursors(gl);	
 		
 		// Draw the corresponding data, debug or not.
@@ -448,6 +466,30 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			//gl.glPopMatrix();
 			
 			//cursorsRef.elementAt(i).DrawCursors(gl);
+		}
+	}
+	
+	private void DrawPowerUps(GL10 gl)
+	{
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
+		
+		for(int i = 0; i < this.powerUps.size(); i++ )
+		{
+			PowerUp powerUp = this.powerUps.elementAt(i);
+			float x =(float)powerUp.Pos().X();
+			float y = (float)powerUp.Pos().Y();
+			
+			gl.glTranslatef(x,y,1);
+			
+			//Set the vertices
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, powerUp.GetBuffer());
+			
+			//Set the texture coordinates
+			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
+			
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+			
+			gl.glTranslatef(-x,-y,-1);
 		}
 	}
 	
@@ -1154,7 +1196,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
     */
    public Vec2 GetWorldCoords( Vec2 touch, Camera cam)
    {
-	   Log.i("World Coords", "-------------- ");
+	   //Log.i("World Coords", "-------------- ");
 	   
 	   // Initialize auxiliary variables.
 	   Vec2 worldPos = new Vec2();
@@ -1163,10 +1205,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   float screenW = cam.GetScreenWidth();
 	   float screenH = cam.GetScreenHeight();
 	   
-	   Camera.Get().Position().Print("World Coords", "Camera");
-	   touch.Print("World Coords", "Screen touch");
-	   Log.i("World Coords", "Screen: " + screenW + ", " + screenH);
-	   Log.i("World Coords", "World: " + Preferences.Get().mapWidth + ", " + Preferences.Get().mapHeight);
+	   //Camera.Get().Position().Print("World Coords", "Camera");
+	   //touch.Print("World Coords", "Screen touch");
+	   //Log.i("World Coords", "Screen: " + screenW + ", " + screenH);
+	   //Log.i("World Coords", "World: " + Preferences.Get().mapWidth + ", " + Preferences.Get().mapHeight);
 	   
 	   // Auxiliary matrix and vectors to deal with ogl.
 	   float[] invertedMatrix, transformMatrix, normalizedInPoint, outPoint;
@@ -1193,7 +1235,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 
 	   /* Apply the inverse to the point in clip space */
 	   Matrix.multiplyMV(outPoint, 0, invertedMatrix, 0, normalizedInPoint, 0);
-	   Print("Out ", outPoint);
+	   //Print("Out ", outPoint);
 	   
 	   if (outPoint[3] == 0.0)
 	   {
@@ -1208,7 +1250,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   // Unnecesary, but here for log purposes.
 	   float worldZ = outPoint[2] / outPoint[3];
 	   
-	   Log.i("World Coords", "Move to point: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);			   
+	   //Log.i("World Coords", "Move to point: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);			   
 	   
 	   return worldPos;	   
    }

@@ -3,6 +3,8 @@ package com.game;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Vector;
 
 import android.app.Activity;
@@ -153,6 +155,59 @@ public class Map {
 	public Tile AtWorld(int x, int y)
 	{
 		return AtTile(x/Constants.TileWidth, y/Constants.TileWidth);
+	}
+	
+	/**
+	 * Finds and returns the closest tile to the coordinates provided. 
+	 * Does a BFS, so use sparingly. 
+	 * @param initialX The x position from where we start searching
+	 * @param initialY The y position from where we start searching
+	 * @return The closest empty tile.
+	 */
+	public Tile GetClosestEmptyTile(int initialX, int initialY)
+	{
+		Queue<Tile> toSearch = new LinkedList<Tile>();
+		toSearch.add(this.AtWorld(initialX,initialY));
+		
+		Tile objectiveTile = null;
+		
+		while(!toSearch.isEmpty())
+		{
+			Tile aux = toSearch.remove();
+			
+			// If it's a max capacity tile, and empty
+			if(aux.GetCurrentCapacity() == Tile.TileMaxCapacity())
+			{
+				// Found our objective tile
+				objectiveTile = aux;
+				toSearch.clear();
+			}
+			else
+			{
+				// Keep looking, look at all the 8 tiles around
+				int x = (int) aux.GetPos().X();
+				int y = (int) aux.GetPos().Y();
+				
+				for(int i = -1; i < 2; i++)
+				{
+					for(int j = -1; j < 2; j++)
+					{
+						Tile newSuspect = this.AtTile(x+i, y+j);
+						if(newSuspect != null)
+						{
+							toSearch.add(newSuspect);
+						}
+					}
+				}
+			}
+		}
+		
+		if(objectiveTile == null)
+		{
+			Log.e("Map", "NOT FOUND EMPTY TILE!");
+		}
+				
+		return objectiveTile;
 	}
 	
 
