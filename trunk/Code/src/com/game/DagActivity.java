@@ -31,24 +31,42 @@ import android.view.WindowManager;
 
 public class DagActivity extends Activity 
 {
-	/// Used to display ram and fps on screen in any view.
+	/**
+	 * Used to display ram and fps on screen in any view.
+	 */
 	private Profiler profiler;
 	
-	/// Handler for messages from other threads (like the render or logic threads)
+	/**
+	 * Handler for messages from other threads (like the render or logic threads)
+	 */
 	private Handler handler;
 	
-	/// Enum with all the scenes in the game.
+	/**
+	 * Enum with all the scenes in the game.
+	 * @author Ying
+	 *
+	 */
 	public enum SceneType 
 	{ MENU_SCENE, SINGLE_SCENE, MULTI_SCENE, OPTIONS_SCENE, HOW_SCENE, ABOUT_SCENE, PLAY_SCENE, GAMEOVER_SCENE};
 	
-	
+	/**
+	 * The actual game view as a relative layout
+	 */
 	public RelativeLayout gameView;
+	
+	/**
+	 * Logic thread of the game
+	 */
 	public DagLogicThread gameLogic;
 	
-	/// Aux value for changing to a new scene/view
+	/**
+	 * Aux value for changing to a new scene/view
+	 */
 	private SceneType nextScene;
 	
-	// Dialog used for long loading times
+	/**
+	 * Dialog used for long loading times
+	 */
 	private ProgressDialog dialog = null;
 	
     /** 
@@ -271,7 +289,6 @@ public class DagActivity extends Activity
 	        		dialog.dismiss();
 	        		dialog = null;
 	        	}
-	        	
 	        }
 	    };
 	    
@@ -325,8 +342,4 @@ public class DagActivity extends Activity
     	Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();         
         Camera.Get().SetScreenSize(display.getWidth(), display.getHeight());
     }
-    
-    
-    
-    
 }

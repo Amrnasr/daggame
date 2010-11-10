@@ -60,6 +60,14 @@ public abstract class InputDevice
 		return deviceHandler;
 	}
 	
+	/**
+	 * For the base class to override. Called after the creating of the InputDevice,
+	 * before the Update. 
+	 */
 	public abstract void Start();
+	
+	/**
+	 * For the base class to overrride. Called every update loop.
+	 */
 	public abstract void Update();
 }

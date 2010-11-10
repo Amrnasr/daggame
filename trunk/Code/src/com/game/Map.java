@@ -67,27 +67,27 @@ public class Map {
 		tileMap = new Vector<Tile>();
 		
 		//Calculate the maximum capacity of each tile and initialize them
-		for( int j = 0; j < tilesPerColumn; j++){
+		for( int j = 0; j < tilesPerColumn; j++)
+		{
 			String[] line = null;
 			try {
 				line = tileMapReader.readLine().split(" ");
 			} catch(IOException ioe) {
 			   Log.e("Map","Error reading from " + tileMapID);
 			} 
-			
-			
 
-			for(int i = 0; i < tilesPerRow; i++){
+			for(int i = 0; i < tilesPerRow; i++)
+			{
 				int value=0;
 				
-				try {
+				try 
+				{
 					value = Integer.parseInt(line[i].trim());
-				} catch(NumberFormatException nfe) {
+				} 
+				catch(NumberFormatException nfe) {
 				   Log.e("Map","Error converting into an integer a value from " + tileMapID);
 				} 
-				
-				
-				
+
 				tileMap.addElement(new Tile(i,j, value, this));
 			}
 		}

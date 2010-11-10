@@ -4,9 +4,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
 import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -225,25 +222,23 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        		Vec2 reply = GetWorldCoords((Vec2)msg.obj, Camera.Get());
 	        		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.REPLY_WCS_TRANSFORM_REQUEST, reply);
 	        	}
-	        	
 	        	// Get the message to initialize the renderer. Do so.
 	        	else if(msg.what == MsgType.INITIALIZE_RENDERER.ordinal())
 	        	{
 	        		Start((RenderInitData)msg.obj);
 	        	}
-	        	
+	        	// Asked to draw a new PowerUp
 	        	else if(msg.what == MsgType.DISPLAY_NEW_POWERUP.ordinal())
 	        	{
 	        		Log.i("DagRenderer", "Add new powerup!");
 	        		powerUps.add((PowerUp)msg.obj);
 	        	}
-	        	
+	        	// Asked to stop drawing a specific PowerUp
 	        	else if(msg.what == MsgType.STOP_DISPLAYING_POWERUP.ordinal())
 	        	{
 	        		Log.i("DagRenderer", "Remove powerup!");
 	        		powerUps.remove((PowerUp)msg.obj);
 	        	}
-	        	
 	        }
 	    };
 	    
@@ -286,9 +281,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	    MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG);
 	    MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.RENDERER_INITIALIZATION_DONE);		    
 	    this.state = RenderState.RENDERING;
-		
-		
-		
+
 	    Log.i("DagRenderer", "Initialization done");
 	}
 	
@@ -469,6 +462,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		}
 	}
 	
+	/**
+	 * Draw the PowerUp images
+	 * @param gl The openGL context
+	 */
 	private void DrawPowerUps(GL10 gl)
 	{
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
@@ -753,242 +750,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		colorArray[count+23] = a; 
 	}
 	
-	/*private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
-	{
-		float r = 0f, g = 0f, b = 0f;
-		
-		
-		//calculate the intensity of the color
-		for(int i=0; i < players.size(); i++){
-			int colorIndex = players.elementAt(i).GetColorIndex();
-			float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
-			switch(colorIndex){
-				case 0: //Red
-					r += intensityChange;
-					break;
-				case 1: //Green
-					g += intensityChange;
-					break;
-				case 2: //Blue
-					b += intensityChange;
-					break;	
-				case 3: //Yellow
-					g += intensityChange;
-					b += intensityChange;
-					break;
-				case 4: //Purple
-					r += intensityChange;
-					b += intensityChange;
-					break;
-				case 5: //Orange
-					r += intensityChange;
-					g += intensityChange;
-					break;
-				default:
-					r += intensityChange; 
-					g += intensityChange; 
-					b += intensityChange;
-			}		
-		}
-		//Add the base intensity if necessary
-		r = (r > 0f) ? (0.75f - r) : 0f; 
-		g = (g > 0f) ? (0.75f - g) : 0f;
-		b = (b > 0f) ? (0.75f - b) : 0f;
-		
-		//Store the color values
-		colorArray[count] = r; 
-		colorArray[count+1] = g;
-		colorArray[count+2] = b; 
-		colorArray[count+3] = 1f; 
-		
-		colorArray[count+4] = r;
-		colorArray[count+5] = g; 
-		colorArray[count+6] = b; 
-		colorArray[count+7] = 1f;
-		
-		colorArray[count+8] = r; 
-		colorArray[count+9] = g; 
-		colorArray[count+10] = b;
-		colorArray[count+11] = 1f; 
-					
-		colorArray[count+12] = r; 
-		colorArray[count+13] = g;
-		colorArray[count+14] = b; 
-		colorArray[count+15] = 1f; 
-		
-		colorArray[count+16] = r;
-		colorArray[count+17] = g; 
-		colorArray[count+18] = b;
-		colorArray[count+19] = 1f; 
-		
-		colorArray[count+20] = r;
-		colorArray[count+21] = g; 
-		colorArray[count+22] = b;
-		colorArray[count+23] = 1f; 
-	}*/
-
-	/*private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
-	{
-		float r = 0f, g = 0f, b = 0f, a=0f;
-		
-		//calculate the intensity of the color
-		for(int i=0; i < players.size(); i++){
-			int colorIndex = players.elementAt(i).GetColorIndex();
-			float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
-			switch(colorIndex){
-				case 0: //Red
-					r += intensityChange;
-					
-					a += intensityChange;
-					break;
-				case 1: //Green
-					g += intensityChange;
-					
-					a += intensityChange;
-					break;
-				case 2: //Blue
-					b += intensityChange;
-					
-					a += intensityChange;
-					break;	
-				case 3: //Yellow
-					g += intensityChange;
-					b += intensityChange;
-					
-					a += intensityChange;
-					break;
-				case 4: //Purple
-					r += intensityChange;
-					b += intensityChange;
-					
-					a += intensityChange;
-					break;
-				case 5: //Orange
-					r += intensityChange;
-					g += intensityChange;
-					
-					a += intensityChange;
-					break;
-				default:
-					r += intensityChange; 
-					g += intensityChange; 
-					b += intensityChange;
-					
-					a += intensityChange;
-			}		
-		}
-		//Add the base intensity if necessary
-		r = (r < 0f) ? (0.5f + r) : 0f; 
-		g = (g < 0f) ? (0.5f + g) : 0f;
-		b = (b < 0f) ? (0.5f + b) : 0f;
-		a = (r+g+b > 0f) ? 0.75f + a : 0f;
-		
-		//TODO: Check that the alpha doesn't accumulate because it's drawn one time per player with units in the tile
-		//Store the color values
-		colorArray[count] = r; 
-		colorArray[count+1] = g;
-		colorArray[count+2] = b; 
-		colorArray[count+3] = a; 
-		
-		colorArray[count+4] = r;
-		colorArray[count+5] = g; 
-		colorArray[count+6] = b; 
-		colorArray[count+7] = a;
-		
-		colorArray[count+8] = r; 
-		colorArray[count+9] = g; 
-		colorArray[count+10] = b;
-		colorArray[count+11] = a; 
-					
-		colorArray[count+12] = r; 
-		colorArray[count+13] = g;
-		colorArray[count+14] = b; 
-		colorArray[count+15] = a; 
-		
-		colorArray[count+16] = r;
-		colorArray[count+17] = g; 
-		colorArray[count+18] = b;
-		colorArray[count+19] = a; 
-		
-		colorArray[count+20] = r;
-		colorArray[count+21] = g; 
-		colorArray[count+22] = b;
-		colorArray[count+23] = a; 
-	}*/
 	
-	/*private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
-	{
-		float r = 0f, g = 0f, b = 0f;
-		
-		
-		//calculate the intensity of the color
-		for(int i=0; i < players.size(); i++){
-			int colorIndex = players.elementAt(i).GetColorIndex();
-			float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
-			switch(colorIndex){
-				case 0: //Red
-					r += intensityChange;
-					break;
-				case 1: //Green
-					g += intensityChange;
-					break;
-				case 2: //Blue
-					b += intensityChange;
-					break;	
-				case 3: //Yellow
-					g += intensityChange;
-					b += intensityChange;
-					break;
-				case 4: //Purple
-					r += intensityChange;
-					b += intensityChange;
-					break;
-				case 5: //Orange
-					r += intensityChange;
-					g += intensityChange;
-					break;
-				default:
-					r += intensityChange; 
-					g += intensityChange; 
-					b += intensityChange;
-			}		
-		}
-		//Add the base intensity if necessary
-		r = (r > 0f) ? (0.5f + r) : 0f; 
-		g = (g > 0f) ? (0.5f + g) : 0f;
-		b = (b > 0f) ? (0.5f + b) : 0f;
-		
-		//Store the color values
-		colorArray[count] = r; 
-		colorArray[count+1] = g;
-		colorArray[count+2] = b; 
-		colorArray[count+3] = 1f; 
-		
-		colorArray[count+4] = r;
-		colorArray[count+5] = g; 
-		colorArray[count+6] = b; 
-		colorArray[count+7] = 1f;
-		
-		colorArray[count+8] = r; 
-		colorArray[count+9] = g; 
-		colorArray[count+10] = b;
-		colorArray[count+11] = 1f; 
-					
-		colorArray[count+12] = r; 
-		colorArray[count+13] = g;
-		colorArray[count+14] = b; 
-		colorArray[count+15] = 1f; 
-		
-		colorArray[count+16] = r;
-		colorArray[count+17] = g; 
-		colorArray[count+18] = b;
-		colorArray[count+19] = 1f; 
-		
-		colorArray[count+20] = r;
-		colorArray[count+21] = g; 
-		colorArray[count+22] = b;
-		colorArray[count+23] = 1f; 
-	}*/
 	
 	/**
 	 * Loads the textures needed into Opengl
@@ -1248,11 +1010,247 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   worldPos.Set(outPoint[0] / outPoint[3], outPoint[1] / outPoint[3]);
 	   
 	   // Unnecesary, but here for log purposes.
-	   float worldZ = outPoint[2] / outPoint[3];
+	   //float worldZ = outPoint[2] / outPoint[3];
 	   
 	   //Log.i("World Coords", "Move to point: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);			   
 	   
 	   return worldPos;	   
    }
-
 }
+
+/*private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
+{
+	float r = 0f, g = 0f, b = 0f;
+	
+	
+	//calculate the intensity of the color
+	for(int i=0; i < players.size(); i++){
+		int colorIndex = players.elementAt(i).GetColorIndex();
+		float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
+		switch(colorIndex){
+			case 0: //Red
+				r += intensityChange;
+				break;
+			case 1: //Green
+				g += intensityChange;
+				break;
+			case 2: //Blue
+				b += intensityChange;
+				break;	
+			case 3: //Yellow
+				g += intensityChange;
+				b += intensityChange;
+				break;
+			case 4: //Purple
+				r += intensityChange;
+				b += intensityChange;
+				break;
+			case 5: //Orange
+				r += intensityChange;
+				g += intensityChange;
+				break;
+			default:
+				r += intensityChange; 
+				g += intensityChange; 
+				b += intensityChange;
+		}		
+	}
+	//Add the base intensity if necessary
+	r = (r > 0f) ? (0.75f - r) : 0f; 
+	g = (g > 0f) ? (0.75f - g) : 0f;
+	b = (b > 0f) ? (0.75f - b) : 0f;
+	
+	//Store the color values
+	colorArray[count] = r; 
+	colorArray[count+1] = g;
+	colorArray[count+2] = b; 
+	colorArray[count+3] = 1f; 
+	
+	colorArray[count+4] = r;
+	colorArray[count+5] = g; 
+	colorArray[count+6] = b; 
+	colorArray[count+7] = 1f;
+	
+	colorArray[count+8] = r; 
+	colorArray[count+9] = g; 
+	colorArray[count+10] = b;
+	colorArray[count+11] = 1f; 
+				
+	colorArray[count+12] = r; 
+	colorArray[count+13] = g;
+	colorArray[count+14] = b; 
+	colorArray[count+15] = 1f; 
+	
+	colorArray[count+16] = r;
+	colorArray[count+17] = g; 
+	colorArray[count+18] = b;
+	colorArray[count+19] = 1f; 
+	
+	colorArray[count+20] = r;
+	colorArray[count+21] = g; 
+	colorArray[count+22] = b;
+	colorArray[count+23] = 1f; 
+}*/
+
+/*private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
+{
+	float r = 0f, g = 0f, b = 0f, a=0f;
+	
+	//calculate the intensity of the color
+	for(int i=0; i < players.size(); i++){
+		int colorIndex = players.elementAt(i).GetColorIndex();
+		float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
+		switch(colorIndex){
+			case 0: //Red
+				r += intensityChange;
+				
+				a += intensityChange;
+				break;
+			case 1: //Green
+				g += intensityChange;
+				
+				a += intensityChange;
+				break;
+			case 2: //Blue
+				b += intensityChange;
+				
+				a += intensityChange;
+				break;	
+			case 3: //Yellow
+				g += intensityChange;
+				b += intensityChange;
+				
+				a += intensityChange;
+				break;
+			case 4: //Purple
+				r += intensityChange;
+				b += intensityChange;
+				
+				a += intensityChange;
+				break;
+			case 5: //Orange
+				r += intensityChange;
+				g += intensityChange;
+				
+				a += intensityChange;
+				break;
+			default:
+				r += intensityChange; 
+				g += intensityChange; 
+				b += intensityChange;
+				
+				a += intensityChange;
+		}		
+	}
+	//Add the base intensity if necessary
+	r = (r < 0f) ? (0.5f + r) : 0f; 
+	g = (g < 0f) ? (0.5f + g) : 0f;
+	b = (b < 0f) ? (0.5f + b) : 0f;
+	a = (r+g+b > 0f) ? 0.75f + a : 0f;
+	
+	//TODO: Check that the alpha doesn't accumulate because it's drawn one time per player with units in the tile
+	//Store the color values
+	colorArray[count] = r; 
+	colorArray[count+1] = g;
+	colorArray[count+2] = b; 
+	colorArray[count+3] = a; 
+	
+	colorArray[count+4] = r;
+	colorArray[count+5] = g; 
+	colorArray[count+6] = b; 
+	colorArray[count+7] = a;
+	
+	colorArray[count+8] = r; 
+	colorArray[count+9] = g; 
+	colorArray[count+10] = b;
+	colorArray[count+11] = a; 
+				
+	colorArray[count+12] = r; 
+	colorArray[count+13] = g;
+	colorArray[count+14] = b; 
+	colorArray[count+15] = a; 
+	
+	colorArray[count+16] = r;
+	colorArray[count+17] = g; 
+	colorArray[count+18] = b;
+	colorArray[count+19] = a; 
+	
+	colorArray[count+20] = r;
+	colorArray[count+21] = g; 
+	colorArray[count+22] = b;
+	colorArray[count+23] = a; 
+}*/
+
+/*private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
+{
+	float r = 0f, g = 0f, b = 0f;
+	
+	
+	//calculate the intensity of the color
+	for(int i=0; i < players.size(); i++){
+		int colorIndex = players.elementAt(i).GetColorIndex();
+		float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
+		switch(colorIndex){
+			case 0: //Red
+				r += intensityChange;
+				break;
+			case 1: //Green
+				g += intensityChange;
+				break;
+			case 2: //Blue
+				b += intensityChange;
+				break;	
+			case 3: //Yellow
+				g += intensityChange;
+				b += intensityChange;
+				break;
+			case 4: //Purple
+				r += intensityChange;
+				b += intensityChange;
+				break;
+			case 5: //Orange
+				r += intensityChange;
+				g += intensityChange;
+				break;
+			default:
+				r += intensityChange; 
+				g += intensityChange; 
+				b += intensityChange;
+		}		
+	}
+	//Add the base intensity if necessary
+	r = (r > 0f) ? (0.5f + r) : 0f; 
+	g = (g > 0f) ? (0.5f + g) : 0f;
+	b = (b > 0f) ? (0.5f + b) : 0f;
+	
+	//Store the color values
+	colorArray[count] = r; 
+	colorArray[count+1] = g;
+	colorArray[count+2] = b; 
+	colorArray[count+3] = 1f; 
+	
+	colorArray[count+4] = r;
+	colorArray[count+5] = g; 
+	colorArray[count+6] = b; 
+	colorArray[count+7] = 1f;
+	
+	colorArray[count+8] = r; 
+	colorArray[count+9] = g; 
+	colorArray[count+10] = b;
+	colorArray[count+11] = 1f; 
+				
+	colorArray[count+12] = r; 
+	colorArray[count+13] = g;
+	colorArray[count+14] = b; 
+	colorArray[count+15] = 1f; 
+	
+	colorArray[count+16] = r;
+	colorArray[count+17] = g; 
+	colorArray[count+18] = b;
+	colorArray[count+19] = 1f; 
+	
+	colorArray[count+20] = r;
+	colorArray[count+21] = g; 
+	colorArray[count+22] = b;
+	colorArray[count+23] = 1f; 
+}*/

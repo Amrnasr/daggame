@@ -3,9 +3,7 @@ package com.game;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import javax.microedition.khronos.opengles.GL10;
 import android.util.Log;
-import android.widget.FrameLayout;
 
 /**
  * Cursor the player moves around
@@ -197,33 +195,15 @@ public class Cursor
 	public synchronized Vec2 GetPosition()	{ return this.pos; }
 	
 	/**
-	 * Draws the cursor.
-	 * It's called by the render thread, so it must be sync to avoid problems.
-	 * 
-	 * @param gl OGL context to draw in
-	 * @deprecated Not used anymore as it gave sync problems.
+	 * Indicates if the cursor is from a human player or not
+	 * @return True if it's from a human, false if it's from AI
 	 */
-	public synchronized void DrawCursors(GL10 gl)
-	{		
-		gl.glPushMatrix();
-		
-		gl.glTranslatef((float)this.pos.X(),(float)this.pos.Y(),1);		
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursorBuff);
-
-		if(parent.IsHuman())
-		{
-			gl.glColor4f(0, 0, 1, 1);
-		}
-		else
-		{
-			gl.glColor4f(1, 0, 0, 1);
-		}
-		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		
-		gl.glPopMatrix();
-	}
-	
 	public boolean IsFromHuman() { return this.parent.IsHuman(); }
+	
+	/**
+	 * Gets the FloarBuffer for drawing the cursor
+	 * @return The float buffer
+	 */
 	public FloatBuffer GetBuffer() { return this.cursorBuff; }
 
 }
