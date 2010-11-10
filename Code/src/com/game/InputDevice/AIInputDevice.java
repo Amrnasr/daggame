@@ -99,7 +99,7 @@ public class AIInputDevice extends InputDevice
 			}
 		}
 		
-		Log.i("Player " + parent.GetID(), "Is "+ decided+"! AvFiRe: " + averageFightRecord);
+		//Log.i("Player " + parent.GetID(), "Is "+ decided+"! AvFiRe: " + averageFightRecord);
 	}
 
 }

@@ -14,6 +14,8 @@ import com.game.Cursor;
 import com.game.Map;
 import com.game.MessageHandler;
 import com.game.MessageHandler.MsgReceiver;
+import com.game.PowerUp.PowerUp;
+import com.game.PowerUp.PowerUpManager;
 import com.game.MsgType;
 import com.game.Player;
 import com.game.Preferences;
@@ -97,6 +99,9 @@ public class PlayScene extends Scene
 	 */
 	private Regulator cameraZoomRegulator;
 	
+	/**
+	 * Keeps the update of the message manager at a fixed speed
+	 */
 	private Regulator messageManagerRegulator;
 	
 	/**
@@ -108,6 +113,11 @@ public class PlayScene extends Scene
 	 * Current tile map file ID
 	 */
 	private int tileMapFile;
+	
+	/**
+	 * Manager for all the PowerUps available
+	 */
+	private PowerUpManager powerUpManager;
 	
 	/**
 	 * Initializes and sets the handler callback.
@@ -125,6 +135,7 @@ public class PlayScene extends Scene
 		this.messageManagerRegulator = new Regulator(1);
 		this.mapFile =  MapsImageAdapter.getImageID(Preferences.Get().singleCurrentMap);
 		this.tileMapFile = MapsImageAdapter.getTilemapID(Preferences.Get().singleCurrentMap);
+		this.powerUpManager = new PowerUpManager(this);
 		
 		CreatePlayers();
 		
@@ -187,6 +198,13 @@ public class PlayScene extends Scene
 	        		if(gameState == LogicState.PAUSED)
 	        		{
 	        			gameState = LogicState.PLAYING;
+	        		}
+	        	}
+	        	else if(msg.what == MsgType.STOP_DISPLAYING_POWERUP.ordinal())
+	        	{
+	        		if(powerUpManager != null)
+	        		{
+	        			powerUpManager.RemovePoweUp((PowerUp) msg.obj);
 	        		}
 	        	}
 	        }
@@ -295,6 +313,8 @@ public class PlayScene extends Scene
 			
 			Camera.Get().Update();
 		}
+		
+		this.powerUpManager.Update();
 		
 		if(GameHasBeenWon())
 		{
@@ -414,7 +434,7 @@ public class PlayScene extends Scene
 	 * Checks if the scene is ready to execute gameplay
 	 * @return True if it is, false if it isn't
 	 */
-	private boolean SceneReady()
+	public boolean SceneReady()
 	{
 		return (gameState == LogicState.PLAYING); 
 	}
@@ -457,4 +477,10 @@ public class PlayScene extends Scene
 		
 		return gameWon;
 	}
+	
+	/**
+	 * Gets the map.
+	 * @return The map.
+	 */
+	public Map GetMap() {return this.map; }
 }

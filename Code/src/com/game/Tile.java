@@ -2,6 +2,10 @@ package com.game;
 
 import java.util.Vector;
 
+import android.util.Log;
+
+import com.game.PowerUp.PowerUp;
+
 
 /**
  * Stub class for the logical map tile.
@@ -48,6 +52,11 @@ public class Tile
 	private Map mapRef;
 	
 	/**
+	 * Reference to a PowerUp if any.
+	 */
+	private PowerUp powerUpRef;
+	
+	/**
 	 * Initializes the tile
 	 * @param x coordinates
 	 * @param y coordinates
@@ -76,6 +85,8 @@ public class Tile
 		this.densityFought = false;
 		
 		this.mapRef = mapRef;
+		
+		this.powerUpRef = null;
 	}
 	
 	/**
@@ -239,11 +250,8 @@ public class Tile
 	 */
 	private void MovementDensityFigth()
 	{
-		
 		Vector<Integer> toFight = null;
-		
-		
-		
+
 		// Find all who wish to fight! SPARTA!
 		for(int i = 0; i < density.length; i++)
 		{
@@ -670,9 +678,24 @@ public class Tile
 		if(this.players[playerPos] == null)
 		{
 			this.players[playerPos] = player;
-			this.densityMoved = true;
-			
+			this.densityMoved = true;			
 			player.LinkTile(this);
+			
+			this.PowerUpLink(player);
+		}
+	}
+	
+	/**
+	 * If the tile has a PowerUp it links it to a player.
+	 * TODO: Read duration from constants, file, or somewhere!
+	 */
+	private void PowerUpLink(Player player)
+	{
+		if(HasPowerUp())
+		{
+			Log.i("Tile", "Giving powerup to Player " + player.GetID() +" !");
+			this.powerUpRef.Assign(player, 3f);
+			this.RemovePowerUp();
 		}
 	}
 	
@@ -681,6 +704,12 @@ public class Tile
 	 * @return Tile position
 	 */
 	public Vec2 GetPos() { return this.position; }
+	
+	/**
+	 * Gets the tile position in map x/y pixels.
+	 * @return Tile position
+	 */
+	public Vec2 GetRealPos() {return new Vec2(position.X()*Constants.TileWidth, position.Y()*Constants.TileWidth); }
 	
 	/**
 	 * Returns whether the player has units in this tile or not
@@ -700,6 +729,35 @@ public class Tile
 	public int GetDensityFrom(int player)
 	{
 		return this.density[player];
+	}
+	
+	/**
+	 * Adds a powerup to the tile, if it had one before it 
+	 * discards it.
+	 * 
+	 * @param newPowerUp PowerUp to add
+	 */
+	public void AddPowerUp(PowerUp newPowerUp)
+	{
+		Log.i("Tile", "Add new powerup!");
+		this.powerUpRef = newPowerUp;
+	}
+	
+	/**
+	 * Removes the current PowerUp from the tile.
+	 */
+	public void RemovePowerUp() 
+	{
+		this.powerUpRef = null;
+	}
+	
+	/**
+	 * Gets whether the tile has a PowerUp
+	 * @return True if it has a PowerUp, false if it doesn't.
+	 */
+	public boolean HasPowerUp()
+	{
+		return this.powerUpRef != null;
 	}
 }
 
