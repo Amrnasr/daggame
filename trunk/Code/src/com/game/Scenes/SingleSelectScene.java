@@ -168,7 +168,7 @@ public class SingleSelectScene extends Scene {
 	@Override
 	public void Update() 
 	{
-		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_PROFILER);
+		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_LOGIC_PROFILER);
 	}
 	
 	@Override

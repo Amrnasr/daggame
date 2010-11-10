@@ -276,9 +276,13 @@ public class DagActivity extends Activity
 	        	{
 	        		ChangeScene(nextScene);
 	        	}
-	        	else if(msg.what == MsgType.UPDATE_PROFILER.ordinal())
+	        	else if(msg.what == MsgType.UPDATE_LOGIC_PROFILER.ordinal())
 	        	{
-	        		profiler.Update();
+	        		profiler.LogicUpdate();
+	        	}
+	        	else if(msg.what == MsgType.UPDATE_RENDER_PROFILER.ordinal())
+	        	{
+	        		profiler.RenderUpdate();
 	        	}
 	        	else if (msg.what == MsgType.ACTIVITY_SAVE_PREFERENCES.ordinal())
 	        	{
