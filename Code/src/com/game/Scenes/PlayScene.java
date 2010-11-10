@@ -200,6 +200,7 @@ public class PlayScene extends Scene
 	        			gameState = LogicState.PLAYING;
 	        		}
 	        	}
+	        	// Asking the PowerUpManager to remove a specific PowerUp
 	        	else if(msg.what == MsgType.STOP_DISPLAYING_POWERUP.ordinal())
 	        	{
 	        		if(powerUpManager != null)

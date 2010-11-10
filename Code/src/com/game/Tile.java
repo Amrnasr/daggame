@@ -60,7 +60,8 @@ public class Tile
 	 * Initializes the tile
 	 * @param x coordinates
 	 * @param y coordinates
-	 * @param maxCapacity Tile's maximum capacity
+	 * @param numberWhitePixels The capacity the tile has
+	 * @param mapRef Reference to the Map that owns the Tile
 	 */
 	public Tile(int x, int y, int numberWhitePixels, Map mapRef)
 	{

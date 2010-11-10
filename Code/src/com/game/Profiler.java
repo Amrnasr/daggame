@@ -17,17 +17,45 @@ import android.widget.LinearLayout.LayoutParams;
  */
 public class Profiler 
 {
+	/**
+	 * Fps time from last update
+	 */
 	private long previousFpsTime;
-	private long previousRamTime;
-	private int fps;
-	private long bt;
 	
+	/**
+	 * Ram time from last update
+	 */
+	private long previousRamTime;
+	
+	/**
+	 * Current frames per second
+	 */
+	private int fps;
+	
+	/**
+	 * Current RAM count in bytes
+	 */
+	private long bytesRam;
+	
+	/**
+	 * FPS refresh speed
+	 */
 	private int fpsRefresh;
+	
+	/**
+	 * RAM refresh speed
+	 */
 	private int ramRefresh;
 	
+	/**
+	 * Text view for displaying FPS
+	 */
 	private TextView fpsView;
-	private TextView ramView;
 	
+	/**
+	 * Text view for displaying RAM
+	 */
+	private TextView ramView;
 
 	/**
 	 * Initializes data
@@ -39,7 +67,7 @@ public class Profiler
 		previousRamTime = 0;
 		
 		fps = 0;
-		bt = 0;
+		bytesRam = 0;
 		
 		fpsRefresh = 1000; // 1 second
 		ramRefresh = 2000; // 2 seconds
@@ -111,10 +139,10 @@ public class Profiler
 	{
 		if(System.currentTimeMillis() - previousRamTime >= ramRefresh)
 		{
-			bt = Runtime.getRuntime().freeMemory();			
+			bytesRam = Runtime.getRuntime().freeMemory();			
 			previousRamTime = System.currentTimeMillis();
 			
-			ramView.setText("Ram: " + bt);
+			ramView.setText("Ram: " + bytesRam);
 		}
 	}
 }

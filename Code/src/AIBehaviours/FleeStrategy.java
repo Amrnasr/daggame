@@ -11,7 +11,14 @@ import com.game.Scenes.PlayScene;
  */
 public class FleeStrategy extends Strategy 
 {
+	/**
+	 * Distance to run in case of fleeing
+	 */
 	private final int FleeDistance = 80;
+	
+	/**
+	 * Radius to check for danger
+	 */
 	private final int DangerRadius = 100;
 	
 	/**

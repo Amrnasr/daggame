@@ -92,6 +92,9 @@ public class Player
 	 */
 	private float densitySpeed;
 	
+	/**
+	 * List of PowerUps the player has
+	 */
 	private Vector<PowerUp> powerUps;
 	
 	/**
@@ -99,6 +102,7 @@ public class Player
 	 * @param playerNumber Unique player identifier. If it's not unique you'll regret it later.
 	 * @param inputDevice Input device used by this player.
 	 * @param humanPlayer true if it's a human player, false if it's IA
+	 * @param colorIndex is the color for the player
 	 */
 	public Player(int playerNumber, InputDevice inputDevice, boolean humanPlayer , int colorIndex)
 	{
@@ -157,41 +161,7 @@ public class Player
 	{
 		this.mapRef = mapRef;
 		
-		Queue<Tile> toSearch = new LinkedList<Tile>();
-		//toSearch.add(mapRef.AtWorld((int)this.cursor.GetPosition().X(), (int)this.cursor.GetPosition().Y()));
-		
 		Tile initialTile = this.mapRef.GetClosestEmptyTile((int)this.cursor.GetPosition().X(), (int)this.cursor.GetPosition().Y());
-		
-		/*while(!toSearch.isEmpty())
-		{
-			Tile aux = toSearch.remove();
-			
-			// If it's a max capacity tile, and empty
-			if(aux.GetCurrentCapacity() == Tile.TileMaxCapacity())
-			{
-				// Found our initial tile
-				initialTile = aux;
-				toSearch.clear();
-			}
-			else
-			{
-				// Keep looking, look at all the 8 tiles around
-				int x = (int) aux.GetPos().X();
-				int y = (int) aux.GetPos().Y();
-				
-				for(int i = -1; i < 2; i++)
-				{
-					for(int j = -1; j < 2; j++)
-					{
-						Tile newSuspect = mapRef.AtTile(x+i, y+j);
-						if(newSuspect != null)
-						{
-							toSearch.add(newSuspect);
-						}
-					}
-				}
-			}
-		}*/
 		
 		if(initialTile == null)
 		{
@@ -262,6 +232,9 @@ public class Player
 		UpdatePowerUps();
 	}
 	
+	/**
+	 * Updates the PowerUps if the player has any
+	 */
 	private void UpdatePowerUps() 
 	{
 		for(int i= 0; i < powerUps.size(); i++)

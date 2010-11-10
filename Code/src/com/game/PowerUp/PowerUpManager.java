@@ -12,13 +12,42 @@ import com.game.Vec2;
 import com.game.MessageHandler.MsgReceiver;
 import com.game.Scenes.PlayScene;
 
+/**
+ * Creates the PowerUps as needed and keeps track of them while on the map.
+ * Every few seconds it creates a PowerUp, to a maximum specified. 
+ * It updates them and keeps them around until a Player claims them. Then
+ * it severs all connection with them and gives them to the player. 
+ *  
+ * @author Ying
+ *
+ */
 public class PowerUpManager 
 {
+	/**
+	 * List of all the PowerUp it has
+	 */
 	private Vector<PowerUp> powerUps;
+	
+	/**
+	 * Maximum number of PowerUp we want
+	 * TODO: Read from file!
+	 */
 	private int recomendedNumberPowerUps;
+	
+	/**
+	 * Regulator for the PowerUp update speed
+	 */
 	private Regulator addNewPowerUpRegulator;
+	
+	/**
+	 * Reference to the parent PlayScene
+	 */
 	private PlayScene playRef;
 	
+	/**
+	 * Creates a new instance of a PowerUpManager.
+	 * @param playRef Reference to the parent PlayScene
+	 */
 	public PowerUpManager(PlayScene playRef)
 	{
 		this.powerUps = new Vector<PowerUp>();
@@ -27,6 +56,9 @@ public class PowerUpManager
 		this.playRef = playRef; 
 	}
 	
+	/**
+	 * Updates the PowerUpManager, adding new PowerUps as needed
+	 */
 	public void Update()
 	{
 		// Only execute if the PlayScene is ready
@@ -41,6 +73,10 @@ public class PowerUpManager
 		}
 	}
 	
+	/**
+	 * Creates and adds a new PowerUp, linking it to a Tile and asking the 
+	 * DagRenderer to display it.
+	 */
 	private void AddNewPowerUp() 
 	{
 		// Select random PowerUp
@@ -60,6 +96,10 @@ public class PowerUpManager
 		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.DISPLAY_NEW_POWERUP, newPowerUp);
 	}
 	
+	/**
+	 * Removes a PowerUp from it's care.
+	 * @param powerUp PowerUp to remove
+	 */
 	public void RemovePoweUp(PowerUp powerUp)
 	{
 		this.powerUps.remove(powerUp);
@@ -92,6 +132,10 @@ public class PowerUpManager
 		return newPUP;
 	}
 
+	/**
+	 * Checks if it has to add a new PowerUp. 
+	 * @return True if it has, false if it doesn't.
+	 */
 	private boolean HasToAddNewPowerUp() 
 	{
 		if(addNewPowerUpRegulator.IsReady())
@@ -104,6 +148,10 @@ public class PowerUpManager
 		return false;
 	}
 
+	/**
+	 * Gets the vector of PowerUps
+	 * @return The vector of PowerUp.
+	 */
 	public Vector<PowerUp> GetPowerUps() { return this.powerUps; }
 
 }
