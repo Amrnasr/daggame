@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	android:id="@+id/about_layout"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	>
+	<TextView
+		android:id="@+id/how_title"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20px"
+		android:text="@string/about_title"
+		android:textSize="18sp"
+		android:layout_centerHorizontal="true"		
+		android:layout_alignParentTop="true"
+		
+		>
+	</TextView>
+	<ScrollView
+		android:id="@+id/about_layout_scroll"
+		android:layout_marginTop="10px"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@+id/how_title"	
+		android:gravity="center_horizontal"
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		>
+		<LinearLayout
+			android:id="@+id/about_layout_inner_scroll"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:orientation="vertical"
+			xmlns:android="http://schemas.android.com/apk/res/android"
+			>
+			
+			<TextView
+				android:id="@+id/widget30"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Jaime Barrachina Verdia"
+				android:layout_gravity="center_horizontal"
+				>
+			</TextView>
+			<TextView
+				android:id="@+id/widget31"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Javier Belenguer Faguas"
+				android:layout_gravity="center_horizontal"
+				>
+			</TextView>
+		</LinearLayout>
+	</ScrollView>
+	<Button
+		android:id="@+id/ok_about_but"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="100px"
+		android:text="Back"
+		android:gravity="center_horizontal"
+		android:layout_alignParentBottom="true"		
+		>
+	</Button>
+</RelativeLayout>
