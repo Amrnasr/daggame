@@ -270,6 +270,7 @@ public class PlayScene extends Scene
 	@Override
 	public void Update() 
 	{
+		long startTime = System.currentTimeMillis();
 		// Logic not dependent on game state
 		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_LOGIC_PROFILER);
 		
@@ -284,6 +285,20 @@ public class PlayScene extends Scene
 		{			
 			Gameplay();
 		}
+		
+		long totalTime = System.currentTimeMillis() - startTime;
+		//Log.i("A", ""+ totalTime);
+		
+		/*if( totalTime < 16)
+		{
+			try {
+	             Thread.sleep(16 - totalTime);
+	         } 
+			catch (InterruptedException e) 
+	         {
+	             // Interruptions here are no big deal.
+	         }
+		}*/
 	}
 	
 	/**

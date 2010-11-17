@@ -346,4 +346,5 @@ public class DagActivity extends Activity
     	Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();         
         Camera.Get().SetScreenSize(display.getWidth(), display.getHeight());
     }
+    
 }
