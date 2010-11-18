@@ -25,7 +25,8 @@ public class MessageHandler
 		ACTIVITY,
 		RENDERER,
 		LOGIC,
-		GLSURFACEVIEW
+		GLSURFACEVIEW,
+		CAMERA
 	}
 	
 	/**
@@ -53,6 +54,11 @@ public class MessageHandler
 	 * Handler for the opengl surface view
 	 */
 	private Handler glSurfaceHandler = null;
+	
+	/**
+	 * Handler for the camera
+	 */
+	private Handler cameraHandler = null;
 	
 	/**
 	 * List of queued messages that could not be delivered because 
@@ -151,6 +157,14 @@ public class MessageHandler
 				sent = true;
 			}
 			break;
+		
+		case CAMERA:
+			if(this.cameraHandler != null)
+			{
+				this.cameraHandler.sendMessage(msg.GetMessage());
+				sent = true;
+			}
+			break;
 
 		default:
 			Log.e("MessageHandler", "Receiver not found");
@@ -203,6 +217,11 @@ public class MessageHandler
 	 */
 	public void SetGLSurfaceHandler( Handler glSurfaceHandler) { this.glSurfaceHandler = glSurfaceHandler;}
 	
+	/**
+	 * Sets the camera surface handler pointer
+	 * @param cameraHandler to pass messages to.
+	 */
+	public void SetCameraHandler( Handler cameraHandler) { this.cameraHandler = cameraHandler;}
 	
 	/**
 	 * Send a message to a handler.
@@ -302,6 +321,18 @@ public class MessageHandler
 			else
 			{
 				Log.e("MessageHandler", "GL SurfaceHandler handler not initialized");
+				QueueMessage(type, arg1, arg2, object, receiver);
+			}
+			break;
+			
+		case CAMERA:
+			if(this.cameraHandler != null)
+			{
+				this.cameraHandler.sendMessage(cameraHandler.obtainMessage(type.ordinal(), arg1, arg2, object));
+			}
+			else
+			{
+				Log.e("MessageHandler", "Camera Handler handler not initialized");
 				QueueMessage(type, arg1, arg2, object, receiver);
 			}
 			break;

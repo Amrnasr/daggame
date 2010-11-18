@@ -60,7 +60,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	/**
 	 * OpenGl context copy
 	 */
-	GL10 gl = null;
+	//GL10 gl = null;
 
 	/**
 	 * Reference to the cursors
@@ -217,13 +217,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        public void handleMessage(Message msg) 
 	        {	
 	        	// If asked to do a wcs to scs transform, do so and reply
-	        	if(msg.what == MsgType.REQUEST_WCS_TRANSFORM.ordinal())
+	        	/*if(msg.what == MsgType.REQUEST_WCS_TRANSFORM.ordinal())
 	        	{
-	        		Vec2 reply = GetWorldCoords((Vec2)msg.obj, Camera.Get());
+	        		Vec2 reply = GetWorldCoords((Vec2)msg.obj, OrthoCamera.Get());
 	        		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.REPLY_WCS_TRANSFORM_REQUEST, reply);
 	        	}
+	        	*/
 	        	// Get the message to initialize the renderer. Do so.
-	        	else if(msg.what == MsgType.INITIALIZE_RENDERER.ordinal())
+	        	if(msg.what == MsgType.INITIALIZE_RENDERER.ordinal())
 	        	{
 	        		Start((RenderInitData)msg.obj);
 	        	}
@@ -238,6 +239,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        	{
 	        		Log.i("DagRenderer", "Remove powerup!");
 	        		powerUps.remove((PowerUp)msg.obj);
+	        	}
+	        	else if(msg.what == MsgType.RENDERER_CHANGE_VIEWPORT_SIZE.ordinal())
+	        	{
+	        		lastWidth = msg.arg1;
+	        		lastHeight = msg.arg2;
+	        		
+	        		surfaceUpdatePending = true;
 	        	}
 	        }
 	    };
@@ -272,8 +280,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		// The camZOffset is because the min/max z of the camera is the limits we can see
 		// at, so we need to give ourselves a little margin to see just at the limits, where our stuff is.
-		this.minZ = Camera.Get().GetMinZ() - camZOffset;
-		this.maxZ = 2*Camera.Get().GetMaxZ() + camZOffset;
+		//this.minZ = OrthoCamera.Get().GetMinZ() - camZOffset;
+		//this.maxZ = 2*OrthoCamera.Get().GetMaxZ() + camZOffset;
 		
 		// Z's changed, so tell the update to update the surface perspective.
 		this.surfaceUpdatePending = true;		
@@ -311,8 +319,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	{        
 		Log.i("DagRenderer","Surface changed: " + w + " / " + h );
 		
-		this.gl = gl;
-		
 		this.lastWidth = w;
 		this.lastHeight = h;
 		
@@ -335,7 +341,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glLoadIdentity();
 		gl.glViewport(0,0,w,h);
 
-		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, this.minZ, this.maxZ);	
+		//GLU.gluPerspective(gl, 45.0f, ((float)w)/h, this.minZ, this.maxZ);	
+		GLU.gluOrtho2D(gl, 0, w, h, 0);
+		
+		Log.i("DagRenderer", "Requested viewport: " + w + "," + h);
 	}
 	 
 	/**
@@ -344,10 +353,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * render thread
 	 */
 	public void onDrawFrame(GL10 gl) 
-    {
-		// Save context for matrix retrieval
-		this.gl = gl;
-		
+    {		
 		// Logic not dependent on game state
 		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_RENDER_PROFILER);
 		
@@ -365,7 +371,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		// Camera transform
-		gl.glTranslatef(-Camera.Get().X(),-Camera.Get().Y(),-Camera.Get().Z());	
+		gl.glTranslatef(-OrthoCamera.Get().X(),-OrthoCamera.Get().Y(),-OrthoCamera.Get().Z());	
 		
 		// If the bitmap hasn't been received don't do anything
 		if(this.state != RenderState.RENDERING) return;	
@@ -381,7 +387,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		gl.glTranslatef(0f,0f,1f);
 		
-		LoadPlayers();
+		LoadPlayers(gl);
 		
 		DrawPlayers(gl);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -550,7 +556,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	/**
 	 * Creates the players vertex buffer
 	 */
-	private void LoadPlayers(){
+	private void LoadPlayers(GL10 gl){
 		//Calculate the size of the vertex array 
 		float[] tilesPerPlayer = new float[Constants.MaxPlayers];
 		for(int i = 0; i < players.size(); i++)
@@ -960,7 +966,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
     * @param cam camera object with x,y,z of the camera and screenWidth and screenHeight of the device.
     * @return position in WCS.
     */
-   public Vec2 GetWorldCoords( Vec2 touch, Camera cam)
+   /*
+   public Vec2 GetWorldCoords( Vec2 touch, OrthoCamera cam)
    {
 	   //Log.i("World Coords", "-------------- ");
 	   
@@ -986,7 +993,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   // Invert y coordinate, as android uses top-left, and ogl bottom-left.
 	   int oglTouchY = (int) (screenH - touch.Y());
 	   
-	   /* Transform the screen point to clip space in ogl (-1,1) */	   
+	   // Transform the screen point to clip space in ogl (-1,1) 
 	   normalizedInPoint[0] = (float) ((touch.X()) * 2.0f / screenW - 1.0);
 	   normalizedInPoint[1] = (float) ((oglTouchY) * 2.0f / screenH - 1.0);
 	   normalizedInPoint[2] = - 1.0f;
@@ -994,12 +1001,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   
 	   //Print("In", normalizedInPoint);
 
-	   /* Obtain the transform matrix and then the inverse. */
+	   // Obtain the transform matrix and then the inverse. 
 	   
 	   Matrix.multiplyMM(transformMatrix, 0, lastProjectionMat, 0, lastModelViewMat, 0);
 	   Matrix.invertM(invertedMatrix, 0, transformMatrix, 0);	   
 
-	   /* Apply the inverse to the point in clip space */
+	   // Apply the inverse to the point in clip space 
 	   Matrix.multiplyMV(outPoint, 0, invertedMatrix, 0, normalizedInPoint, 0);
 	   //Print("Out ", outPoint);
 	   
@@ -1020,7 +1027,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   
 	   return worldPos;	   
    }
+   */
 }
+
 
 /*private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
 {

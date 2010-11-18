@@ -344,7 +344,7 @@ public class DagActivity extends Activity
     private void InitializeCamera()
     {
     	Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();         
-        Camera.Get().SetScreenSize(display.getWidth(), display.getHeight());
+        OrthoCamera.Get().SetScreenSize(display.getWidth(), display.getHeight());
     }
     
 }

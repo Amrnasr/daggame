@@ -8,7 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.game.Camera;
+import com.game.OrthoCamera;
 import com.game.Constants;
 import com.game.Cursor;
 import com.game.Map;
@@ -153,14 +153,7 @@ public class PlayScene extends Scene
 	        			// send him the message. Otherwise we ignore it.
 	        			touchEvent.sendMessage(touchEvent.obtainMessage(MsgType.TOUCH_EVENT.ordinal(), msg.obj));
 	        		}
-	        	}
-	        	else if(msg.what == MsgType.REPLY_WCS_TRANSFORM_REQUEST.ordinal())
-				{
-	        		if( touchEvent != null )
-	        		{
-	        			touchEvent.sendMessage(touchEvent.obtainMessage(MsgType.REPLY_WCS_TRANSFORM_REQUEST.ordinal(), msg.obj));
-	        		}
-				}	        	
+	        	}	        	
 	        	else if(msg.what == MsgType.TRACKBALL_EVENT.ordinal())
 				{	        		
 	        		if( trackballEvent != null )
@@ -258,6 +251,7 @@ public class PlayScene extends Scene
         		
         		// Done initializing logic, get the word out to the renderer.
         		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.INITIALIZE_RENDERER, renderInitData); 
+        		MessageHandler.Get().Send(MsgReceiver.CAMERA, MsgType.CAMERA_CALCULATE_MAP_RELIANT_DATA);
         		Log.i("PlayScene", "Start function finished");
             }
         };
@@ -320,14 +314,14 @@ public class PlayScene extends Scene
 			this.players.elementAt(i).Update();			
 		}
 		
-		if(Camera.Get() != null)
+		if(OrthoCamera.Get() != null)
 		{
 			if(cameraZoomRegulator.IsReady())
 			{
-				Camera.Get().ZoomOnPlayers(players);
+				//OrthoCamera.Get().ZoomOnPlayers(players);
 			}
 			
-			Camera.Get().Update();
+			OrthoCamera.Get().Update();
 		}
 		
 		this.powerUpManager.Update();

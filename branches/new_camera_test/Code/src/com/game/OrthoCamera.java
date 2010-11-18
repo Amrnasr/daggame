@@ -3,45 +3,33 @@ package com.game;
 
 import java.util.Vector;
 
+import com.game.MessageHandler.MsgReceiver;
+
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 /**
- * Not sure what I'm doing here, camera transformations are like multithreading, that is
- * NOT my forte xD But I pulled off multithreading, so here's to a little hope this works 
- * as well.
- * 
- * The camera is a singleton for the LOGIC thread, keeps the position of the OGL camera, 
- * moves it in 3D space as required, and can transform screen to map coordinates.
- * 
- * It's a singleton because the data here is needed and modified in quite a few different places,
- * and honestly everyone has a right to know where the hell the camera is. It is NOT so the render
- * thread can access directly.
- * 
- * It's in the Logic thread because...
- * The render thread is sent a message if the camera changes.
- * The camera should not change much, just when the player cursors go out of it's field of view
- * or they are close enough to zoom in on them. That's why we can afford to message each position 
- * change. 
- * This also allows us to keep things consistent by doing logic calculations (where and when to move)
- * in the logic thread, while the render thread only get's told where to draw.
- * 
- * TODO: Camera is only gonna work correctly for maps where width > height. Fix this by using max/min(w,h)
- * where appropriate.
- * 
+ * Test for an orthogonal camera system.
  * @author Ying
  *
  */
-public class Camera 
+public class OrthoCamera 
 {
 	/**
 	 * Static singleton instance
 	 */
-	private static Camera instance = new Camera();
+	private static OrthoCamera instance = new OrthoCamera();
 	
 	/**
 	 * Position in ogl coords of the camera
 	 */
 	private Vec3 pos;
+	
+	/**
+	 * Size of the camera viewport
+	 */
+	private Vec2 size;
 	
 	/**
 	 * Screen viewport height
@@ -52,26 +40,6 @@ public class Camera
 	 * Screen viewport width
 	 */
 	private int screenW;
-	
-	/**
-	 * Minimum camera z
-	 */
-	private int minZ;
-	
-	/**
-	 * Maximum camera z
-	 */
-	private int maxZ;
-	
-	/**
-	 * Minimum ratio for map/screen
-	 */
-	private float minRatio;
-	
-	/**
-	 * Maximum ratio for map/screen
-	 */
-	private float maxRatio;
 	
 	/**
 	 * Distance the camera must translate through if asked to move.
@@ -87,6 +55,7 @@ public class Camera
 	
 	/**
 	 * Camera movement speed.
+	 * Used for interpolation.
 	 */
 	private int speed;
 	
@@ -96,24 +65,54 @@ public class Camera
 	private static final int NORMAL_SPEED = 5;
 	
 	/**
+	 * Distance the camera is at.
+	 */
+	private static final float zDistance = 800;
+	
+	/**
+	 * Width of the view frustrum so that the map image covers the whole screen
+	 * without distortion.
+	 */
+	private int fillScreenWidth;
+	
+	/**
+	 * Height of the view frustrum so that the map image covers the whole screen
+	 * without distortion.
+	 */
+	private int fillScreenHeight;
+	
+	private Handler handler;
+	
+	/**
 	 * Prevents the instantiation of an object of the Camera class
 	 */
-	protected Camera() 
+	protected OrthoCamera() 
 	{
 		pos = new Vec3();
+		size = new Vec2();
 
 		screenH = 0;
 		screenW = 0;
 		
-		minZ = 0;
-		maxZ = 0;
-		
-		minRatio = 1;
-		maxRatio = 0;
-		
 		direction = new Vec3();
 		distance = 0;
 		speed = NORMAL_SPEED;
+		
+		fillScreenWidth = 1;
+		fillScreenHeight = 1;
+		
+		this.handler = new Handler() 
+		{
+	        public void handleMessage(Message msg) 
+	        {	
+	        	if(msg.what == MsgType.CAMERA_CALCULATE_MAP_RELIANT_DATA.ordinal())
+	        	{
+	        		SetMapReliantData(Preferences.Get().mapWidth, Preferences.Get().mapHeight);
+	        	}
+	        }
+		};
+		
+		MessageHandler.Get().SetCameraHandler(this.handler);	
 	}
 	
 	/**
@@ -124,13 +123,13 @@ public class Camera
 	 * 
 	 * @return the instance of the camera
 	 */
-	public static synchronized Camera Get()
+	public static synchronized OrthoCamera Get()
 	{
 		return instance;
 	}
 	
 	/**
-	 * It updates the camera. If necessary it interplolates it's movement in a straight line
+	 * It updates the camera. If necessary it interpolates it's movement in a straight line
 	 * in the this.direction for this.distance.
 	 */
 	public void Update()
@@ -146,16 +145,33 @@ public class Camera
 	
 	/**
 	 * Initializes the screen size values
+	 * NOTE: Called on ACTIVITY CREATION, before any Scene creation or anything,
+	 * so it's not dangerous to assume the values are initialized when doing map
+	 * initialization.
+	 * 
 	 * @param w is the width of the screen
 	 * @param h is the height of the screen
 	 */
 	public void SetScreenSize(int w, int h)
 	{
 		this.screenH = h;
-		this.screenW = w;
+		this.screenW = w;		
+	}
+	
+	/**
+	 * Initializes any members that rely on the map size.
+	 * @param w Width of the map
+	 * @param h Height of the map
+	 */
+	public void SetMapReliantData(int mapW, int mapH)
+	{		
+		// Initial size is the map size
+		this.size.Set(mapW, mapH);
 		
-		// Set initial z then:
-		this.minZ = 2* this.screenH;		
+		// map width divided by the size ratio (sH/mH) is the "full screen" size
+		// The weird calculation for the W is to avoid distortion
+		this.fillScreenWidth = 665; //(int)(mapW / ((float)((float)this.screenH / (float)mapH)));
+		this.fillScreenHeight = mapH;
 	}
 	
 	/**
@@ -206,7 +222,7 @@ public class Camera
 		if(cursorCount == 0)
 		{
 			// No human players, just watch the whole damm thing
-			this.pos.Set(0, 0, this.maxZ);
+			this.pos.Set(0, 0, zDistance);
 		}
 		else
 		{
@@ -217,42 +233,19 @@ public class Camera
 			centerX /= cursorCount;
 			centerY /= cursorCount;
 			
-			// Make it so the camera viewport is at least as big as the physical screen
+			// Make it so the camera viewport is at least as big as the map
 			int xWidth = (int) (maxX - minX);
-			int xHeight = (int) (maxY - minY);
-			xWidth = Math.max(xWidth, this.screenW);
-			xHeight = Math.max(xHeight, this.screenH);
+			this.size.SetX( Math.max(xWidth, this.fillScreenWidth) );
+			this.size.SetY((Preferences.Get().mapHeight / ((float)((float)(Preferences.Get().mapWidth) / (float)(this.size.X())))));
 			//Log.i("Camera", "Viewport: " + xWidth  + ", " + xHeight);
 			
-			// Set X and y
-			destination.SetX((centerX - xWidth/2) + this.screenW/2);
-			destination.SetY((centerY - xHeight/2) + this.screenH/2);
-			
-			// Set Z  (xDDD)			
-			xWidth = Math.max(1, xWidth); // To avoid /0 errors while loading
-			
-			// Get the ratio map/screen
-			float ratio = (float)((float)(xWidth) / (float)(this.screenW)); 
-			//Log.i("Camera", "Ratio: " + ratio);
-			
-			this.maxRatio = (float)((float)(Preferences.Get().mapWidth) / (float)(screenW));
-			ratio = ratio - this.minRatio;
-			float ratioRange = this.maxRatio - this.minRatio;
-			//Log.i("Camera", "Ratio: [" + this.minRatio + ", " + this.maxRatio + "], range: " + ratioRange);
-			
-			
-			ratio = ratio / ratioRange; // % of the total ratio range
-			//Log.i("Camera", "Ratio %:" + ratio);
-			
-			this.maxZ = 2*Preferences.Get().mapWidth;			
-			float zRange = this.maxZ - this.minZ;
-			//Log.i("Camera", "Z: [" + this.minZ + ", " + this.maxZ + "] range: " + zRange );
-			
-			// Now we've got the % of ratio, just apply it to the allowed Z interval.
-			destination.SetZ(this.minZ + (zRange * ratio));
-			//destination.Print("Camera", "Destination:");
+			// Set destination
+			destination.SetX((centerX - this.size.X()/2) + this.screenW/2);
+			destination.SetY((centerY - this.size.Y()/2) + this.screenH/2);
+			destination.SetZ(zDistance);
 			
 			// Once the destination point is calculated, request to move there.
+			MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.RENDERER_CHANGE_VIEWPORT_SIZE, (int)this.size.X(), (int)this.size.Y());
 			MoveTo(destination);			
 		}
 		
@@ -339,17 +332,35 @@ public class Camera
 	 * Gets the camera position vector
 	 * @return the pos vector
 	 */
-	public Vec3 Position() {return this.pos; }
-	
-	/**
-	 * Gets the minimum z
-	 * @return minZ
-	 */
-	public int GetMinZ() { return this.minZ; }
+	public Vec3 Pos() {return this.pos; }
 	
 	/**
 	 * Gets the maximum z
 	 */
-	public int GetMaxZ() { return 2*Preferences.Get().mapWidth; }
+	//public int GetMaxZ() { return 2*Preferences.Get().mapWidth; }
+	
+	public Vec2 GetWorldCoords( Vec2 touch )
+	{
+		   //Log.i("World Coords", "-------------- ");
+		   Log.i("Camera", "Cam info --------------- ");
+		   this.pos.Print("Camera", "Position");
+		   this.size.Print("Camera", "Size");
+		   Log.i("Camera", "FillScreen: " + fillScreenWidth + ", " + fillScreenHeight);
+		   
+		   // Initialize auxiliary variables.
+		   Vec2 worldPos = new Vec2();
+
+		   // Invert y coordinate, as android uses top-left, and ogl bottom-left.
+		   touch.SetY((screenH - touch.Y()));
+		   
+		   worldPos.Set(this.fillScreenWidth/this.size.X(), this.fillScreenHeight/this.size.Y());
+		   worldPos.Offset(this.pos.X(), this.pos.Y());
+		   
+		   //Log.i("World Coords", "Move to point: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);			   
+		   
+		   return worldPos;	   
+	   }
+	
+	
 
 }
