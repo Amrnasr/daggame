@@ -116,14 +116,14 @@ public enum MsgType
 	 * 
 	 * obj: Vec2 to transform.
 	 */
-	REQUEST_WCS_TRANSFORM,
+	//REQUEST_WCS_TRANSFORM,
 	
 	/**
 	 * Reply to the WCS transform request.
 	 * 
 	 * obj: Vec2 with the transform
 	 */
-	REPLY_WCS_TRANSFORM_REQUEST,
+	//REPLY_WCS_TRANSFORM_REQUEST,
 	
 	/**
 	 * Sent to the DagRenderer to initialize the renderer once the logic has loaded stuff
@@ -152,6 +152,18 @@ public enum MsgType
 	 * Sent when a PowerUp is not to be displayed anymore on screen
 	 * obj: The PowerUp to stop displaying
 	 */
-	STOP_DISPLAYING_POWERUP
+	STOP_DISPLAYING_POWERUP,
 	
+	/**
+	 * Sent to the camera when the map has finished loading, so
+	 * it can calculate all data that relies on the map size
+	 */
+	CAMERA_CALCULATE_MAP_RELIANT_DATA,
+	
+	/**
+	 * Sent to the renderer when the camera changes viewport size
+	 * arg1: New viewport width
+	 * arg2: New viewport height
+	 */
+	RENDERER_CHANGE_VIEWPORT_SIZE	
 }
