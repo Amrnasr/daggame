@@ -20,6 +20,7 @@ import android.util.Log;
 
 import com.game.MessageHandler.MsgReceiver;
 import com.game.PowerUp.PowerUp;
+import com.game.Scenes.PlayScene.LogicState;
 
 /**
  * Renderer for the GLSurface
@@ -238,6 +239,20 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        	{
 	        		Log.i("DagRenderer", "Remove powerup!");
 	        		powerUps.remove((PowerUp)msg.obj);
+	        	}
+	        	else if(msg.what == MsgType.PAUSE_GAME.ordinal())
+	        	{
+	        		if(state == RenderState.RENDERING)
+	        		{
+	        			state = RenderState.PAUSED;
+	        		}
+	        	}
+	        	else if(msg.what == MsgType.UNPAUSE_GAME.ordinal())
+	        	{
+	        		if(state == RenderState.PAUSED)
+	        		{
+	        			state = RenderState.RENDERING;
+	        		}
 	        	}
 	        }
 	    };

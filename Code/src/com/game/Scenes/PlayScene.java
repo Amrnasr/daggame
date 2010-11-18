@@ -195,6 +195,7 @@ public class PlayScene extends Scene
 	        	}
 	        	else if(msg.what == MsgType.UNPAUSE_GAME.ordinal())
 	        	{
+	        		Log.i("PlayScene", "Unpause");
 	        		if(gameState == LogicState.PAUSED)
 	        		{
 	        			gameState = LogicState.PLAYING;
