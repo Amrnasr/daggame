@@ -5,8 +5,10 @@ import com.game.MessageHandler.MsgReceiver;
 import com.game.ViewData.*;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.widget.RelativeLayout;
 import android.os.Bundle;
 import android.os.Handler;
@@ -382,13 +384,13 @@ public class DagActivity extends Activity
     	if(item.getItemId() == OptionsMenuID.OP_MENU_MENU.ordinal())
     	{
     		Log.i("Activity", "MENU MENU");
-    		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.MENU_SCENE.ordinal());
+    		CreateAlert(OptionsMenuID.OP_MENU_MENU);
     		return true;
     	}
     	else if(item.getItemId() == OptionsMenuID.OP_MENU_HOME.ordinal()) 
     	{
     		Log.i("Activity", "MENU HOME");
-    		this.finish();
+    		CreateAlert(OptionsMenuID.OP_MENU_HOME);
     		return true;
     	}
     	else
@@ -397,9 +399,49 @@ public class DagActivity extends Activity
     	}
     }
     
+    public void CreateAlert(OptionsMenuID optionsID)
+    {
+    	AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+    	final OptionsMenuID optID = optionsID;
+    	
+    	alt_bld.setMessage(" Are you really sure about that?");
+    	alt_bld.setCancelable(false);
+    	
+    	alt_bld.setPositiveButton("Yes", new DialogInterface.OnClickListener() 
+    	{
+	    	public void onClick(DialogInterface dialog, int id) {
+	    	// Action for 'Yes' Button
+	    		if(optID == OptionsMenuID.OP_MENU_HOME)
+	    		{
+	    			finish();
+	    		}
+	    		else if (optID == OptionsMenuID.OP_MENU_MENU)
+	    		{
+	    			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.MENU_SCENE.ordinal());
+	    		}
+	    	}
+    	});
+    	
+    	alt_bld.setNegativeButton("No", new DialogInterface.OnClickListener() 
+    	{
+	    	public void onClick(DialogInterface dialog, int id) {
+	    	//  Action for 'NO' Button
+	    	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
+	    	dialog.cancel();
+    	}
+    	});
+    	
+    	AlertDialog alert = alt_bld.create();
+    	// Title for AlertDialog
+    	//alert.setTitle("Title");
+    	// Icon for AlertDialog
+    	//alert.setIcon(R.drawable.icon);
+    	alert.show();
+    }
+    
     @Override
     public void onOptionsMenuClosed(Menu menu)
     {
-    	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
+    	
     }
 }
