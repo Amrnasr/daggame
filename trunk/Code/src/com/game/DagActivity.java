@@ -13,6 +13,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -68,6 +70,13 @@ public class DagActivity extends Activity
 	 * Dialog used for long loading times
 	 */
 	private ProgressDialog dialog = null;
+	
+	/**
+	 * Identifiers for the options menu buttons.
+	 * @author Ying
+	 *
+	 */
+	public enum OptionsMenuID { OP_MENU_MENU, OP_MENU_HOME }
 	
     /** 
      * Called when the activity is first created. 
@@ -347,4 +356,50 @@ public class DagActivity extends Activity
         Camera.Get().SetScreenSize(display.getWidth(), display.getHeight());
     }
     
+    @Override
+    public boolean onPrepareOptionsMenu (Menu menu) 
+    {
+        super.onPrepareOptionsMenu (menu);
+        boolean handled = false;
+        if(nextScene == SceneType.PLAY_SCENE)
+	    {
+	        menu.clear();
+	        menu.add(0, OptionsMenuID.OP_MENU_MENU.ordinal(), 0, "Quit to MENU");
+	        menu.add(0, OptionsMenuID.OP_MENU_HOME.ordinal(), 1, "Quit to HOME");
+	        handled = true;
+	        
+	        //MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.PAUSE_GAME);
+	        MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.PAUSE_GAME);
+    	}
+
+        return handled;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) 
+    {
+        // Handle item selection
+    	if(item.getItemId() == OptionsMenuID.OP_MENU_MENU.ordinal())
+    	{
+    		Log.i("Activity", "MENU MENU");
+    		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.MENU_SCENE.ordinal());
+    		return true;
+    	}
+    	else if(item.getItemId() == OptionsMenuID.OP_MENU_HOME.ordinal()) 
+    	{
+    		Log.i("Activity", "MENU HOME");
+    		this.finish();
+    		return true;
+    	}
+    	else
+    	{    		
+    		return super.onOptionsItemSelected(item);
+    	}
+    }
+    
+    @Override
+    public void onOptionsMenuClosed(Menu menu)
+    {
+    	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
+    }
 }
