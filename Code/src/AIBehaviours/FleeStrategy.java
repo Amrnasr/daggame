@@ -30,6 +30,9 @@ public class FleeStrategy extends Strategy
 	{
 		super(sceneRef, playerRef, 1f);
 	}
+	
+	@Override public void Start() 
+	{}
 
 	/**
 	 * Updates the strategy
