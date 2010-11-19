@@ -22,6 +22,9 @@ public class ChaseClosestCursorStrategy extends Strategy
 		super(sceneRef,playerRef,0.5f);
 	}
 	
+	@Override public void Start() 
+	{}
+	
 	/**
 	 * Updates the strategy
 	 */

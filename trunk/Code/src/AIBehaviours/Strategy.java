@@ -27,6 +27,11 @@ public abstract class Strategy
 	protected Regulator nextUpdate;
 	
 	/**
+	 * Indicates whether the strategy is done.
+	 */
+	protected boolean done;
+	
+	/**
 	 * Creates a new instance of the Strategy class
 	 * @param sceneRef Reference to the PlayScene
 	 * @param playerRef Reference to the current Player
@@ -36,6 +41,7 @@ public abstract class Strategy
 		this.sceneRef = sceneRef;
 		this.playerRef = playerRef;
 		this.nextUpdate = new Regulator(updateSpeed);
+		this.done = false;
 	}
 	
 	/**
@@ -44,14 +50,18 @@ public abstract class Strategy
 	 */
 	protected abstract void Update();	
 	
+	public abstract void Start();
+	
 	/**
 	 * Updates the Strategy when the regulator is ready
 	 */
-	public void TimedUpdate()
+	public void SafeUpdate()
 	{
-		if(nextUpdate.IsReady())
+		if(nextUpdate.IsReady() && !done)
 		{
 			this.Update();
 		}
 	}
+	
+	public boolean Done() { return this.done; }
 }

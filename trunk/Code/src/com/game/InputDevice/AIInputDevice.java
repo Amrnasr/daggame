@@ -1,6 +1,9 @@
 package com.game.InputDevice;
 
+import java.util.Random;
+
 import AIBehaviours.ChaseClosestCursorStrategy;
+import AIBehaviours.CircleStrategy;
 import AIBehaviours.FleeStrategy;
 import AIBehaviours.Strategy;
 import android.util.Log;
@@ -20,17 +23,22 @@ public class AIInputDevice extends InputDevice
 	/**
 	 * Regulator for keeping track of when we have to check if we change strategy.
 	 */
-	Regulator redecideRegulator;
+	private Regulator redecideRegulator;
 	
 	/**
 	 * Reference to the PlayScene, to access data.
 	 */
-	PlayScene sceneRef;
+	private PlayScene sceneRef;
 	
 	/**
 	 * Current strategy the AIInputDevice is following. 
 	 */
-	Strategy currentStrategy;
+	private Strategy currentStrategy;
+	
+	/**
+	 * Used for balancing the probability for the two different kinds of attack.
+	 */
+	private int winningAlpha;
 	
 	/**
 	 * Creates a new instance of the AIInputDevice
@@ -42,6 +50,7 @@ public class AIInputDevice extends InputDevice
 		sceneRef = playScene;
 		redecideRegulator = new Regulator(2f);
 		currentStrategy = null;
+		winningAlpha = 0;
 	}
 
 	/**
@@ -69,7 +78,22 @@ public class AIInputDevice extends InputDevice
 			ChooseBestStrategy();
 		}
 		
-		currentStrategy.TimedUpdate();
+		UpdateStrategy();
+	}
+	
+	private void UpdateStrategy()
+	{
+		if(currentStrategy != null)
+		{
+			if(currentStrategy.Done())
+			{
+				currentStrategy = null;
+			}
+			else
+			{
+				currentStrategy.SafeUpdate();
+			}
+		}
 	}
 	
 	/**
@@ -80,22 +104,51 @@ public class AIInputDevice extends InputDevice
 	{
 		float averageFightRecord = parent.GetAverageFightRecord();
 		String decided = new String("doing the same");
+		
+		Strategy newStrategy = null;
+		
 		if(averageFightRecord >= 1)
 		{
+
 			// Wining streak
-			if(currentStrategy.getClass() != ChaseClosestCursorStrategy.class)
+			Random rand = new Random();		
+			int choose = rand.nextInt() % 100;
+			if(choose > (100 ))// TODO: Testing... if(choose < (100 - winningAlpha))
 			{
-				currentStrategy = new ChaseClosestCursorStrategy(sceneRef, parent);
+				newStrategy = new ChaseClosestCursorStrategy(sceneRef, parent);
 				decided = new String("chasing");
+			}
+			else
+			{
+				newStrategy = new CircleStrategy(sceneRef, parent);
+				decided = new String("circling");
+			}
+			
+			winningAlpha++;
+			if(winningAlpha > 99)
+			{
+				winningAlpha = 0;
 			}
 		}
 		else
 		{
 			// Loosing here!
-			if(currentStrategy.getClass() != FleeStrategy.class)
+
+			newStrategy = new FleeStrategy(sceneRef, parent);
+			decided = new String("fleeing");
+		}
+		
+		if(currentStrategy == null)
+		{
+			currentStrategy = newStrategy;
+			currentStrategy.Start();
+		}
+		else
+		{
+			if(currentStrategy.getClass() != newStrategy.getClass())
 			{
-				currentStrategy = new FleeStrategy(sceneRef, parent);
-				decided = new String("fleeing");
+				currentStrategy = newStrategy;
+				currentStrategy.Start();
 			}
 		}
 		
