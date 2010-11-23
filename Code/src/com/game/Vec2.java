@@ -85,6 +85,16 @@ public class Vec2
 		return aux;
 	}
 	
+	public Vec2 GetVectorTo(int x, int y)
+	{
+		Vec2 aux = new Vec2();
+		
+		aux.SetX(x - this.x);
+		aux.SetY(y - this.y);
+		
+		return aux;
+	}
+	
 	/**
 	 * Sets the x,y
 	 * @param x
@@ -173,6 +183,27 @@ public class Vec2
 	{
 		this.x *= val;
 		this.y *= val;
+	}
+	
+	/**
+	 * Gets a Vec2 with the truncated values of the float coordinates
+	 * @return A Vec2 with no decimals.
+	 */
+	public Vec2 GetIntValue()
+	{
+		Vec2 intVec = new Vec2();
+		intVec.Set((int)this.x, (int)this.y);
+		return intVec;
+	}
+	
+	/**
+	 * Checks if the rounded coordinates of both vectors are equal
+	 * @param vec Vec2 to check against
+	 * @return True if they are equal, false if they are not.
+	 */
+	public boolean RoundEqual(Vec2 vec)
+	{
+		return ( (Math.round(this.x) == Math.round(vec.X())) && (Math.round(this.y) == Math.round(vec.Y())));
 	}
 
 }

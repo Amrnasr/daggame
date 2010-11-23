@@ -231,7 +231,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        	// Asked to draw a new PowerUp
 	        	else if(msg.what == MsgType.DISPLAY_NEW_POWERUP.ordinal())
 	        	{
-	        		Log.i("DagRenderer", "Add new powerup!");
+	        		//Log.i("DagRenderer", "Add new powerup!");
 	        		powerUps.add((PowerUp)msg.obj);
 	        	}
 	        	// Asked to stop drawing a specific PowerUp

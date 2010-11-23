@@ -63,5 +63,9 @@ public abstract class Strategy
 		}
 	}
 	
+	/**
+	 * Checks to see if the strategy is done executing
+	 * @return True if it's done, false if it's not.
+	 */
 	public boolean Done() { return this.done; }
 }
