@@ -79,6 +79,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private Bitmap cursorBitmap;
 	
 	/**
+	 * Cursor bitmap for rendering
+	 */
+	private Bitmap powerUpBitmap;
+	
+	/**
 	 * Map vertex buffer
 	 */
 	private FloatBuffer vertexMapBuffer;
@@ -97,6 +102,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * Id of the texture of the cursor
 	 */
 	private int cursorTextureId;
+	
+	/**
+	 * Id of the texture of the cursor
+	 */
+	private int powerUpTextureId;
 	
 	/**
 	 * Length of the tile map array
@@ -192,6 +202,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		this.map = null;
 		this.cursorBitmap = null;
+		this.powerUpBitmap = null;
 		this.cursorsRef = new Vector<Cursor>();
 		this.powerUps = new Vector<PowerUp>();
 		this.players = null;
@@ -277,8 +288,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
     		LoadTileMap(map.getTileMap());
 		}
 
-		//Store the cursor bitmap
+		// Store the cursor bitmap
 		this.cursorBitmap = initData.GetCursorBitmap();
+		
+		// Store the PowerUp bitmap
+		this.powerUpBitmap = initData.GetPowerUpBitmap();
 		
 		showMinimap = (!Preferences.Get().multiplayerGame && Preferences.Get().singleShowMinimap) || (Preferences.Get().multiplayerGame && Preferences.Get().multiShowMinimap);
 		Log.i("DagRenderer","multiplayerGame: " + Preferences.Get().multiplayerGame + ", singleShowMinimap: " + Preferences.Get().singleShowMinimap + ", multiShowMinimap:" + Preferences.Get().multiShowMinimap);
@@ -487,7 +501,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private void DrawPowerUps(GL10 gl)
 	{
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, powerUpTextureId);
 		
 		for(int i = 0; i < this.powerUps.size(); i++ )
 		{
@@ -783,8 +797,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
 		//Generate the texture and bind it
-		int[] tmp_tex = new int[2];
-		gl.glGenTextures(2, tmp_tex, 0); 
+		int[] tmp_tex = new int[3];
+		gl.glGenTextures(3, tmp_tex, 0); 
 		this.mapTextureId = tmp_tex[0];
 		
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.mapTextureId);
@@ -823,6 +837,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.cursorBitmap, 0);
 		
 		this.cursorBitmap.recycle();
+		
+		//Generate the texture and bind it
+		this.powerUpTextureId = tmp_tex[2];
+		
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.powerUpTextureId);
+		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.powerUpBitmap, 0);
+		
+		this.powerUpBitmap.recycle();
 		
 		//Set the texture parameters
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,

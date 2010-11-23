@@ -27,6 +27,11 @@ public class RenderInitData
 	private Bitmap cursorBitmap;
 	
 	/**
+	 * PowerUp bitmap for rendering
+	 */
+	private Bitmap powerUpBitmap;
+	
+	/**
 	 * Vector of players to check for which tiles to render
 	 */
 	private Vector<Player> players;
@@ -61,9 +66,16 @@ public class RenderInitData
 	
 	/**
 	 * Sets the cursor bitmap
-	 * @param mapImage
+	 * @param cursorBitmap
 	 */
 	public void SetCursorBitmap(Bitmap cursorBitmap) { this.cursorBitmap = cursorBitmap; }
+	
+	/**
+	 * Sets the PowerUp bitmap
+	 * @param cursorBitmap
+	 */
+	public void SetPowerUpBitmap(Bitmap powerUpBitmap) { this.powerUpBitmap = powerUpBitmap; }
+	
 	
 	/**
 	 * Gets the player vector
@@ -88,4 +100,10 @@ public class RenderInitData
 	 * @return
 	 */
 	public Bitmap GetCursorBitmap() { return this.cursorBitmap; }
+	
+	/**
+	 * Gets the PowerUp bitmap
+	 * @return
+	 */
+	public Bitmap GetPowerUpBitmap() { return this.powerUpBitmap; }
 }
