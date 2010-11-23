@@ -241,6 +241,9 @@ public class PlayScene extends Scene
         		
         		Bitmap cursorBitmap=BitmapFactory.decodeResource(refActivity.getResources(), R.drawable.cursor);
         		renderInitData.SetCursorBitmap(cursorBitmap);
+        		
+        		Bitmap powerUpBitmap=BitmapFactory.decodeResource(refActivity.getResources(), R.drawable.powerup);
+        		renderInitData.SetPowerUpBitmap(powerUpBitmap);
             	
             	// Set the initial pos for all the cursors
         		for(int i= 0; i < players.size(); i++)
