@@ -113,7 +113,7 @@ public class AIInputDevice extends InputDevice
 			// Wining streak
 			Random rand = new Random();		
 			int choose = rand.nextInt() % 100;
-			if(choose > (100 ))// TODO: Testing... if(choose < (100 - winningAlpha))
+			if(choose < (100 - winningAlpha))//if(choose > (100 ))// TODO: Testing... if(choose < (100 - winningAlpha))
 			{
 				newStrategy = new ChaseClosestCursorStrategy(sceneRef, parent);
 				decided = new String("chasing");
@@ -124,7 +124,7 @@ public class AIInputDevice extends InputDevice
 				decided = new String("circling");
 			}
 			
-			winningAlpha++;
+			winningAlpha+=3;
 			if(winningAlpha > 99)
 			{
 				winningAlpha = 0;
@@ -140,6 +140,7 @@ public class AIInputDevice extends InputDevice
 		
 		if(currentStrategy == null)
 		{
+			//Log.i("Player " + parent.GetID(), "Is changing to "+ decided+"!");
 			currentStrategy = newStrategy;
 			currentStrategy.Start();
 		}
@@ -147,6 +148,7 @@ public class AIInputDevice extends InputDevice
 		{
 			if(currentStrategy.getClass() != newStrategy.getClass())
 			{
+				//Log.i("Player " + parent.GetID(), "Is changing to "+ decided+"!");
 				currentStrategy = newStrategy;
 				currentStrategy.Start();
 			}

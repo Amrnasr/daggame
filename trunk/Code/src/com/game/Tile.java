@@ -740,7 +740,7 @@ public class Tile
 	 */
 	public void AddPowerUp(PowerUp newPowerUp)
 	{
-		Log.i("Tile", "Add new powerup!");
+		//Log.i("Tile", "Add new powerup!");
 		this.powerUpRef = newPowerUp;
 	}
 	

@@ -153,7 +153,10 @@ public  abstract class PowerUp
 	 * Sets a new map position for the PowerUp
 	 * @param newPos New position of the PowerUp.
 	 */
-	public void SetPos(Vec2 newPos) { this.mapPos = newPos; }
+	public void SetPos(Vec2 newPos) 
+	{ 
+		this.mapPos = newPos;
+	}
 	
 	/**
 	 * Gets the FloatBuffer to draw on
