@@ -22,6 +22,11 @@ public class Constants
 	public static final float CursorColorIntensity = 0.8f;
 	
 	/**
+	 * Increment for the PowerUp glow
+	 */
+	public static final float PowerUpAlphaIncrease = 0.05f;
+	
+	/**
 	 * Maximum number of players.
 	 */
 	public static final int MaxPlayers = 6;
