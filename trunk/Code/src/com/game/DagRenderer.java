@@ -192,6 +192,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private Vector<PowerUp> powerUps;
 	
+	private float powerUpAlpha;
+	
 	/**
 	 * Initializes the renderer and sets the handler callbacks.
 	 */
@@ -222,6 +224,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	    this.minZ = 10;
 	    this.maxZ = 100;
 	    this.surfaceUpdatePending = false;
+	    
+	    this.powerUpAlpha = 0;
 		
 		// Initialize handler
 		this.handler = new Handler() 
@@ -504,12 +508,19 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, powerUpTextureId);
 		
 		for(int i = 0; i < this.powerUps.size(); i++ )
-		{
+		{			
 			PowerUp powerUp = this.powerUps.elementAt(i);
+			powerUp.RenderUpdate();
+			
 			float x =(float)powerUp.Pos().X();
 			float y = (float)powerUp.Pos().Y();
 			
 			gl.glTranslatef(x,y,1);
+			gl.glColor4f(
+					Constants.CursorColorIntensity, 
+					Constants.CursorColorIntensity, 
+					Constants.CursorColorIntensity, 
+					powerUp.GetAlpha() );
 			
 			//Set the vertices
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, powerUp.GetBuffer());
@@ -1059,239 +1070,3 @@ public class DagRenderer implements GLSurfaceView.Renderer
    }
 }
 
-/*private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
-{
-	float r = 0f, g = 0f, b = 0f;
-	
-	
-	//calculate the intensity of the color
-	for(int i=0; i < players.size(); i++){
-		int colorIndex = players.elementAt(i).GetColorIndex();
-		float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
-		switch(colorIndex){
-			case 0: //Red
-				r += intensityChange;
-				break;
-			case 1: //Green
-				g += intensityChange;
-				break;
-			case 2: //Blue
-				b += intensityChange;
-				break;	
-			case 3: //Yellow
-				g += intensityChange;
-				b += intensityChange;
-				break;
-			case 4: //Purple
-				r += intensityChange;
-				b += intensityChange;
-				break;
-			case 5: //Orange
-				r += intensityChange;
-				g += intensityChange;
-				break;
-			default:
-				r += intensityChange; 
-				g += intensityChange; 
-				b += intensityChange;
-		}		
-	}
-	//Add the base intensity if necessary
-	r = (r > 0f) ? (0.75f - r) : 0f; 
-	g = (g > 0f) ? (0.75f - g) : 0f;
-	b = (b > 0f) ? (0.75f - b) : 0f;
-	
-	//Store the color values
-	colorArray[count] = r; 
-	colorArray[count+1] = g;
-	colorArray[count+2] = b; 
-	colorArray[count+3] = 1f; 
-	
-	colorArray[count+4] = r;
-	colorArray[count+5] = g; 
-	colorArray[count+6] = b; 
-	colorArray[count+7] = 1f;
-	
-	colorArray[count+8] = r; 
-	colorArray[count+9] = g; 
-	colorArray[count+10] = b;
-	colorArray[count+11] = 1f; 
-				
-	colorArray[count+12] = r; 
-	colorArray[count+13] = g;
-	colorArray[count+14] = b; 
-	colorArray[count+15] = 1f; 
-	
-	colorArray[count+16] = r;
-	colorArray[count+17] = g; 
-	colorArray[count+18] = b;
-	colorArray[count+19] = 1f; 
-	
-	colorArray[count+20] = r;
-	colorArray[count+21] = g; 
-	colorArray[count+22] = b;
-	colorArray[count+23] = 1f; 
-}*/
-
-/*private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
-{
-	float r = 0f, g = 0f, b = 0f, a=0f;
-	
-	//calculate the intensity of the color
-	for(int i=0; i < players.size(); i++){
-		int colorIndex = players.elementAt(i).GetColorIndex();
-		float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
-		switch(colorIndex){
-			case 0: //Red
-				r += intensityChange;
-				
-				a += intensityChange;
-				break;
-			case 1: //Green
-				g += intensityChange;
-				
-				a += intensityChange;
-				break;
-			case 2: //Blue
-				b += intensityChange;
-				
-				a += intensityChange;
-				break;	
-			case 3: //Yellow
-				g += intensityChange;
-				b += intensityChange;
-				
-				a += intensityChange;
-				break;
-			case 4: //Purple
-				r += intensityChange;
-				b += intensityChange;
-				
-				a += intensityChange;
-				break;
-			case 5: //Orange
-				r += intensityChange;
-				g += intensityChange;
-				
-				a += intensityChange;
-				break;
-			default:
-				r += intensityChange; 
-				g += intensityChange; 
-				b += intensityChange;
-				
-				a += intensityChange;
-		}		
-	}
-	//Add the base intensity if necessary
-	r = (r < 0f) ? (0.5f + r) : 0f; 
-	g = (g < 0f) ? (0.5f + g) : 0f;
-	b = (b < 0f) ? (0.5f + b) : 0f;
-	a = (r+g+b > 0f) ? 0.75f + a : 0f;
-	
-	//TODO: Check that the alpha doesn't accumulate because it's drawn one time per player with units in the tile
-	//Store the color values
-	colorArray[count] = r; 
-	colorArray[count+1] = g;
-	colorArray[count+2] = b; 
-	colorArray[count+3] = a; 
-	
-	colorArray[count+4] = r;
-	colorArray[count+5] = g; 
-	colorArray[count+6] = b; 
-	colorArray[count+7] = a;
-	
-	colorArray[count+8] = r; 
-	colorArray[count+9] = g; 
-	colorArray[count+10] = b;
-	colorArray[count+11] = a; 
-				
-	colorArray[count+12] = r; 
-	colorArray[count+13] = g;
-	colorArray[count+14] = b; 
-	colorArray[count+15] = a; 
-	
-	colorArray[count+16] = r;
-	colorArray[count+17] = g; 
-	colorArray[count+18] = b;
-	colorArray[count+19] = a; 
-	
-	colorArray[count+20] = r;
-	colorArray[count+21] = g; 
-	colorArray[count+22] = b;
-	colorArray[count+23] = a; 
-}*/
-
-/*private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
-{
-	float r = 0f, g = 0f, b = 0f;
-	
-	
-	//calculate the intensity of the color
-	for(int i=0; i < players.size(); i++){
-		int colorIndex = players.elementAt(i).GetColorIndex();
-		float intensityChange = tile.GetDensityFrom(i) * 0.25f / (Constants.TileWidth* Constants.TileWidth);
-		switch(colorIndex){
-			case 0: //Red
-				r += intensityChange;
-				break;
-			case 1: //Green
-				g += intensityChange;
-				break;
-			case 2: //Blue
-				b += intensityChange;
-				break;	
-			case 3: //Yellow
-				g += intensityChange;
-				b += intensityChange;
-				break;
-			case 4: //Purple
-				r += intensityChange;
-				b += intensityChange;
-				break;
-			case 5: //Orange
-				r += intensityChange;
-				g += intensityChange;
-				break;
-			default:
-				r += intensityChange; 
-				g += intensityChange; 
-				b += intensityChange;
-		}		
-	}
-	//Add the base intensity if necessary
-	r = (r > 0f) ? (0.5f + r) : 0f; 
-	g = (g > 0f) ? (0.5f + g) : 0f;
-	b = (b > 0f) ? (0.5f + b) : 0f;
-	
-	//Store the color values
-	colorArray[count] = r; 
-	colorArray[count+1] = g;
-	colorArray[count+2] = b; 
-	colorArray[count+3] = 1f; 
-	
-	colorArray[count+4] = r;
-	colorArray[count+5] = g; 
-	colorArray[count+6] = b; 
-	colorArray[count+7] = 1f;
-	
-	colorArray[count+8] = r; 
-	colorArray[count+9] = g; 
-	colorArray[count+10] = b;
-	colorArray[count+11] = 1f; 
-				
-	colorArray[count+12] = r; 
-	colorArray[count+13] = g;
-	colorArray[count+14] = b; 
-	colorArray[count+15] = 1f; 
-	
-	colorArray[count+16] = r;
-	colorArray[count+17] = g; 
-	colorArray[count+18] = b;
-	colorArray[count+19] = 1f; 
-	
-	colorArray[count+20] = r;
-	colorArray[count+21] = g; 
-	colorArray[count+22] = b;
-	colorArray[count+23] = 1f; 
-}*/

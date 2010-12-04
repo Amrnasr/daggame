@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import com.game.Constants;
 import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.Player;
@@ -43,8 +44,30 @@ public  abstract class PowerUp
 	 */
 	private Vec2 mapPos;
 	
-	/** Buffer for the cursor square in ogl **/
+	/** 
+	 * Buffer for the cursor square in ogl 
+	 * **/
 	FloatBuffer cursorBuff;
+	
+	/**
+	 * Current transparency of the powerup.
+	 */
+	private float alpha;
+	
+	/**
+	 * Flag to indicate if the alpha increases or decreases. Must be 1 or -1;
+	 */
+	private float alphaDir;
+	
+	/**
+	 * Lower bound for the alpha
+	 */
+	private final float minAlpha;
+	
+	/**
+	 * Upper bound for the alpha
+	 */
+	private final float maxAlpha;
 	
 	/**
 	 * Creates a instance of the PoerUp class
@@ -54,6 +77,10 @@ public  abstract class PowerUp
 		this.parent = null;
 		this.done = false;
 		this.mapPos = startingPos;
+		this.alpha = 0.1f;
+		this.alphaDir = 1f;
+		this.minAlpha = 0.1f;
+		this.maxAlpha = 1;
 		
 		float[] debSquare = new float[] 
 		                    	      { 30f, 30f, 1.0f,
@@ -163,4 +190,29 @@ public  abstract class PowerUp
 	 * @return The float buffer.
 	 */
 	public FloatBuffer GetBuffer() { return this.cursorBuff; }
+	
+	/**
+	 * Gets the alpha value
+	 * @return
+	 */
+	public float GetAlpha() { return this.alpha; }
+	
+	/**
+	 * Updates the render image
+	 */
+	public void RenderUpdate() 
+	{
+		this.alpha += this.alphaDir*Constants.PowerUpAlphaIncrease;
+		
+		if(this.alpha >= this.maxAlpha)
+		{
+			this.alpha = this.maxAlpha;
+			this.alphaDir = -1;
+		}
+		else if (this.alpha <= this.minAlpha)
+		{
+			this.alpha = this.minAlpha;
+			this.alphaDir = 1;
+		}
+	}
 }
