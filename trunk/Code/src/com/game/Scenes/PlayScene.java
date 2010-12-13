@@ -22,6 +22,7 @@ import com.game.Preferences;
 import com.game.R;
 import com.game.Regulator;
 import com.game.RenderInitData;
+import com.game.AI.Blackboard;
 import com.game.DagActivity.SceneType;
 import com.game.InputDevice.AIInputDevice;
 import com.game.InputDevice.BallInputDevice;
@@ -259,6 +260,10 @@ public class PlayScene extends Scene
         			cursors.add(players.elementAt(i).GetCursor());
         		}
         		renderInitData.SetCursors(cursors);
+        		
+        		// Set blackboard data for the AI
+        		Blackboard.players = players;
+        		Blackboard.map = map;
         		
         		// Done initializing logic, get the word out to the renderer.
         		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.INITIALIZE_RENDERER, renderInitData); 
