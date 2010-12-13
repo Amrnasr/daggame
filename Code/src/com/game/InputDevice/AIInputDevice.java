@@ -8,7 +8,17 @@ import AIBehaviours.FleeStrategy;
 import AIBehaviours.Strategy;
 import android.util.Log;
 
+import com.game.Player;
 import com.game.Regulator;
+import com.game.AI.Blackboard;
+import com.game.AI.CalculateFleeDestinationTask;
+import com.game.AI.GetClosestEnemyCursorTask;
+import com.game.AI.MoveToDestinationTask;
+import com.game.AI.Selector;
+import com.game.AI.Sequence;
+import com.game.AI.SetEnemyCursorAsDestinationTask;
+import com.game.AI.Task;
+import com.game.AI.WaitTillNearDestinationTask;
 import com.game.Scenes.PlayScene;
 
 /**
@@ -33,13 +43,16 @@ public class AIInputDevice extends InputDevice
 	/**
 	 * Current strategy the AIInputDevice is following. 
 	 */
-	private Strategy currentStrategy;
+	//private Strategy currentStrategy;
 	
 	/**
 	 * Used for balancing the probability for the two different kinds of attack.
 	 */
 	private int winningAlpha;
 	
+	private Selector planner;
+	
+	private Blackboard blackboard;
 	/**
 	 * Creates a new instance of the AIInputDevice
 	 * @param playScene Reference to the playScene
@@ -49,8 +62,38 @@ public class AIInputDevice extends InputDevice
 		super(playScene);
 		sceneRef = playScene;
 		redecideRegulator = new Regulator(2f);
-		currentStrategy = null;
+		//currentStrategy = null;
 		winningAlpha = 0;
+		
+		// Set AI the blackboard data.
+		blackboard = new Blackboard();			
+		
+		CreateBehaviourTree();
+	}
+	
+	private void CreateBehaviourTree()
+	{
+		this.planner = new Selector(blackboard, "Planner");
+		
+		Sequence chase = new Sequence(blackboard, "Chase sequence");
+		chase.Add(new GetClosestEnemyCursorTask(blackboard, "GetClosestEnemyCursor"));
+		chase.Add(new SetEnemyCursorAsDestinationTask(blackboard, "SetEnemyCursorAsDestination"));
+		chase.Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
+		chase.Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestination"));
+		
+		Sequence flee = new Sequence(blackboard, "Flee sequence");
+		flee.Add(new CalculateFleeDestinationTask(blackboard, "CalculateFleeDestination"));
+		flee.Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
+		flee.Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestination"));
+		
+		this.planner.Add(chase);
+		this.planner.Add(flee);
+	}
+	
+	public void SetParent(Player parent)
+	{
+		super.SetParent(parent);
+		blackboard.player = parent;	
 	}
 
 	/**
@@ -59,7 +102,8 @@ public class AIInputDevice extends InputDevice
 	@Override
 	public void Start() 
 	{
-		currentStrategy = new ChaseClosestCursorStrategy(sceneRef, parent);
+		//currentStrategy = new ChaseClosestCursorStrategy(sceneRef, parent);
+		this.planner.SafeStart();
 	}
 
 	/**
@@ -73,14 +117,20 @@ public class AIInputDevice extends InputDevice
 			return;
 		}
 		
+		this.planner.DoAction();
+		
+		/*
+		
 		if(redecideRegulator.IsReady())
 		{
 			ChooseBestStrategy();
 		}
 		
 		UpdateStrategy();
+		*/
 	}
 	
+	/*
 	private void UpdateStrategy()
 	{
 		if(currentStrategy != null)
@@ -95,11 +145,12 @@ public class AIInputDevice extends InputDevice
 			}
 		}
 	}
-	
+	*/
 	/**
 	 * Checks if the current strategy is going well, 
 	 * if not, choose another one
 	 */
+	/*
 	private void ChooseBestStrategy()
 	{
 		float averageFightRecord = parent.GetAverageFightRecord();
@@ -156,5 +207,6 @@ public class AIInputDevice extends InputDevice
 		
 		//Log.i("Player " + parent.GetID(), "Is "+ decided+"! AvFiRe: " + averageFightRecord);
 	}
+	*/
 
 }
