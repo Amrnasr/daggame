@@ -1,37 +1,65 @@
 package com.game.AI;
 
-public class Sequence extends GroupTask 
+/**
+ * This ParentTask executes each of it's children in turn until he has finished all of them.
+ * 
+ * It always starts by the first child, updating each one.
+ * If any child finishes with failure, the Sequence fails, and we finish with failure.
+ * When a child finishes with success, we select the next child as the update victim.
+ * If we have finished updating the last child, the Sequence returns with success.
+ * 
+ * @author Ying
+ *
+ */
+public class Sequence extends ParentTask 
 {
+	/**
+	 * Creates a new instance of the Sequence class
+	 * @param blackboard Reference to the AI Blackboard data
+	 */
 	public Sequence(Blackboard blackboard)
 	{
 		super(blackboard);
 	}
 	
+	/**
+	 * Creates a new instance of the Sequence class
+	 * @param blackboard Reference to the AI Blackboard data
+	 * @param name Name of the class, used for debugging
+	 */
 	public Sequence(Blackboard blackboard, String name)
 	{
 		super(blackboard, name);
 	}
 
+	/**
+	 * A child finished with failure.
+	 * We failed to update the whole sequence. Bail with failure.
+	 */
 	@Override
 	public void ChildFailed() 
 	{
-		this.FinishWithFailure();
+		control.FinishWithFailure();
 	}
 
+	/**
+	 * A child has finished with success
+	 * Select the next one to update. If it's the last, we have finished with success.
+	 */
 	@Override
 	public void ChildSucceeded() 
 	{
-		int curPos = this.subtasks.indexOf(this.curTask);
-		if( curPos == (this.subtasks.size() - 1))
+		int curPos = control.subtasks.indexOf(control.curTask);
+		if( curPos == (control.subtasks.size() - 1))
 		{
-			this.FinishWithSuccess();
+			control.FinishWithSuccess();
 		}
 		else
 		{
-			this.curTask = this.subtasks.elementAt(curPos + 1);
-			if(!this.curTask.CheckConditions())
+			control.curTask = control.subtasks.elementAt(curPos + 1);
+			if(!control.curTask.CheckConditions())
 			{
-				this.FinishWithFailure();
+				control.FinishWithFailure();
 			}
 		}
 	}

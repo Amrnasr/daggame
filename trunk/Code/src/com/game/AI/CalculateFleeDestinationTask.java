@@ -5,7 +5,13 @@ import java.util.Vector;
 import com.game.Player;
 import com.game.Vec2;
 
-public class CalculateFleeDestinationTask extends Task 
+/**
+ * This task calculates the direction vector for the Cursor to
+ * flee in, and stores the vector and the destination in the Blackboard
+ * @author Ying
+ *
+ */
+public class CalculateFleeDestinationTask extends LeafTask 
 {
 	/**
 	 * Distance to run in case of fleeing
@@ -17,18 +23,28 @@ public class CalculateFleeDestinationTask extends Task
 	 */
 	private final int DangerRadius = 100;
 
+	/**
+	 * Creates a new instance of the CalculateFleeDestinationTask class
+	 * @param blackboard Reference to the AI Blackboard data
+	 */
 	public CalculateFleeDestinationTask(Blackboard blackboard) 
 	{
 		super(blackboard);
-		
 	}
 	
+	/**
+	 * Creates a new instance of the CalculateFleeDestinationTask class
+	 * @param blackboard Reference to the AI Blackboard data
+	 * @param name Name of the class, for debug purposes
+	 */
 	public CalculateFleeDestinationTask(Blackboard blackboard, String name) 
 	{
 		super(blackboard, name);
-		
 	}
 
+	/**
+	 * Does basic sanity checks for this Task
+	 */
 	@Override
 	public boolean CheckConditions() 
 	{
@@ -37,6 +53,9 @@ public class CalculateFleeDestinationTask extends Task
 		return Blackboard.players.size() > 1;
 	}
 
+	/**
+	 * Calculates flee path and ends the task.
+	 */
 	@Override
 	public void DoAction() 
 	{
@@ -68,28 +87,31 @@ public class CalculateFleeDestinationTask extends Task
 			movementVector.Normalize();
 			movementVector.Scale(FleeDistance);
 			
-			
 			bb.moveDirection = movementVector;
 			bb.destination = new Vec2( cursorPos.X() + movementVector.X(),cursorPos.Y() + movementVector.Y());
-			FinishWithSuccess();
+			GetControl().FinishWithSuccess();
 		}
 		else
 		{
-			FinishWithFailure();
+			GetControl().FinishWithFailure();
 		}
-
 	}
 
+	/**
+	 * Ends the task
+	 */
 	@Override
 	public void End() 
 	{
 		LogTask("Ending");
 	}
 
+	/**
+	 * Starts the task
+	 */
 	@Override
 	public void Start() 
 	{
 		LogTask("Starting");
 	}
-
 }

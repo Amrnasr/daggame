@@ -7,6 +7,8 @@ import com.game.Scenes.PlayScene;
 
 /**
  * Strategy that chases the closest cursor
+ * @deprecated
+ * @see Task
  * @author Ying
  *
  */

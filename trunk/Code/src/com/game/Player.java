@@ -279,7 +279,16 @@ public class Player
 		
 		if(previousDensity > 0)
 		{
-			fightRecord.Store((float)((float)(totalDensity)/(float)(previousDensity)));
+			float difference = (previousDensity - totalDensity);
+			
+			// Empirical numbers. Put it on the [-330, 300] line, move it to 0, normalize between 0 and 1
+			difference += 300;
+			difference /= 600;
+			
+			float ratio = Math.min(1, difference);
+			ratio = Math.max(0, ratio);
+			
+			fightRecord.Store(ratio);
 		}
 	}
 	
