@@ -14,6 +14,8 @@ import com.game.Vec2;
 import com.game.Scenes.PlayScene;
 
 /**
+ * @deprecated
+ * @see Task
  * Strategy for attacking players.
  * 
  * The player selects a path from his cursor to the enemy's cursor.

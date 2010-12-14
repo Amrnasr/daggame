@@ -6,6 +6,8 @@ import com.game.Scenes.PlayScene;
 
 /**
  * Trivial flee strategy
+ * @deprecated
+ * @see Task
  * @author Ying
  *
  */

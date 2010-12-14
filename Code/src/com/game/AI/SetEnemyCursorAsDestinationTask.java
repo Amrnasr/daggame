@@ -2,18 +2,36 @@ package com.game.AI;
 
 import com.game.Vec2;
 
-public class SetEnemyCursorAsDestinationTask extends Task 
+/**
+ * This tasks takes the closest enemy Cursor from the Blackboard and
+ * sets the destination and move-to vectors properly. 
+ * @author Ying
+ *
+ */
+public class SetEnemyCursorAsDestinationTask extends LeafTask 
 {
+	/**
+	 * Creates a new instance of the SetEnemyCursorAsDestinationTask class
+	 * @param blackboard Reference to the AI Blackboard data
+	 */
 	public SetEnemyCursorAsDestinationTask(Blackboard blackboard)
 	{
 		super(blackboard);
 	}
 	
+	/**
+	 * Creates a new instance of the SetEnemyCursorAsDestinationTask class
+	 * @param blackboard Reference to the AI Blackboard data
+	 * @param name Name of the class, used for debugging
+	 */
 	public SetEnemyCursorAsDestinationTask(Blackboard blackboard, String name)
 	{
 		super(blackboard, name);
 	}
 
+	/**
+	 * Checks that the needed data exists.
+	 */
 	@Override
 	public boolean CheckConditions() 
 	{
@@ -21,6 +39,9 @@ public class SetEnemyCursorAsDestinationTask extends Task
 		return bb.closestEnemyCursor != null && bb.moveDirection != null;
 	}
 
+	/**
+	 * Calculates the Blackboard's moveDirection and destination vectors.
+	 */
 	@Override
 	public void DoAction() 
 	{
@@ -30,15 +51,21 @@ public class SetEnemyCursorAsDestinationTask extends Task
 		bb.moveDirection = new Vec2(enemyPos.X()-cursorPos.X(), enemyPos.Y()-cursorPos.Y());
 		bb.destination.Set(enemyPos.X(), enemyPos.Y());
 		
-		this.FinishWithSuccess();
+		control.FinishWithSuccess();
 	}
 
+	/**
+	 * Ends the task
+	 */
 	@Override
 	public void End() 
 	{
 		LogTask("Ending");
 	}
 
+	/**
+	 * Starts the task
+	 */
 	@Override
 	public void Start() 
 	{

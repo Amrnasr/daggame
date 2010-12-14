@@ -1,27 +1,52 @@
 package com.game.AI;
 
-import com.game.Regulator;
 
 import android.graphics.Rect;
-import android.util.Log;
 
-public class WaitTillNearDestinationTask extends Task 
+/**
+ * This task waits until the Cursor is near the destination.
+ * It is used to force the planner to wait until the current strategy
+ * has been completely carried out before starting on the next one.
+ * 
+ * TODO: Add timeout
+ * 
+ * @author Ying
+ *
+ */
+public class WaitTillNearDestinationTask extends LeafTask 
 {
-	//private final float TIMEOUT_SECS = 8;
+	/**
+	 * Error allowed to the end distance point. 
+	 */
 	private final int PADDING_DISTANCE = 5;
+	
+	/**
+	 * Rectangle defining the end area
+	 */
 	Rect rect;
-	//Regulator timeout;
 
+	/**
+	 * Creates a new instance of the WaitTillNearDestinationTask class
+	 * @param blackboard Reference to the AI Blackboard data
+	 */
 	public WaitTillNearDestinationTask(Blackboard blackboard) 
 	{
 		super(blackboard);
 	}
 	
+	/**
+	 * Creates a new instance of the WaitTillNearDestinationTask class
+	 * @param blackboard Reference to the AI Blackboard data
+	 * @param name Name of the class, used for debugging
+	 */
 	public WaitTillNearDestinationTask(Blackboard blackboard, String name) 
 	{
 		super(blackboard, name);
 	}
 
+	/**
+	 * Sanity check of the needed data
+	 */
 	@Override
 	public boolean CheckConditions() 
 	{
@@ -29,6 +54,9 @@ public class WaitTillNearDestinationTask extends Task
 		return bb.moveDirection != null;
 	}
 
+	/**
+	 * Checks if we have arrived, finishes if we have.
+	 */
 	@Override
 	public void DoAction() 
 	{
@@ -38,22 +66,22 @@ public class WaitTillNearDestinationTask extends Task
 				(int)(bb.player.GetCursor().GetPosition().X()),
 				(int)(bb.player.GetCursor().GetPosition().Y())) )
 		{
-			FinishWithSuccess();
+			control.FinishWithSuccess();
 		}
-		/*
-		else if(timeout.IsReady())
-		{
-			FinishWithFailure();
-		}
-		*/
 	}
 
+	/**
+	 * Ends the task
+	 */
 	@Override
 	public void End() 
 	{
 		LogTask("Ending");
 	}
 
+	/**
+	 * Starts the task
+	 */
 	@Override
 	public void Start() 
 	{
@@ -63,7 +91,5 @@ public class WaitTillNearDestinationTask extends Task
 				(int)(bb.destination.Y() - PADDING_DISTANCE),
 				(int)(bb.destination.X() + PADDING_DISTANCE),
 				(int)(bb.destination.Y() + PADDING_DISTANCE));
-		//this.timeout = new Regulator(1.0f/TIMEOUT_SECS);
 	}
-
 }

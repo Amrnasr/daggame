@@ -7,18 +7,35 @@ import com.game.Player;
 import com.game.Preferences;
 import com.game.Vec2;
 
-public class GetClosestEnemyCursorTask extends Task 
+/**
+ * Finds the closest enemy Cursor and stores it in the Blackboard.
+ * @author Ying
+ *
+ */
+public class GetClosestEnemyCursorTask extends LeafTask 
 {
+	/**
+	 * Creates a new instance of the GetClosestEnemyCursorTask task
+	 * @param blackboard Reference to the AI Blackboard data
+	 */
 	public GetClosestEnemyCursorTask(Blackboard blackboard)
 	{
 		super(blackboard);
 	}
 	
+	/**
+	 * Creates a new instance of the GetClosestEnemyCursorTask task
+	 * @param blackboard Reference to the AI Blackboard data
+	 * @param name Name of the class for debugging
+	 */
 	public GetClosestEnemyCursorTask(Blackboard blackboard, String name)
 	{
 		super(blackboard, name);
 	}
 
+	/**
+	 * Checks for preconditions
+	 */
 	@Override
 	public boolean CheckConditions() 
 	{		
@@ -26,6 +43,9 @@ public class GetClosestEnemyCursorTask extends Task
 		return Blackboard.players.size() > 1 && bb.player.GetCursor().GetPosition() != null;
 	}
 
+	/**
+	 * Finds the closest enemy cursor and stores it in the Blackboard
+	 */
 	@Override
 	public void DoAction() 
 	{
@@ -51,19 +71,25 @@ public class GetClosestEnemyCursorTask extends Task
 					{
 						minLenght = (float) vecToEnemy.Length();
 						bb.closestEnemyCursor = enemyCur;
-						this.FinishWithSuccess();
+						GetControl().FinishWithSuccess();
 					}
 				}
 			}			
 		}
 	}
 
+	/**
+	 * Ends the task
+	 */
 	@Override
 	public void End() 
 	{
 		LogTask("Ending");
 	}
 
+	/**
+	 * Starts the task
+	 */
 	@Override
 	public void Start() 
 	{

@@ -6,6 +6,8 @@ import com.game.Scenes.PlayScene;
 
 /**
  * Base class to encapsulate individual AI strategies.
+ * @deprecated
+ * @see Task
  * @author Ying
  *
  */

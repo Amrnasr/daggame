@@ -64,4 +64,15 @@ public class CircularBuffer
 		
 		return sum / data.length;
 	}
+	
+	@Override
+	public String toString()
+	{
+		String res = "Av: " + GetAverage() + " Data: ";
+		for(int i = 0; i < data.length; i++)
+		{
+			res += data[i] + ", ";
+		}
+		return res;
+	}
 }
