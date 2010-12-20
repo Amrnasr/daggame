@@ -1,9 +1,12 @@
 package com.game.AI;
 
 /**
- * Leaf task (or node) in the behavior tree. 
- * Specifies a TaskControler, by composition, to take care of all the control logic, without
- * burdening the Task class with complications.
+ * Leaf task (or node) in the behavior tree.
+ *  
+ * Specifies a TaskControler, by composition, 
+ * to take care of all the control logic, 
+ * without burdening the Task class with 
+ * complications.
  * 
  * @author Ying
  *

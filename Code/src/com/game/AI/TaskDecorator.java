@@ -68,7 +68,7 @@ public abstract class TaskDecorator extends Task
 	}
 
 	/**
-	 * Decorate the request for the Controll reference
+	 * Decorate the request for the Control reference
 	 */
 	@Override
 	public TaskController GetControl() 
