@@ -5,6 +5,7 @@ import java.util.Vector;
 import com.game.Cursor;
 import com.game.Map;
 import com.game.Player;
+import com.game.Tile;
 import com.game.Vec2;
 
 /**
@@ -45,7 +46,7 @@ public class Blackboard
 	/**
 	 * Path of positions to move to
 	 */
-	public Vector<Vec2> path;
+	public Vector<Tile> path;
 	
 	/**
 	 * Reference to the owner player
@@ -59,6 +60,6 @@ public class Blackboard
 	{
 		this.moveDirection = new Vec2();
 		this.destination = new Vec2();
-		this.path = new Vector<Vec2>();
+		this.path = new Vector<Tile>();
 	}
 }

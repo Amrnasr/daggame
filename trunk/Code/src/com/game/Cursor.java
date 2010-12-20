@@ -201,9 +201,15 @@ public class Cursor
 	public boolean IsFromHuman() { return this.parent.IsHuman(); }
 	
 	/**
-	 * Gets the FloarBuffer for drawing the cursor
+	 * Gets the FloatBuffer for drawing the cursor
 	 * @return The float buffer
 	 */
 	public FloatBuffer GetBuffer() { return this.cursorBuff; }
+	
+	/**
+	 * Gets the Parent of the cursor
+	 * @return Parent of the cursor
+	 */
+	public Player GetPlayer() { return this.parent; }
 
 }

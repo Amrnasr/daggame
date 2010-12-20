@@ -3,9 +3,11 @@ package com.game.InputDevice;
 import com.game.Player;
 
 import com.game.AI.Blackboard;
+import com.game.AI.CalculateCirclePathTask;
 import com.game.AI.CalculateFleeDestinationTask;
 import com.game.AI.FleeDecorator;
 import com.game.AI.GetClosestEnemyCursorTask;
+import com.game.AI.IteratePathDecorator;
 import com.game.AI.ParentTaskController;
 import com.game.AI.MoveToDestinationTask;
 import com.game.AI.RegulatorDecorator;
@@ -13,6 +15,7 @@ import com.game.AI.ResetDecorator;
 import com.game.AI.Selector;
 import com.game.AI.Sequence;
 import com.game.AI.SetEnemyCursorAsDestinationTask;
+import com.game.AI.SetPathTileAsDestination;
 import com.game.AI.Task;
 import com.game.AI.WaitTillNearDestinationTask;
 import com.game.Scenes.PlayScene;
@@ -58,6 +61,16 @@ public class AIInputDevice extends InputDevice
 		this.planner = new ResetDecorator(blackboard, this.planner, "Planner");
 		this.planner = new RegulatorDecorator(blackboard, this.planner, "Planner", 0.1f);
 		
+		Task circleChase = new Sequence(blackboard, "Circle chase sequence");
+		((ParentTaskController)circleChase.GetControl()).Add(new GetClosestEnemyCursorTask(blackboard, "GetClosestEnemyCursorTask"));
+		((ParentTaskController)circleChase.GetControl()).Add(new CalculateCirclePathTask(blackboard, "CalculateCirclePathTask"));
+		Task followNextTile = new Sequence(blackboard, "Follow next tile sequence");
+		followNextTile = new IteratePathDecorator(blackboard, followNextTile, "Follow next tile sequence");
+		((ParentTaskController)followNextTile.GetControl()).Add(new SetPathTileAsDestination(blackboard, "SetPathTileAsDestination"));
+		((ParentTaskController)followNextTile.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestinationTask"));
+		((ParentTaskController)followNextTile.GetControl()).Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestinationTask"));
+		((ParentTaskController)circleChase.GetControl()).Add(followNextTile);
+		
 		Task chase = new Sequence(blackboard, "Chase sequence");
 		((ParentTaskController)chase.GetControl()).Add(new GetClosestEnemyCursorTask(blackboard, "GetClosestEnemyCursor"));
 		((ParentTaskController)chase.GetControl()).Add(new SetEnemyCursorAsDestinationTask(blackboard, "SetEnemyCursorAsDestination"));
@@ -71,7 +84,7 @@ public class AIInputDevice extends InputDevice
 		((ParentTaskController)flee.GetControl()).Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestination"));
 		
 		((ParentTaskController)this.planner.GetControl()).Add(flee);
-		((ParentTaskController)this.planner.GetControl()).Add(chase);
+		((ParentTaskController)this.planner.GetControl()).Add(circleChase);
 		
 	}
 	
