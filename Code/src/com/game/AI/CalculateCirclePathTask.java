@@ -116,7 +116,7 @@ public class CalculateCirclePathTask extends LeafTask
 			
 			for(int j = 0; j < 9; j++)
 			{
-				Tile next = GetNeighbour(curTile, j, Blackboard.map);
+				Tile next = Blackboard.map.GetNeighbour(curTile, j);
 				if(next != null)
 				{
 					if(toAdd == null)
@@ -193,59 +193,6 @@ public class CalculateCirclePathTask extends LeafTask
 		return !found;
 	}
 	
-	/**
-	 * Gets the neighboring tile to a tile in a specific direction:
-	 * 
-	 * |7|0|1|
-	 * |6|8|2|
-	 * |5|4|3|
-	 * 
-	 * Where 8 is the current tile.
-	 * 
-	 * @param curTile Tile at the center. We search around this tile for neighbors
-	 * @param dir Direction to search on. Accepted values ]0,8[
-	 * @return The neighboring tile to curTile in the specified direction.
-	 */
-	private Tile GetNeighbour(Tile curTile, int dir, Map map)
-	{
-		Tile neighbour = null;
-		
-		switch (dir) 
-		{
-		case 0:
-			neighbour = map.AtTile((int)(curTile.GetPos().X()), (int)(curTile.GetPos().Y() - 1));
-			break;
-		case 1:
-			neighbour = map.AtTile((int)(curTile.GetPos().X() + 1), (int)(curTile.GetPos().Y() - 1));
-			break;
-		case 2:
-			neighbour = map.AtTile((int)(curTile.GetPos().X() + 1), (int)(curTile.GetPos().Y()));
-			break;
-		case 3:
-			neighbour = map.AtTile((int)(curTile.GetPos().X() + 1), (int)(curTile.GetPos().Y() + 1));
-			break;
-		case 4:
-			neighbour = map.AtTile((int)(curTile.GetPos().X()), (int)(curTile.GetPos().Y() + 1));
-			break;
-		case 5:
-			neighbour = map.AtTile((int)(curTile.GetPos().X() - 1), (int)(curTile.GetPos().Y() + 1));
-			break;
-		case 6:
-			neighbour = map.AtTile((int)(curTile.GetPos().X() - 1), (int)(curTile.GetPos().Y()));
-			break;
-		case 7:
-			neighbour = map.AtTile((int)(curTile.GetPos().X() - 1), (int)(curTile.GetPos().Y() - 1));
-			break;
-		case 8:
-			neighbour = map.AtTile((int)(curTile.GetPos().X()), (int)(curTile.GetPos().Y()));
-			break;
-
-		default:
-			Log.e("CircleStrategy", "Requested direction invalid motherfcuker: dir: " + dir);
-			break;
-		}
-		
-		return neighbour;
-	}
+	
 
 }

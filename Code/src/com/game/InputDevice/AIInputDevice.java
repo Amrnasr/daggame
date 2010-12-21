@@ -5,7 +5,9 @@ import com.game.Player;
 import com.game.AI.Blackboard;
 import com.game.AI.CalculateCirclePathTask;
 import com.game.AI.CalculateFleeDestinationTask;
-import com.game.AI.FleeDecorator;
+import com.game.AI.CalculateFleePathTask;
+import com.game.AI.ChanceDecorator;
+import com.game.AI.DefendDecorator;
 import com.game.AI.GetClosestEnemyCursorTask;
 import com.game.AI.IteratePathDecorator;
 import com.game.AI.ParentTaskController;
@@ -57,34 +59,64 @@ public class AIInputDevice extends InputDevice
 	 */
 	private void CreateBehaviourTree()
 	{
+		// Planner
 		this.planner = new Selector(blackboard, "Planner");
 		this.planner = new ResetDecorator(blackboard, this.planner, "Planner");
-		this.planner = new RegulatorDecorator(blackboard, this.planner, "Planner", 0.1f);
+		this.planner = new RegulatorDecorator(blackboard, this.planner, "Planner", 0.2f);
 		
+		// Attack
+		Task attack = new Selector(blackboard, "Attack");
+		
+		/// Circle Chase Attack
 		Task circleChase = new Sequence(blackboard, "Circle chase sequence");
-		((ParentTaskController)circleChase.GetControl()).Add(new GetClosestEnemyCursorTask(blackboard, "GetClosestEnemyCursorTask"));
+		circleChase = new ChanceDecorator(blackboard, circleChase, "Circle chase sequence", 60);
+		((ParentTaskController)circleChase.GetControl()).Add(new GetClosestEnemyCursorTask(blackboard, "GetClosestEnemyCursor"));
 		((ParentTaskController)circleChase.GetControl()).Add(new CalculateCirclePathTask(blackboard, "CalculateCirclePathTask"));
-		Task followNextTile = new Sequence(blackboard, "Follow next tile sequence");
-		followNextTile = new IteratePathDecorator(blackboard, followNextTile, "Follow next tile sequence");
-		((ParentTaskController)followNextTile.GetControl()).Add(new SetPathTileAsDestination(blackboard, "SetPathTileAsDestination"));
-		((ParentTaskController)followNextTile.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestinationTask"));
-		((ParentTaskController)followNextTile.GetControl()).Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestinationTask"));
-		((ParentTaskController)circleChase.GetControl()).Add(followNextTile);
+		Task circleChasePathSequence = new Sequence(blackboard, "Follow next tile sequence");
+		circleChasePathSequence = new IteratePathDecorator(blackboard, circleChasePathSequence, "Follow next tile sequence");
+		((ParentTaskController)circleChasePathSequence.GetControl()).Add(new SetPathTileAsDestination(blackboard, "SetPathTileAsDestination"));
+		((ParentTaskController)circleChasePathSequence.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
+		((ParentTaskController)circleChasePathSequence.GetControl()).Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestination"));
+		((ParentTaskController)circleChase.GetControl()).Add(circleChasePathSequence);
 		
-		Task chase = new Sequence(blackboard, "Chase sequence");
-		((ParentTaskController)chase.GetControl()).Add(new GetClosestEnemyCursorTask(blackboard, "GetClosestEnemyCursor"));
-		((ParentTaskController)chase.GetControl()).Add(new SetEnemyCursorAsDestinationTask(blackboard, "SetEnemyCursorAsDestination"));
-		((ParentTaskController)chase.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
-		((ParentTaskController)chase.GetControl()).Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestination"));
+		/// Straight Chase Attack
+		Task straightChase = new Sequence(blackboard, "Chase sequence");
+		((ParentTaskController)straightChase.GetControl()).Add(new GetClosestEnemyCursorTask(blackboard, "GetClosestEnemyCursor"));
+		((ParentTaskController)straightChase.GetControl()).Add(new SetEnemyCursorAsDestinationTask(blackboard, "SetEnemyCursorAsDestination"));
+		((ParentTaskController)straightChase.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
+		((ParentTaskController)straightChase.GetControl()).Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestination"));
 		
-		Task flee = new Sequence(blackboard, "Flee sequence");
-		flee = new FleeDecorator(blackboard, flee, "Flee sequence");
-		((ParentTaskController)flee.GetControl()).Add(new CalculateFleeDestinationTask(blackboard, "CalculateFleeDestination"));
-		((ParentTaskController)flee.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
-		((ParentTaskController)flee.GetControl()).Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestination"));
+		// Add to attack
+		((ParentTaskController)attack.GetControl()).Add(circleChase);
+		((ParentTaskController)attack.GetControl()).Add(straightChase);
 		
-		((ParentTaskController)this.planner.GetControl()).Add(flee);
-		((ParentTaskController)this.planner.GetControl()).Add(circleChase);
+		// Defend
+		Task defend = new Selector(blackboard, "Defend");
+		defend = new DefendDecorator(blackboard, defend, "Defend");
+		
+		/// Circle Flee Defend
+		Task circleFlee = new Sequence(blackboard, "Circle flee sequence");
+		((ParentTaskController)circleFlee.GetControl()).Add(new CalculateFleePathTask(blackboard, "CalculateFleePath"));
+		Task circleFleePathSequence = new Sequence(blackboard, "Flee chase sequence");
+		circleFleePathSequence = new IteratePathDecorator(blackboard, circleFleePathSequence, "Flee chase sequence");
+		((ParentTaskController)circleFleePathSequence.GetControl()).Add(new SetPathTileAsDestination(blackboard, "SetPathTileAsDestination"));
+		((ParentTaskController)circleFleePathSequence.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
+		((ParentTaskController)circleFleePathSequence.GetControl()).Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestination"));
+		((ParentTaskController)circleFlee.GetControl()).Add(circleFleePathSequence);
+		
+		/// Straight Flee Defend
+		Task straightFlee = new Sequence(blackboard, "Straight flee sequence");		
+		((ParentTaskController)straightFlee.GetControl()).Add(new CalculateFleeDestinationTask(blackboard, "CalculateFleeDestination"));
+		((ParentTaskController)straightFlee.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
+		((ParentTaskController)straightFlee.GetControl()).Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestination"));
+		
+		// Add to defend
+		((ParentTaskController)defend.GetControl()).Add(circleFlee);
+		((ParentTaskController)defend.GetControl()).Add(straightFlee);
+		
+		// Add to planner
+		((ParentTaskController)this.planner.GetControl()).Add(defend);
+		((ParentTaskController)this.planner.GetControl()).Add(attack);
 		
 	}
 	

@@ -5,7 +5,7 @@ package com.game.AI;
  * @author Ying
  *
  */
-public class FleeDecorator extends TaskDecorator 
+public class DefendDecorator extends TaskDecorator 
 {
 	/**
 	 * Bound for when to start fleeing. It works in a [0, 1] domain.
@@ -18,7 +18,7 @@ public class FleeDecorator extends TaskDecorator
 	 * @param task Task we decorate
 	 * @param name Name of the class, for debuging
 	 */
-	public FleeDecorator(Blackboard blackboard, Task task, String name) 
+	public DefendDecorator(Blackboard blackboard, Task task, String name) 
 	{
 		super(blackboard, task, name);
 	}
@@ -28,7 +28,7 @@ public class FleeDecorator extends TaskDecorator
 	 * @param blackboard Reference to the AI Blackboard data
 	 * @param task Task we decorate
 	 */
-	public FleeDecorator(Blackboard blackboard, Task task) 
+	public DefendDecorator(Blackboard blackboard, Task task) 
 	{
 		super(blackboard, task);
 	}
