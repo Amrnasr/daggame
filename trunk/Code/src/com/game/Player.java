@@ -373,4 +373,10 @@ public class Player
 	{
 		this.densitySpeed += quantity;
 	}
+	
+	/**
+	 * Gets the InputDevice reference of the player.
+	 * @return The players InputDevice
+	 */
+	public InputDevice GetInputDevice() { return this.inputDevice; }
 }

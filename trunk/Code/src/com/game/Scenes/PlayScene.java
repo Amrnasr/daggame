@@ -27,6 +27,7 @@ import com.game.DagActivity.SceneType;
 import com.game.InputDevice.AIInputDevice;
 import com.game.InputDevice.BallInputDevice;
 import com.game.InputDevice.InputDevice;
+import com.game.InputDevice.JoystickInputDevice;
 import com.game.InputDevice.TouchInputDevice;
 import com.game.ViewData.MapsImageAdapter;
 
@@ -382,6 +383,11 @@ public class PlayScene extends Scene
 					// Trackball
 					player1ID = new BallInputDevice(this);
 					break;
+				
+				case 2:
+					// Joystick
+					player1ID = new JoystickInputDevice(this);
+					break;
 	
 				default:
 					Log.e("PlayScene", "Input device requested for player not implemented yet!");				
@@ -429,6 +435,11 @@ public class PlayScene extends Scene
 				case 1:
 					// Trackball
 					inputDevice = new BallInputDevice(this);
+					break;
+				
+				case 2:
+					// Joystick
+					inputDevice = new JoystickInputDevice(this);
 					break;
 	
 				default:

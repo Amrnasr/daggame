@@ -152,6 +152,5 @@ public enum MsgType
 	 * Sent when a PowerUp is not to be displayed anymore on screen
 	 * obj: The PowerUp to stop displaying
 	 */
-	STOP_DISPLAYING_POWERUP
-	
+	STOP_DISPLAYING_POWERUP,
 }
