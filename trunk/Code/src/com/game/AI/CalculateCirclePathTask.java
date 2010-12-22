@@ -3,38 +3,76 @@ package com.game.AI;
 import java.util.Iterator;
 import java.util.Vector;
 
-import android.util.Log;
-
 import com.game.Constants;
 import com.game.Cursor;
 import com.game.Map;
 import com.game.Tile;
 import com.game.Vec2;
 
+/**
+ * Task to calculate a path along the border of the nearest enemy
+ * army.
+ * @author Ying
+ *
+ */
 public class CalculateCirclePathTask extends LeafTask 
 {
 	/**
 	 * Max length of the path we want
 	 */
 	private static final int pathLen = 10;
+	
+	/**
+	 * Minimum distance at which we attempt to circle
+	 * TODO: Calculate from map size.
+	 */
+	private static final float minDistance = 40;
 
+	/**
+	 * Creates a new instance of the CalculateCirclePathTask class 
+	 * @param blackboard Reference to the AI Blackboard data
+	 */
 	public CalculateCirclePathTask(Blackboard blackboard) 
 	{
 		super(blackboard);
 	}
 
+	/**
+	 * Creates a new instance of the CalculateCirclePathTask class 
+	 * @param blackboard Reference to the AI Blackboard data
+	 * @param name Name of the class, used for debugging
+	 */
 	public CalculateCirclePathTask(Blackboard blackboard, String name) 
 	{
 		super(blackboard, name);
 	}
 
+	/**
+	 * Confirms the data we need exists and that we are not
+	 * too far away to circle.
+	 */
 	@Override
 	public boolean CheckConditions()
 	{
 		LogTask("Checking conditions");
-		return bb.path != null && bb.closestEnemyCursor != null;
+		if(bb.path == null && bb.closestEnemyCursor == null)
+		{
+			return false;
+		}
+		
+		float distanceToEnemy = (float) bb.player.GetCursor().GetPosition().GetVectorTo(bb.closestEnemyCursor.GetPosition()).Length();
+		if(distanceToEnemy > minDistance)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 
+	/**
+	 * Calculates a path of tiles around the enemy army
+	 * and stores it in the Blackboard
+	 */
 	@Override
 	public void DoAction() 
 	{
@@ -159,6 +197,9 @@ public class CalculateCirclePathTask extends LeafTask
 		
 	}
 
+	/**
+	 * Ends the task
+	 */
 	@Override
 	public void End() 
 	{
@@ -166,6 +207,9 @@ public class CalculateCirclePathTask extends LeafTask
 
 	}
 
+	/**
+	 * Starts the task
+	 */
 	@Override
 	public void Start() 
 	{
@@ -192,7 +236,4 @@ public class CalculateCirclePathTask extends LeafTask
 		
 		return !found;
 	}
-	
-	
-
 }

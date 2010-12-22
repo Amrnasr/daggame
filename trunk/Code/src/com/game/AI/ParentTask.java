@@ -141,5 +141,4 @@ public abstract class ParentTask extends Task
 			Log.e("Selector", "Current task has a null action");
 		}
 	}
-
 }

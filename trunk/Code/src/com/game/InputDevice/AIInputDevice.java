@@ -62,7 +62,7 @@ public class AIInputDevice extends InputDevice
 		// Planner
 		this.planner = new Selector(blackboard, "Planner");
 		this.planner = new ResetDecorator(blackboard, this.planner, "Planner");
-		this.planner = new RegulatorDecorator(blackboard, this.planner, "Planner", 0.2f);
+		this.planner = new RegulatorDecorator(blackboard, this.planner, "Planner", 0.1f);
 		
 		// Attack
 		Task attack = new Selector(blackboard, "Attack");

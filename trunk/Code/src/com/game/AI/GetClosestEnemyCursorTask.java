@@ -95,5 +95,4 @@ public class GetClosestEnemyCursorTask extends LeafTask
 	{
 		LogTask("Starting");
 	}
-
 }

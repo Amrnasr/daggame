@@ -6,6 +6,13 @@ import java.util.Vector;
 import com.game.Map;
 import com.game.Tile;
 
+/**
+ * Task that calculates the easiest path for fleeing from
+ * the spot.
+ * 
+ * @author Ying
+ *
+ */
 public class CalculateFleePathTask extends LeafTask 
 {
 	/**
@@ -13,16 +20,28 @@ public class CalculateFleePathTask extends LeafTask
 	 */
 	private final int steps = 8;
 
+	/**
+	 * Creates a new instance of the CalculateFleePathTask class
+	 * @param blackboard Reference to the AI Blackboard data
+	 */
 	public CalculateFleePathTask(Blackboard blackboard) 
 	{
 		super(blackboard);
 	}
 
+	/**
+	 * Creates a new instance of the CalculateFleePathTask class
+	 * @param blackboard Reference to the AI Blackboard data
+	 * @param name Name of the class, for debug purposes
+	 */
 	public CalculateFleePathTask(Blackboard blackboard, String name) 
 	{
 		super(blackboard, name);
 	}
 
+	/**
+	 * No conditions to check
+	 */
 	@Override
 	public boolean CheckConditions() 
 	{
@@ -30,6 +49,10 @@ public class CalculateFleePathTask extends LeafTask
 		return true;
 	}
 
+	/**
+	 * Calculates a flee path and stores it in the 
+	 * blackboard
+	 */
 	@Override
 	public void DoAction() 
 	{
@@ -94,12 +117,18 @@ public class CalculateFleePathTask extends LeafTask
 		}
 	}
 
+	/**
+	 * Ends the task
+	 */
 	@Override
 	public void End() 
 	{
 		LogTask("Ending");
 	}
 
+	/**
+	 * Starts the task
+	 */
 	@Override
 	public void Start() 
 	{
@@ -125,6 +154,4 @@ public class CalculateFleePathTask extends LeafTask
 		
 		return !found;
 	}
-	
-
 }

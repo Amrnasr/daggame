@@ -80,5 +80,4 @@ public abstract class Task
 	 * @return The specific task controller.
 	 */
 	public abstract TaskController GetControl();
-	
 }

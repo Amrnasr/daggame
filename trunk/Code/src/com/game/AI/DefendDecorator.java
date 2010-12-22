@@ -50,6 +50,4 @@ public class DefendDecorator extends TaskDecorator
 	{
 		return super.CheckConditions() && bb.player.GetAverageFightRecord() < LOOSING_LOWER_BOUND;
 	}
-	
-
 }
