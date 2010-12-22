@@ -71,5 +71,4 @@ public class SetEnemyCursorAsDestinationTask extends LeafTask
 	{
 		LogTask("Starting");
 	}
-
 }

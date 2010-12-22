@@ -41,6 +41,5 @@ public class ResetDecorator extends TaskDecorator
 		{
 			this.task.GetControl().Reset();
 		}
-
 	}
 }

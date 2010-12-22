@@ -85,5 +85,4 @@ public abstract class TaskDecorator extends Task
 		this.task.Start();
 
 	}
-
 }

@@ -49,5 +49,4 @@ public class ParentTaskController extends TaskController
 		super.Reset();
 		this.curTask = subtasks.firstElement();
 	}
-
 }
