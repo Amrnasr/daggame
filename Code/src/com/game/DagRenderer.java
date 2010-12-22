@@ -16,8 +16,10 @@ import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.Message;
+import android.test.IsolatedContext;
 import android.util.Log;
 
+import com.game.InputDevice.JoystickInputDevice;
 import com.game.MessageHandler.MsgReceiver;
 import com.game.PowerUp.PowerUp;
 import com.game.Scenes.PlayScene.LogicState;
@@ -192,7 +194,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private Vector<PowerUp> powerUps;
 	
-	private float powerUpAlpha;
+	private Vec2 mainJoystickPos = null;
+	private Vec2 dirJoystickPos = null;
 	
 	/**
 	 * Initializes the renderer and sets the handler callbacks.
@@ -224,8 +227,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	    this.minZ = 10;
 	    this.maxZ = 100;
 	    this.surfaceUpdatePending = false;
-	    
-	    this.powerUpAlpha = 0;
 		
 		// Initialize handler
 		this.handler = new Handler() 
@@ -310,6 +311,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		// Z's changed, so tell the update to update the surface perspective.
 		this.surfaceUpdatePending = true;		
+		
+		// Check to see if we have to draw Joystick
+		if(this.players.firstElement().GetInputDevice() instanceof JoystickInputDevice)
+		{
+			// If so, get the references to the position of the Joystick
+			this.mainJoystickPos = ((JoystickInputDevice)this.players.firstElement().GetInputDevice()).GetMainCirclePos();
+			this.dirJoystickPos = ((JoystickInputDevice)this.players.firstElement().GetInputDevice()).GetDirCirclePos();
+		}
 	    
 	    MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG);
 	    MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.RENDERER_INITIALIZATION_DONE);		    
@@ -421,7 +430,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		DrawPowerUps(gl);
 		
-		DrawCursors(gl);	
+		DrawCursors(gl);
+		
+		DrawJoyStick(gl);
 		
 		// Draw the corresponding data, debug or not.
 		if(!Constants.DebugMode )
@@ -578,6 +589,33 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
 		DrawTexturedMap(gl);
+		
+		//Return to a perspective projection
+		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glViewport(0,0,this.lastWidth,this.lastHeight);
+
+		GLU.gluPerspective(gl, 45.0f, ((float)this.lastWidth)/this.lastHeight, this.minZ, this.maxZ);
+	}
+	
+	private void DrawJoyStick(GL10 gl)
+	{
+		if(this.mainJoystickPos == null)
+		{
+			return;
+		}
+		
+		//Change to orthogonal projection
+		gl.glMatrixMode(GL10.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glViewport(0,0,this.lastWidth,this.lastHeight);
+
+		gl.glOrthof(-this.lastWidth/2f, this.lastWidth/2f, -this.lastHeight/2f, this.lastHeight/2f, this.minZ, this.maxZ);
+		
+		// Draw the joystick
+		gl.glMatrixMode(GL10.GL_MODELVIEW);
+		gl.glLoadIdentity();
+		// TODO
 		
 		//Return to a perspective projection
 		gl.glMatrixMode(GL10.GL_PROJECTION);
