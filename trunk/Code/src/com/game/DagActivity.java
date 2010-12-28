@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.RelativeLayout;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -120,6 +121,7 @@ public class DagActivity extends Activity
     @Override protected void onStart()
     {
     	super.onStart();
+    	
     	Log.i("DagActivity", "======== onStart");
     }
     
@@ -167,6 +169,7 @@ public class DagActivity extends Activity
     @Override protected void onStop()
     {
     	super.onStop();
+    	Debug.stopMethodTracing();
     	
     	Log.i("DagActivity", "======== onStop");
     	
