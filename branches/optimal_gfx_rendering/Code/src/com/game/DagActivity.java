@@ -169,7 +169,7 @@ public class DagActivity extends Activity
     @Override protected void onStop()
     {
     	super.onStop();
-    	Debug.stopMethodTracing();
+    	//Debug.stopMethodTracing();
     	
     	Log.i("DagActivity", "======== onStop");
     	
