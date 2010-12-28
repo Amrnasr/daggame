@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="color_prompt">Choose a color</string>
+    <string-array name="color_array">
+        <item>Brown</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Cyan</item>
+        <item>Purple</item>
+        <item>Yellow</item>
+    </string-array>
+</resources>
