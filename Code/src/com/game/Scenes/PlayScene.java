@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -220,6 +221,7 @@ public class PlayScene extends Scene
 	@Override
 	public void End() 
 	{
+		
 	}
 
 	/**
@@ -269,6 +271,7 @@ public class PlayScene extends Scene
         		// Done initializing logic, get the word out to the renderer.
         		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.INITIALIZE_RENDERER, renderInitData); 
         		Log.i("PlayScene", "Start function finished");
+        		Debug.startMethodTracing("lena");
             }
         };
         t.start();		

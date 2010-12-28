@@ -14,6 +14,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
+import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.test.IsolatedContext;
@@ -22,7 +23,6 @@ import android.util.Log;
 import com.game.InputDevice.JoystickInputDevice;
 import com.game.MessageHandler.MsgReceiver;
 import com.game.PowerUp.PowerUp;
-import com.game.Scenes.PlayScene.LogicState;
 
 /**
  * Renderer for the GLSurface
@@ -59,11 +59,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * To receive messages from the logic thread.
 	 */
 	private Handler handler;
-	
-	/**
-	 * OpenGl context copy
-	 */
-	GL10 gl = null;
 
 	/**
 	 * Reference to the cursors
@@ -194,7 +189,15 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private Vector<PowerUp> powerUps;
 	
+	/**
+	 * Joystick main circle position reference
+	 */
 	private Vec2 mainJoystickPos = null;
+
+	
+	/**
+	 * Joystick direction circle position reference
+	 */
 	private Vec2 dirJoystickPos = null;
 	
 	/**
@@ -247,7 +250,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        	// Asked to draw a new PowerUp
 	        	else if(msg.what == MsgType.DISPLAY_NEW_POWERUP.ordinal())
 	        	{
-	        		//Log.i("DagRenderer", "Add new powerup!");
+	        		//Log.i("DagRenderer", "Add new PowerUp!");
 	        		powerUps.add((PowerUp)msg.obj);
 	        	}
 	        	// Asked to stop drawing a specific PowerUp
@@ -300,7 +303,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.powerUpBitmap = initData.GetPowerUpBitmap();
 		
 		showMinimap = (!Preferences.Get().multiplayerGame && Preferences.Get().singleShowMinimap) || (Preferences.Get().multiplayerGame && Preferences.Get().multiShowMinimap);
-		Log.i("DagRenderer","multiplayerGame: " + Preferences.Get().multiplayerGame + ", singleShowMinimap: " + Preferences.Get().singleShowMinimap + ", multiShowMinimap:" + Preferences.Get().multiShowMinimap);
+		//Log.i("DagRenderer","multiplayerGame: " + Preferences.Get().multiplayerGame + ", singleShowMinimap: " + Preferences.Get().singleShowMinimap + ", multiShowMinimap:" + Preferences.Get().multiShowMinimap);
 		//Store the players vector
 		this.players = initData.GetPlayers();
 		
@@ -324,6 +327,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	    MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.RENDERER_INITIALIZATION_DONE);		    
 	    this.state = RenderState.RENDERING;
 
+	    
+	    
 	    Log.i("DagRenderer", "Initialization done");
 	}
 	
@@ -343,6 +348,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		
 		gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
+		
+		
     }
 	
 	/**
@@ -352,8 +359,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	public void onSurfaceChanged(GL10 gl, int w, int h) 
 	{        
 		Log.i("DagRenderer","Surface changed: " + w + " / " + h );
-		
-		this.gl = gl;
 		
 		this.lastWidth = w;
 		this.lastHeight = h;
@@ -386,10 +391,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * render thread
 	 */
 	public void onDrawFrame(GL10 gl) 
-    {
-		// Save context for matrix retrieval
-		this.gl = gl;
-		
+    {		
 		// Logic not dependent on game state
 		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_RENDER_PROFILER);
 		
@@ -412,10 +414,15 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		// If the bitmap hasn't been received don't do anything
 		if(this.state != RenderState.RENDERING) return;	
 		
-		//Load the texture if it hasn't been loaded and it's necessary
-		if(!Constants.DebugMode && !this.texReady) SetTextures(gl);
 		
-		// Draw background rectangle	
+		//Load the texture if it hasn't been loaded and it's necessary
+		if(!Constants.DebugMode && !this.texReady) 
+		{
+			SetTextures(gl);
+		}
+		
+		// Draw background rectangle
+		
 		gl.glDisable(GL10.GL_TEXTURE_2D);
 		gl.glTranslatef(0f,0f,-1f);
 		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -423,7 +430,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		gl.glTranslatef(0f,0f,1f);
 		
-		LoadPlayers();
+		
+		LoadPlayers(gl);
 		
 		DrawPlayers(gl);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -444,17 +452,22 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		else
 		{
 			// Draw tile map		
+			
 			gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexMapBuffer);		
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.tileMapBufferLength/3);
+			
 		}	
 		
 		getCurrentProjection(gl);
 		getCurrentModelView(gl);
 		
-		if(showMinimap){
+		if(showMinimap)
+		{
 			DrawMinimap(gl);
 		}
+		
+		
     }
 	
 	/**
@@ -628,7 +641,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	/**
 	 * Creates the players vertex buffer
 	 */
-	private void LoadPlayers(){
+	private void LoadPlayers(GL10 gl){
 		//Calculate the size of the vertex array 
 		float[] tilesPerPlayer = new float[Constants.MaxPlayers];
 		for(int i = 0; i < players.size(); i++)
@@ -912,6 +925,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glShadeModel(GL10.GL_FLAT);
 		
 		texReady=true;
+		
+		
 	}
 	
 	/**
@@ -1020,22 +1035,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
        MatrixTrackingGL gl2 = (MatrixTrackingGL) gl;
        gl2.glMatrixMode(mode);
        gl2.getMatrix(mat, 0);
-   }
-   
-   
-   /**
-    * Prints a float vector
-    * @param name to display
-    * @param vec to display
-    */
-   private void Print(String name, float[] vec)
-   {
-	   String text = name + ": ";
-	   for(int i = 0; i < vec.length; i+=1)
-	   {
-		   text = text + vec[i] + ", ";
-	   }
-	   Log.i("World Coords", text);
    }
 
    /**
