@@ -194,7 +194,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private Vec2 mainJoystickPos = null;
 
-	
 	/**
 	 * Joystick direction circle position reference
 	 */
@@ -326,8 +325,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	    MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG);
 	    MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.RENDERER_INITIALIZATION_DONE);		    
 	    this.state = RenderState.RENDERING;
-
-	    
 	    
 	    Log.i("DagRenderer", "Initialization done");
 	}
@@ -431,9 +428,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glTranslatef(0f,0f,1f);
 		
 		
-		LoadPlayers(gl);
+		//LoadPlayers(gl);
 		
-		DrawPlayers(gl);
+		//DrawPlayers(gl);
+		DrawMap(gl);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
 		DrawPowerUps(gl);
@@ -464,7 +462,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		if(showMinimap)
 		{
-			DrawMinimap(gl);
+			//DrawMinimap(gl);
 		}
 		
 		
@@ -596,6 +594,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		gl.glDisable(GL10.GL_TEXTURE_2D);
 		DrawPlayers(gl);
+		
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
 		DrawCursors(gl);
@@ -609,6 +608,18 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glViewport(0,0,this.lastWidth,this.lastHeight);
 
 		GLU.gluPerspective(gl, 45.0f, ((float)this.lastWidth)/this.lastHeight, this.minZ, this.maxZ);
+	}
+	
+	private void DrawMap(GL10 gl)
+	{
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, map.GetVertexBuffer());
+		gl.glColorPointer(4, GL10.GL_FLOAT, 0, map.GetColorBuffer());
+		
+		gl.glDrawElements(GL10.GL_TRIANGLES, map.GetIndexSize(),
+                GL10.GL_UNSIGNED_SHORT, map.GetIndexBuffer());
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 	}
 	
 	private void DrawJoyStick(GL10 gl)

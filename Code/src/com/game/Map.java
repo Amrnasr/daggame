@@ -3,8 +3,14 @@ package com.game;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.CharBuffer;
+import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Vector;
 
 import android.app.Activity;
@@ -38,6 +44,12 @@ public class Map {
 	 * How many tiles in a vertical line
 	 */
 	private int tilesPerColumn;
+	
+	/// Drawing data
+	private CharBuffer indexBuffer;
+	private int indexSize;
+	private FloatBuffer vertexBuffer;
+	private FloatBuffer colorBuffer;
 	
 	/**
 	 * Initializes the map
@@ -92,8 +104,17 @@ public class Map {
 			}
 		}
 		
+		// Create the data for map drawing
+		GenerateDrawMesh();
+		
 		Log.i("Map", "Tiles: " + tilesPerRow + ", " + tilesPerColumn + " total: " + tileMap.size());
 	}
+	
+	public CharBuffer GetIndexBuffer() { return this.indexBuffer; }
+	public int GetIndexSize() { return this.indexSize; }
+	public Buffer GetVertexBuffer() { return this.vertexBuffer; }
+	public Buffer GetColorBuffer() { return this.colorBuffer; }
+	
 	/**
 	 * Returns the current bitmap
 	 * @return the related bitmap.
@@ -264,6 +285,90 @@ public class Map {
 		}
 		
 		return neighbour;
+	}
+	
+	private void GenerateDrawMesh()
+	{
+		int size = tilesPerColumn * tilesPerRow;
+        final int FLOAT_SIZE = 4;
+        final int CHAR_SIZE = 2;
+        
+        // Creating the index array for a triangle mesh
+        int quadW = tilesPerRow - 1;
+        int quadH = tilesPerColumn - 1;
+        int quadCount = quadW * quadH;
+        int indexCount = quadCount * 6;
+        indexSize = indexCount;
+        indexBuffer = ByteBuffer.allocateDirect(CHAR_SIZE * indexCount)
+            .order(ByteOrder.nativeOrder()).asCharBuffer();
+
+        /*
+         * Initialize triangle list mesh.
+         *
+         *     [0]-----[  1] ...
+         *      |    /   |
+         *      |   /    |
+         *      |  /     |
+         *     [w]-----[w+1] ...
+         *      |       |
+         *
+         */
+
+        {
+            int i = 0;
+            for (int y = 0; y < quadH; y++) {
+                for (int x = 0; x < quadW; x++) {
+                    char a = (char) (y * tilesPerRow + x);
+                    char b = (char) (y * tilesPerRow + x + 1);
+                    char c = (char) ((y + 1) * tilesPerRow + x);
+                    char d = (char) ((y + 1) * tilesPerRow + x + 1);
+
+                    indexBuffer.put(i++, a);
+                    indexBuffer.put(i++, b);
+                    indexBuffer.put(i++, c);
+
+                    indexBuffer.put(i++, b);
+                    indexBuffer.put(i++, c);
+                    indexBuffer.put(i++, d);
+                }
+            }
+        }
+        
+        // Creating the vertex buffer
+        {
+        	vertexBuffer = ByteBuffer.allocateDirect(FLOAT_SIZE * size * 3)
+    			.order(ByteOrder.nativeOrder()).asFloatBuffer();
+        	int i = 0;
+            for(int x = 0; x < tilesPerRow; x++)
+            {
+            	for(int y = 0; y < tilesPerColumn; y++)
+            	{
+            		vertexBuffer.put(i++, x*Constants.TileWidth);
+            		vertexBuffer.put(i++, y*Constants.TileWidth);
+            		vertexBuffer.put(i++, 0);
+            	}
+            }
+        }
+        
+        // Creating the color buffer
+        {
+        	Random rand = new Random();
+        	
+        	colorBuffer = ByteBuffer.allocateDirect(FLOAT_SIZE * size * 4)
+	    		.order(ByteOrder.nativeOrder()).asFloatBuffer();
+        	int i = 0;
+        	for(int x = 0; x < tilesPerRow; x++)
+            {
+            	for(int y = 0; y < tilesPerColumn; y++)
+            	{
+            		colorBuffer.put(i++, rand.nextFloat());
+            		colorBuffer.put(i++, 0f);
+            		colorBuffer.put(i++, rand.nextFloat());
+            		colorBuffer.put(i++, 1f);
+            	}
+            }
+        }
+	    
 	}
 
 }

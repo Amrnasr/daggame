@@ -271,7 +271,7 @@ public class PlayScene extends Scene
         		// Done initializing logic, get the word out to the renderer.
         		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.INITIALIZE_RENDERER, renderInitData); 
         		Log.i("PlayScene", "Start function finished");
-        		Debug.startMethodTracing("lena");
+        		//Debug.startMethodTracing("lena");
             }
         };
         t.start();		
