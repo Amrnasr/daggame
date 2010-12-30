@@ -196,6 +196,15 @@ public class Map {
 		{
 			Tile aux = toSearch.remove();
 			
+			if(aux == null)
+			{
+				// Probably doing some debugging
+				aux = AtTile(0, 0);
+				toSearch.clear();
+				Log.e("Map", "Using dummy start position!");
+				break;
+			}
+			
 			// If it's a max capacity tile, and empty
 			if(aux.GetCurrentCapacity() == Tile.TileMaxCapacity())
 			{
@@ -226,6 +235,10 @@ public class Map {
 		if(objectiveTile == null)
 		{
 			Log.e("Map", "NOT FOUND EMPTY TILE!");
+			
+			// Probably doing some debugging
+			objectiveTile = AtTile(0, 0);
+			Log.e("Map", "Using dummy start position!");
 		}
 				
 		return objectiveTile;
@@ -339,9 +352,9 @@ public class Map {
         	vertexBuffer = ByteBuffer.allocateDirect(FLOAT_SIZE * size * 3)
     			.order(ByteOrder.nativeOrder()).asFloatBuffer();
         	int i = 0;
-            for(int x = 0; x < tilesPerRow; x++)
+            for(int y = 0; y < tilesPerColumn; y++)
             {
-            	for(int y = 0; y < tilesPerColumn; y++)
+            	for(int x = 0; x < tilesPerRow; x++)
             	{
             		vertexBuffer.put(i++, x*Constants.TileWidth);
             		vertexBuffer.put(i++, y*Constants.TileWidth);
@@ -357,9 +370,9 @@ public class Map {
         	colorBuffer = ByteBuffer.allocateDirect(FLOAT_SIZE * size * 4)
 	    		.order(ByteOrder.nativeOrder()).asFloatBuffer();
         	int i = 0;
-        	for(int x = 0; x < tilesPerRow; x++)
+        	for(int y = 0; y < tilesPerColumn; y++)
             {
-            	for(int y = 0; y < tilesPerColumn; y++)
+        		for(int x = 0; x < tilesPerRow; x++)
             	{
             		colorBuffer.put(i++, rand.nextFloat());
             		colorBuffer.put(i++, 0f);
