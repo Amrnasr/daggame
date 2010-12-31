@@ -341,8 +341,8 @@ public class Map {
                     indexBuffer.put(i++, c);
 
                     indexBuffer.put(i++, b);
-                    indexBuffer.put(i++, c);
                     indexBuffer.put(i++, d);
+                    indexBuffer.put(i++, c);
                 }
             }
         }
