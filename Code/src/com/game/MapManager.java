@@ -1,5 +1,7 @@
 package com.game;
 
+import java.util.Vector;
+
 import android.app.Activity;
 import android.util.Log;
 
@@ -92,11 +94,11 @@ public class MapManager {
 	/**
 	 * Called by the game logic thread each update loop.
 	 */
-	public void Update()
+	public void Update(Vector<Player> players)
 	{
 		if(mCurrentMap != null)
 		{
-			mCurrentMap.Update();
+			mCurrentMap.Update(players);
 			if(mShowMinimap){
 				mCurrentMinimap.Update();
 			}

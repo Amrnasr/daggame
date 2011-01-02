@@ -33,7 +33,7 @@ public class Player
 	private int playerNumber;
 	
 	/**
-	 * Indicates wherether the player is human controled.
+	 * Indicates whether the player is human controlled.
 	 */
 	private boolean humanPlayer;
 	

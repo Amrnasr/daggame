@@ -47,6 +47,11 @@ public class Tile
 	private boolean densityFought;
 	
 	/**
+	 * Keeps track if the tile has been color-updated this round
+	 */
+	private boolean densityColorUpdated;
+	
+	/**
 	 * Reference to the parent map
 	 */
 	private Map mapRef;
@@ -599,6 +604,7 @@ public class Tile
 	{
 		this.densityMoved = false;
 		this.densityFought = false;
+		this.densityColorUpdated = false;
 	}
 	
 	/**
@@ -760,5 +766,16 @@ public class Tile
 	{
 		return this.powerUpRef != null;
 	}
+	
+	/**
+	 * Gets whether the tile has been color updated this cycle
+	 * @return True if it has, false if it doesn't
+	 */
+	public boolean HasBeenColorUpdated() { return this.densityColorUpdated; }
+	
+	/**
+	 * Marks the tile as color updated this cycle
+	 */
+	public void FlagAsColorUpdated()  { this.densityColorUpdated = true; }
 }
 
