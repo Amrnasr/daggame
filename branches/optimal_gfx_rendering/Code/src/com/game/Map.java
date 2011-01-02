@@ -22,6 +22,32 @@ import android.util.Log;
 * Class that represents maps in the game. Maps are owned and controlled by the 
 * map manager.
 * 
+* Safe-sync method:
+* 
+* class World {
+  private ArrayList<Entity> entityList;
+
+  /** This method is called by Update thread. 
+  public void update(int timeMs) {
+     for( Entity e : entityList ) {
+        synchronize(e) {
+           e.update(timeMs);
+           e.notifyAll();
+        }
+     }
+  }
+
+  /** This method is called by render thread 
+  public void render(GL10 gl, int timeMs) {
+     for( Entity e : entityList ) {
+        synchronize(e) {
+           e.render(gl, timeMs);
+           e.notifyAll();
+        }
+     }
+  }
+}
+* 
 * @author NeoM
 *
 */
@@ -135,9 +161,89 @@ public class Map {
 		// TODO Auto-generated method stub
 	}
 	
-	public void Update() 
+	public void Update(Vector<Player> players) 
 	{
-		// TODO Auto-generated method stub
+		if(players == null) { return; }
+		
+		// Set the tile colors
+		for(int i = 0; i < players.size(); i++)
+		{
+			Player player = players.elementAt(i);
+			Vector<Tile> tiles = player.GetTiles();
+			
+			for(int j = 0; j < tiles.size(); j++)
+			{
+				Tile tile = tiles.elementAt(j);
+				if(tile.HasBeenColorUpdated())
+				{
+					float density = 1 - (tile.GetCurrentDensity() / tile.GetMaxCapacity());
+					SetColor(tile.GetRealPos(), 1, 0, 0, density);
+				}
+				else
+				{
+					int colorIndex = player.GetColorIndex();
+					float density = (tile.GetDensityFrom(player.GetID()) * 0.25f / tile.GetMaxCapacity());
+					this.UpdateTileToColor(colorIndex, density, tile.GetRealPos());
+				}
+				
+				tile.FlagAsColorUpdated();
+			}
+		}
+	}
+	
+	private void UpdateTileToColor(int colorIndex, float density, Vec2 realPos)
+	{
+		float r = 0, g = 0, b = 0, a = 0;
+		if(density > 0f)
+		{
+			switch(colorIndex)
+			{
+				case 0: //Brown
+					r += density + 0.1f;
+					g += density + 0.43f;
+					b += density + 0.62f;
+					
+					a += density;
+					break;
+				case 1: //Green
+					g += density;
+					
+					a += density;
+					break;
+				case 2: //Blue
+					b += density;
+					
+					a += density;
+					break;	
+				case 3: //Cyan
+					g += density;
+					b += density;
+					
+					a += density;
+					break;
+				case 4: //Purple
+					r += density;
+					b += density;
+					
+					a += density;
+					break;
+				case 5: //Yellow
+					r += density;
+					g += density;
+					
+					a += density;
+					break;
+			}	
+			
+			//Add the base intensity if necessary
+			r = (r > 0f) ? (0.75f - r) : 0f; 
+			g = (g > 0f) ? (0.75f - g) : 0f;
+			b = (b > 0f) ? (0.75f - b) : 0f;
+			a = (r+g+b > 0f) ? 0.75f + a : 0f;
+			
+			//Log.i("Map", "r: " + r + " g: " + g + " b: " + b + " a: " + a );
+			SetColor(realPos, r, g, b, a);
+		}
 	}
 	
 	public void End(){
@@ -300,6 +406,9 @@ public class Map {
 		return neighbour;
 	}
 	
+	/**
+	 * Creates the index, vertex and color meshes for the map.
+	 */
 	private void GenerateDrawMesh()
 	{
 		int size = tilesPerColumn * tilesPerRow;
@@ -365,8 +474,6 @@ public class Map {
         
         // Creating the color buffer
         {
-        	Random rand = new Random();
-        	
         	colorBuffer = ByteBuffer.allocateDirect(FLOAT_SIZE * size * 4)
 	    		.order(ByteOrder.nativeOrder()).asFloatBuffer();
         	int i = 0;
@@ -374,14 +481,32 @@ public class Map {
             {
         		for(int x = 0; x < tilesPerRow; x++)
             	{
-            		colorBuffer.put(i++, rand.nextFloat());
-            		colorBuffer.put(i++, 0f);
-            		colorBuffer.put(i++, rand.nextFloat());
+            		colorBuffer.put(i++, 1f);
+            		colorBuffer.put(i++, 1f);
+            		colorBuffer.put(i++, 1f);
             		colorBuffer.put(i++, 1f);
             	}
             }
         }
-	    
 	}
-
+	
+	/**
+	 * Sets the color of a tile of the render map
+	 * @param realPos Position of the tile to change color
+	 * @param r Red
+	 * @param g Green
+	 * @param b Blue
+	 * @param a Alpha
+	 */
+	public synchronized void SetColor(Vec2 realPos, float r, float g, float b, float a)
+	{
+		// Get index
+		final int index = (int) ((realPos.Y()/Constants.TileWidth)*this.tilesPerRow + realPos.X()/Constants.TileWidth);
+		final int colorIndex = index * 4;
+		
+		this.colorBuffer.put(colorIndex, r);
+		this.colorBuffer.put(colorIndex + 1, g);
+		this.colorBuffer.put(colorIndex + 2, b);
+		this.colorBuffer.put(colorIndex + 3, a);		
+	}
 }

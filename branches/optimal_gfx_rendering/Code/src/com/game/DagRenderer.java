@@ -431,7 +431,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		//LoadPlayers(gl);
 		
 		//DrawPlayers(gl);
-		DrawMap(gl);
+		synchronized (map) 
+		{
+			DrawMap(gl);
+			map.notifyAll();
+		}
+		
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
 		DrawPowerUps(gl);
@@ -559,6 +564,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	/**
 	 * Draws the density polygons of the players.
 	 * @param gl Opengl context
+	 * @deprecated
 	 */
 	private void DrawPlayers(GL10 gl)
 	{
@@ -651,6 +657,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	
 	/**
 	 * Creates the players vertex buffer
+	 * @deprecated
 	 */
 	private void LoadPlayers(GL10 gl){
 		//Calculate the size of the vertex array 
@@ -751,6 +758,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * @param tile The tile to be rendered
 	 * @param count Initial position to store values in the array
 	 * @param colorArray  The array to store the color values
+	 * @deprecated
 	 */
 	private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
 	{

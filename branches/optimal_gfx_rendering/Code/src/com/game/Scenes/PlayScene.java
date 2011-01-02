@@ -345,6 +345,8 @@ public class PlayScene extends Scene
 		
 		this.powerUpManager.Update();
 		
+		this.map.Update(this.players);
+		
 		if(GameHasBeenWon())
 		{
 			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.GAMEOVER_SCENE.ordinal());
