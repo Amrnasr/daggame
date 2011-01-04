@@ -431,7 +431,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		DrawPowerUps(gl);
 		
-		//DrawCursors(gl);
+		DrawCursors(gl);
 		
 		//DrawJoyStick(gl);
 		
@@ -462,8 +462,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			//DrawMinimap(gl);
 		}
 		*/
-		
-		
     }
 	
 	/**
@@ -472,7 +470,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private void DrawTexturedMap(GL10 gl)
 	{	
-		
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.mapTextureId);
 		
 		//Set the vertices
@@ -496,7 +493,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		for(int i = 0; i < this.cursorsRef.size(); i++ )
 		{
 			Cursor cursor = this.cursorsRef.elementAt(i);
-			//gl.glPushMatrix();
 			float x =(float)cursor.GetPosition().X();
 			float y = (float)cursor.GetPosition().Y();
 			
@@ -513,9 +509,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 			
 			gl.glTranslatef(-x,-y,-1);		
-			//gl.glPopMatrix();
-			
-			//cursorsRef.elementAt(i).DrawCursors(gl);
 		}
 	}
 	
@@ -526,7 +519,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private void DrawPowerUps(GL10 gl)
 	{
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, powerUpTextureId);
-		
 		for(int i = 0; i < this.powerUps.size(); i++ )
 		{			
 			PowerUp powerUp = this.powerUps.elementAt(i);
@@ -625,6 +617,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
                 GL10.GL_UNSIGNED_SHORT, map.GetIndexBuffer());
 		
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 	}
 	
 	private void DrawJoyStick(GL10 gl)
@@ -735,6 +728,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		gl.glTranslatef(0f,0f,1f);
 	}
+	
 	/**
 	 * Sets the color used for rendering the cursor with the given player ID
 	 * @param gl Opengl context
@@ -877,8 +871,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		colorArray[count+23] = a; 
 	}
 	
-	
-	
 	/**
 	 * Loads the textures needed into Opengl
 	 * @param gl Opengl context.
@@ -1015,7 +1007,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.vertexMapBuffer = makeFloatBuffer(floatArray);
 	}
 	
-
 	/**
 	 * Transform a float array into a floatBuffer usable by ogl 1.0
 	 * @param arr to transform
@@ -1038,9 +1029,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
     */
    public void getCurrentModelView(GL10 gl) 
    {
-		//float[] mModelView = new float[16];
 		getMatrix(gl, GL10.GL_MODELVIEW, lastModelViewMat);
-		//return lastModelViewMat;
    }
 
    /**
@@ -1050,10 +1039,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
     */
    public void getCurrentProjection(GL10 gl) 
    {
-	   //float[] mProjection = new float[16];
-	   
        getMatrix(gl, GL10.GL_PROJECTION, lastProjectionMat);
-       //return lastProjectionMat;
    }
 
    /**
@@ -1079,19 +1065,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
     */
    public Vec2 GetWorldCoords( Vec2 touch, Camera cam)
    {
-	   //Log.i("World Coords", "-------------- ");
-	   
 	   // Initialize auxiliary variables.
 	   Vec2 worldPos = new Vec2();
 	   
 	   // SCREEN height & width (ej: 320 x 480)
 	   float screenW = cam.GetScreenWidth();
 	   float screenH = cam.GetScreenHeight();
-	   
-	   //Camera.Get().Position().Print("World Coords", "Camera");
-	   //touch.Print("World Coords", "Screen touch");
-	   //Log.i("World Coords", "Screen: " + screenW + ", " + screenH);
-	   //Log.i("World Coords", "World: " + Preferences.Get().mapWidth + ", " + Preferences.Get().mapHeight);
 	   
 	   // Auxiliary matrix and vectors to deal with ogl.
 	   float[] invertedMatrix, transformMatrix, normalizedInPoint, outPoint;
@@ -1109,16 +1088,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   normalizedInPoint[2] = - 1.0f;
 	   normalizedInPoint[3] = 1.0f;
 	   
-	   //Print("In", normalizedInPoint);
-
 	   /* Obtain the transform matrix and then the inverse. */
-	   
 	   Matrix.multiplyMM(transformMatrix, 0, lastProjectionMat, 0, lastModelViewMat, 0);
 	   Matrix.invertM(invertedMatrix, 0, transformMatrix, 0);	   
 
 	   /* Apply the inverse to the point in clip space */
 	   Matrix.multiplyMV(outPoint, 0, invertedMatrix, 0, normalizedInPoint, 0);
-	   //Print("Out ", outPoint);
 	   
 	   if (outPoint[3] == 0.0)
 	   {
@@ -1129,11 +1104,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	   
 	   // Divide by the 3rd component to find out the real position.
 	   worldPos.Set(outPoint[0] / outPoint[3], outPoint[1] / outPoint[3]);
-	   
-	   // Unnecesary, but here for log purposes.
-	   //float worldZ = outPoint[2] / outPoint[3];
-	   
-	   //Log.i("World Coords", "Move to point: " + worldPos.X() + ", " + worldPos.Y() + ", " + worldZ);			   
 	   
 	   return worldPos;	   
    }
