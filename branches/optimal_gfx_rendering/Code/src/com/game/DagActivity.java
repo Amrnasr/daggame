@@ -6,6 +6,7 @@ import com.game.ViewData.*;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -72,7 +73,8 @@ public class DagActivity extends Activity
 	/**
 	 * Dialog used for long loading times
 	 */
-	private ProgressDialog dialog = null;
+	//private ProgressDialog dialog = null;
+	private final static int LOAD_DIALOG = 0;
 	
 	/**
 	 * Identifiers for the options menu buttons.
@@ -187,6 +189,26 @@ public class DagActivity extends Activity
     {
     	super.onDestroy();
     	Log.i("DagActivity", "======== onDestroy");
+    }
+    
+    @Override protected Dialog onCreateDialog(int id)
+    {
+    	Dialog dialog = null;
+    	
+    	switch (id) {
+		case LOAD_DIALOG:
+			// Loading dialog
+			dialog = new ProgressDialog(this);
+    		((ProgressDialog)dialog).setMessage("Loading...");
+    		dialog.setCancelable(false);
+			break;
+
+		default:
+			Log.e("DagActivity", "Requested dialog that does not exist!!");
+			break;
+		}
+    	
+    	return dialog;
     }
     
     /**
@@ -304,8 +326,9 @@ public class DagActivity extends Activity
 	        	}
 	        	else if (msg.what == MsgType.ACTIVITY_DISMISS_LOAD_DIALOG.ordinal())
 	        	{
-	        		dialog.dismiss();
-	        		dialog = null;
+	        		removeDialog(LOAD_DIALOG);
+	        		//dialog.dismiss();
+	        		//dialog = null;
 	        	}
 	        }
 	    };
@@ -339,10 +362,10 @@ public class DagActivity extends Activity
     	// It will be deactivated by the PlayScene when it's done loading
     	if(nextScene == SceneType.PLAY_SCENE)
     	{
-    		dialog = new ProgressDialog(this);
-    		dialog.setMessage("Loading...");
-    		dialog.setCancelable(false);
-    		dialog.show();
+    		this.showDialog(LOAD_DIALOG);
+    		
+    		//dialog.show();   
+    				
     	}
     	
     	// Do not change the order!!
