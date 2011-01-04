@@ -442,6 +442,11 @@ public class Tile
 	{
 		players[player].UnlinkTile(this);
 		players[player] = null;
+		
+		if(this.GetCurrentCapacity() == this.maxCapacity)
+		{
+			this.mapRef.SetColor(this.GetRealPos(), 1, 1, 1, 1);
+		}
 	}
 	
 	/**

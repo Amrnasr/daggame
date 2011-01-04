@@ -399,18 +399,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			this.surfaceUpdatePending = false;
 		}
 		
-		// Initialize the buffers and matrices		
-        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		gl.glLoadIdentity();
-		
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		// Camera transform
-		gl.glTranslatef(-Camera.Get().X(),-Camera.Get().Y(),-Camera.Get().Z());	
-		
 		// If the bitmap hasn't been received don't do anything
 		if(this.state != RenderState.RENDERING) return;	
-		
 		
 		//Load the texture if it hasn't been loaded and it's necessary
 		if(!Constants.DebugMode && !this.texReady) 
@@ -418,34 +408,35 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			SetTextures(gl);
 		}
 		
-		// Draw background rectangle
+		/// RENDERING
 		
+		// Initialize the buffers and matrices		
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		gl.glMatrixMode(GL10.GL_MODELVIEW);
+		gl.glLoadIdentity();
+		
+		// Camera transform
+		gl.glTranslatef(-Camera.Get().X(),-Camera.Get().Y(),-Camera.Get().Z());	
+		
+		// Draw non-textured elements
 		gl.glDisable(GL10.GL_TEXTURE_2D);
-		gl.glTranslatef(0f,0f,-1f);
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexMapBuffer);		
-		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		gl.glTranslatef(0f,0f,1f);
-		
-		
-		//LoadPlayers(gl);
-		
-		//DrawPlayers(gl);
 		synchronized (map) 
 		{
 			DrawMap(gl);
 			map.notifyAll();
 		}
 		
+		// Draw textured elements
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
 		DrawPowerUps(gl);
 		
-		DrawCursors(gl);
+		//DrawCursors(gl);
 		
-		DrawJoyStick(gl);
+		//DrawJoyStick(gl);
 		
 		// Draw the corresponding data, debug or not.
+		/*
 		if(!Constants.DebugMode )
 		{
 			//Log.i("DagRenderer", "Drawing map");
@@ -454,21 +445,23 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		}
 		else
 		{
-			// Draw tile map		
-			
+			// Draw tile map	
+			// TODO: @deprecated code here, fix or remove
 			gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexMapBuffer);		
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.tileMapBufferLength/3);
-			
 		}	
+		*/
 		
 		getCurrentProjection(gl);
 		getCurrentModelView(gl);
 		
+		/*
 		if(showMinimap)
 		{
 			//DrawMinimap(gl);
 		}
+		*/
 		
 		
     }
@@ -616,15 +609,21 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		GLU.gluPerspective(gl, 45.0f, ((float)this.lastWidth)/this.lastHeight, this.minZ, this.maxZ);
 	}
 	
+	/**
+	 * Draws the density map
+	 * @param gl Opengl context to draw in.
+	 */
 	private void DrawMap(GL10 gl)
 	{
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+		
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, map.GetVertexBuffer());
 		gl.glColorPointer(4, GL10.GL_FLOAT, 0, map.GetColorBuffer());
 		
 		gl.glDrawElements(GL10.GL_TRIANGLES, map.GetIndexSize(),
                 GL10.GL_UNSIGNED_SHORT, map.GetIndexBuffer());
+		
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 	}
 	
@@ -722,6 +721,20 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		}	
 	}
 	
+	/**
+	 * Draws a background map-sized rectangle
+	 * @deprecated
+	 * @param gl OpenGL context
+	 */
+	private void DrawBackgroundRect(GL10 gl)
+	{
+		gl.glDisable(GL10.GL_TEXTURE_2D);
+		gl.glTranslatef(0f,0f,-1f);
+		gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexMapBuffer);		
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		gl.glTranslatef(0f,0f,1f);
+	}
 	/**
 	 * Sets the color used for rendering the cursor with the given player ID
 	 * @param gl Opengl context

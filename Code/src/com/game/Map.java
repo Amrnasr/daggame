@@ -16,6 +16,7 @@ import java.util.Vector;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
 /**
@@ -114,6 +115,7 @@ public class Map {
 			   Log.e("Map","Error reading from " + tileMapID);
 			} 
 
+			//Log.i("Map", "Line size: " + line.length);
 			for(int i = 0; i < tilesPerRow; i++)
 			{
 				int value=0;
@@ -125,6 +127,10 @@ public class Map {
 				catch(NumberFormatException nfe) {
 				   Log.e("Map","Error converting into an integer a value from " + tileMapID);
 				} 
+				catch(IndexOutOfBoundsException iob)
+				{
+					//Log.e("Map", "Exception on i:" + i + " line.lenght: " + line.length + " tilesPerRow: " + tilesPerRow);					
+				}
 
 				tileMap.addElement(new Tile(i,j, value, this));
 			}
@@ -507,6 +513,6 @@ public class Map {
 		this.colorBuffer.put(colorIndex, r);
 		this.colorBuffer.put(colorIndex + 1, g);
 		this.colorBuffer.put(colorIndex + 2, b);
-		this.colorBuffer.put(colorIndex + 3, a);		
+		this.colorBuffer.put(colorIndex + 3, a);
 	}
 }
