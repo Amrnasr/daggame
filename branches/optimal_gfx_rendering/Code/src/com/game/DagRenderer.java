@@ -338,6 +338,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		//Enable blending
 		gl.glEnable (GL10.GL_BLEND);
+		gl.glEnable (GL10.GL_DEPTH_TEST);
 		
 		gl.glBlendFunc (GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -451,7 +452,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexMapBuffer);		
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.tileMapBufferLength/3);
 		}	
-		
 		
 		getCurrentProjection(gl);
 		getCurrentModelView(gl);
@@ -880,21 +880,57 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * @param gl Opengl context.
 	 */
 	private void SetTextures(GL10 gl)
-	{	
-		gl.glEnable(GL10.GL_DEPTH_TEST);
-        
-        //Enable the use of textures and set the texture 0 as the current texture
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		
-		//Generate the texture and bind it
+	{			
+		//Generate the texture vector
 		int[] tmp_tex = new int[3];
 		gl.glGenTextures(3, tmp_tex, 0); 
-		this.mapTextureId = tmp_tex[0];
 		
+		/// MAP
+		this.mapTextureId = tmp_tex[0];
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.mapTextureId);
+		
+		//Set the texture parameters
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE); 
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,	GL10.GL_MODULATE); 
+		
 		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.map.getBitmap(), 0);
 		
 		this.map.getBitmap().recycle();
+		
+		/// CURSOR
+		this.cursorTextureId = tmp_tex[1];		
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.cursorTextureId);
+		
+		//Set the texture parameters
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE); 
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,	GL10.GL_MODULATE); 
+		
+		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.cursorBitmap, 0);
+		this.cursorBitmap.recycle();
+		
+		/// POWERUP
+		this.powerUpTextureId = tmp_tex[2];
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.powerUpTextureId);
+		
+		//Set the texture parameters
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE); 
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,	GL10.GL_MODULATE); 
+
+		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.powerUpBitmap, 0);
+		this.powerUpBitmap.recycle();
+		
+		//Set the rendering parameters
+		gl.glEnable(GL10.GL_CULL_FACE);
+		gl.glShadeModel(GL10.GL_FLAT);
 		
 		//Create the float buffers of the vertices, texture coordinates and normals
 		float VertexMapArray[] = {Preferences.Get().mapWidth,Preferences.Get().mapHeight,1.0f,
@@ -907,66 +943,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.vertexMapBuffer = makeFloatBuffer(VertexMapArray);
 		this.textureMapBuffer = makeFloatBuffer(textureArray);
 		
-		//Set the texture parameters
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
-				GL10.GL_CLAMP_TO_EDGE);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
-				GL10.GL_CLAMP_TO_EDGE); 
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
-				GL10.GL_LINEAR);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
-				GL10.GL_LINEAR);
-		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,
-				GL10.GL_MODULATE); 
-		
-		
-		//Generate the texture and bind it
-		this.cursorTextureId = tmp_tex[1];
-		
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.cursorTextureId);
-		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.cursorBitmap, 0);
-		
-		this.cursorBitmap.recycle();
-		
-		//Set the texture parameters
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
-				GL10.GL_CLAMP_TO_EDGE);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
-				GL10.GL_CLAMP_TO_EDGE); 
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
-				GL10.GL_LINEAR);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
-				GL10.GL_LINEAR);
-		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,
-				GL10.GL_MODULATE);
-		
-		//Generate the texture and bind it
-		this.powerUpTextureId = tmp_tex[2];
-		
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.powerUpTextureId);
-		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.powerUpBitmap, 0);
-		
-		this.powerUpBitmap.recycle();
-		
-		//Set the texture parameters
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
-				GL10.GL_CLAMP_TO_EDGE);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
-				GL10.GL_CLAMP_TO_EDGE); 
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
-				GL10.GL_LINEAR);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
-				GL10.GL_LINEAR);
-		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,
-				GL10.GL_MODULATE);
-		
-		//Set the rendering parameters
-		gl.glEnable(GL10.GL_CULL_FACE);
-		gl.glShadeModel(GL10.GL_FLAT);
-		
 		texReady=true;
-		
-		
 	}
 	
 	/**
