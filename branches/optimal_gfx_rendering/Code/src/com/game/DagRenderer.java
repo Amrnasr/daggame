@@ -531,12 +531,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			float x =(float)powerUp.Pos().X();
 			float y = (float)powerUp.Pos().Y();
 			
-			gl.glTranslatef(x,y,1);
-			gl.glColor4f(
-					Constants.CursorColorIntensity, 
-					Constants.CursorColorIntensity, 
-					Constants.CursorColorIntensity, 
-					powerUp.GetAlpha() );
+			gl.glTranslatef(x,y,-0.5f);
+			gl.glColor4f(1f, 1f, 1f, powerUp.GetAlpha());
 			
 			//Set the vertices
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, powerUp.GetBuffer());
@@ -546,7 +542,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 			
-			gl.glTranslatef(-x,-y,-1);
+			gl.glTranslatef(-x,-y,0.5f);
 		}
 	}
 	
@@ -925,6 +921,18 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.cursorBitmap, 0);
 		
 		this.cursorBitmap.recycle();
+		
+		//Set the texture parameters
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
+				GL10.GL_CLAMP_TO_EDGE);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
+				GL10.GL_CLAMP_TO_EDGE); 
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
+				GL10.GL_LINEAR);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
+				GL10.GL_LINEAR);
+		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,
+				GL10.GL_MODULATE);
 		
 		//Generate the texture and bind it
 		this.powerUpTextureId = tmp_tex[2];
