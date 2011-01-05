@@ -431,7 +431,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		//DrawPowerUps(gl);
 		
-		DrawCursors(gl);
+		//DrawCursors(gl);
 		
 		//DrawJoyStick(gl);
 		
@@ -470,6 +470,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private void DrawTexturedMap(GL10 gl)
 	{	
+		gl.glTranslatef(10f,0f,0f);
+		
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.mapTextureId);
 		
 		//Set the vertices
@@ -480,6 +482,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		//Draw the bitmap
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		
+		gl.glTranslatef(-10f,0f,0f);
 	}
 	
 	/**
@@ -617,7 +621,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
                 GL10.GL_UNSIGNED_SHORT, map.GetIndexBuffer());
 		
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 	}
 	
 	private void DrawJoyStick(GL10 gl)
