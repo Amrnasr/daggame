@@ -429,14 +429,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		// Draw textured elements
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
-		DrawPowerUps(gl);
+		//DrawPowerUps(gl);
 		
 		DrawCursors(gl);
 		
 		//DrawJoyStick(gl);
 		
 		// Draw the corresponding data, debug or not.
-		/*
+		
 		if(!Constants.DebugMode )
 		{
 			//Log.i("DagRenderer", "Drawing map");
@@ -451,7 +451,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexMapBuffer);		
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.tileMapBufferLength/3);
 		}	
-		*/
+		
 		
 		getCurrentProjection(gl);
 		getCurrentModelView(gl);
@@ -963,7 +963,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		int rowTiles = Preferences.Get().mapWidth/Constants.TileWidth;
 		int columnTiles = Preferences.Get().mapHeight/Constants.TileWidth;
 		
-		//Initialize the vertex array and other auxiliar variables
+		//Initialize the vertex array and other auxiliary variables
 		float[] floatArray= new float[rowTiles*columnTiles*6*3];        		
 		Iterator<Tile> it = map.getTileMap().listIterator();
 		Tile tile = null;
@@ -1010,9 +1010,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	/**
 	 * Transform a float array into a floatBuffer usable by ogl 1.0
 	 * @param arr to transform
-	 * @return the related floatbuffer.
+	 * @return the related FloatBuffer.
 	 */
-	protected static FloatBuffer makeFloatBuffer(float[] arr)
+	public static FloatBuffer makeFloatBuffer(float[] arr)
 	{
 		ByteBuffer bb = ByteBuffer.allocateDirect(arr.length*4);
 		bb.order(ByteOrder.nativeOrder());

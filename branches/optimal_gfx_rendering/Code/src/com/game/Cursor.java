@@ -31,7 +31,11 @@ public class Cursor
 	private static final int NORMAL_SPEED  = 2;
 	
 	/** Buffer for the cursor square in ogl **/
-	FloatBuffer cursorBuff;
+	private static final FloatBuffer cursorBuff = DagRenderer.makeFloatBuffer(new float[] 
+	      { 30f, 30f, 1.0f,
+			0f, 30f, 1.0f,
+			30f, 0f, 1.0f,
+			0f, 0f, 1.0f });
 	
 	/**
 	 * Creates an instance of the Cursor class
@@ -45,29 +49,6 @@ public class Cursor
 		this.speed = NORMAL_SPEED;
 		this.direction = null;
 		this.distance = 0;
-		
-		float[] debSquare = new float[] 
-	      { 30f, 30f, 1.0f,
-			0f, 30f, 1.0f,
-			30f, 0f, 1.0f,
-			0f, 0f, 1.0f };
-		
-		this.cursorBuff = makeFloatBuffer(debSquare);
-	}
-	
-	/**
-	 * Makes a float buffer for ogl drawing
-	 * @param arr of floats to turn into a buffer
-	 * @return the float buffer asociated to arr
-	 */
-	protected static FloatBuffer makeFloatBuffer(float[] arr)
-	{
-		ByteBuffer bb = ByteBuffer.allocateDirect(arr.length*4);
-		bb.order(ByteOrder.nativeOrder());
-		FloatBuffer fb = bb.asFloatBuffer();
-		fb.put(arr);
-		fb.position(0);
-		return fb;
 	}
 	
 	/**
@@ -204,7 +185,7 @@ public class Cursor
 	 * Gets the FloatBuffer for drawing the cursor
 	 * @return The float buffer
 	 */
-	public FloatBuffer GetBuffer() { return this.cursorBuff; }
+	public FloatBuffer GetBuffer() { return Cursor.cursorBuff; }
 	
 	/**
 	 * Gets the Parent of the cursor

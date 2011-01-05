@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import com.game.Constants;
+import com.game.DagRenderer;
 import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.Player;
@@ -47,7 +48,11 @@ public  abstract class PowerUp
 	/** 
 	 * Buffer for the cursor square in ogl 
 	 * **/
-	FloatBuffer cursorBuff;
+	public static final FloatBuffer cursorBuff = DagRenderer.makeFloatBuffer(new float[] 
+	      { 30f, 30f, 1.0f,
+			0f, 30f, 1.0f,
+			30f, 0f, 1.0f,
+			0f, 0f, 1.0f });
 	
 	/**
 	 * Current transparency of the powerup.
@@ -81,14 +86,6 @@ public  abstract class PowerUp
 		this.alphaDir = 1f;
 		this.minAlpha = 0.1f;
 		this.maxAlpha = 1;
-		
-		float[] debSquare = new float[] 
-		                    	      { 30f, 30f, 1.0f,
-		                    			0f, 30f, 1.0f,
-		                    			30f, 0f, 1.0f,
-		                    			0f, 0f, 1.0f };
-		                    		
-		this.cursorBuff = makeFloatBuffer(debSquare);
 	}
 	
 	/**
@@ -189,7 +186,7 @@ public  abstract class PowerUp
 	 * Gets the FloatBuffer to draw on
 	 * @return The float buffer.
 	 */
-	public FloatBuffer GetBuffer() { return this.cursorBuff; }
+	public FloatBuffer GetBuffer() { return PowerUp.cursorBuff; }
 	
 	/**
 	 * Gets the alpha value
