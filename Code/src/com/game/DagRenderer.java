@@ -532,7 +532,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			float y = (float)powerUp.Pos().Y();
 			
 			gl.glTranslatef(x,y,-0.5f);
-			gl.glColor4f(1f, 1f, 1f, powerUp.GetAlpha());
+			gl.glColor4f(
+					Constants.CursorColorIntensity, 
+					Constants.CursorColorIntensity, 
+					Constants.CursorColorIntensity, 
+					powerUp.GetAlpha());
 			
 			//Set the vertices
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, powerUp.GetBuffer());
@@ -732,26 +736,28 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * @param gl Opengl context
 	 * @param playerID  The player ID
 	 */
-	private void SetCursorColor(GL10 gl,int playerID){
+	private void SetCursorColor(GL10 gl,int playerID)
+	{
 		int colorIndex = players.elementAt(playerID).GetColorIndex();
-		switch(colorIndex){
+		switch(colorIndex)
+		{
 			case 0: //Brown
-				gl.glColor4f(0.65f*Constants.CursorColorIntensity, 0.32f*Constants.CursorColorIntensity, 0.13f*Constants.CursorColorIntensity, 1f);
+				gl.glColor4f(0.65f*Constants.CursorColorIntensity, 0.32f*Constants.CursorColorIntensity, 0.13f*Constants.CursorColorIntensity, 0.8f);
 				break;
 			case 1: //Green
-				gl.glColor4f(0f, Constants.CursorColorIntensity, 0f, 1f);
+				gl.glColor4f(0f, Constants.CursorColorIntensity, 0f, 0.8f);
 				break;
 			case 2: //Blue
-				gl.glColor4f(0f, 0f, Constants.CursorColorIntensity, 1f);
+				gl.glColor4f(0f, 0f, Constants.CursorColorIntensity, 0.8f);
 				break;	
 			case 3: //Cyan
-				gl.glColor4f(0f, Constants.CursorColorIntensity, Constants.CursorColorIntensity, 1f);
+				gl.glColor4f(0f, Constants.CursorColorIntensity, Constants.CursorColorIntensity, 0.8f);
 				break;
 			case 4: //Purple
-				gl.glColor4f(Constants.CursorColorIntensity, 0f, Constants.CursorColorIntensity, 1f);
+				gl.glColor4f(Constants.CursorColorIntensity, 0f, Constants.CursorColorIntensity, 0.8f);
 				break;
 			case 5: //Yellow
-				gl.glColor4f(Constants.CursorColorIntensity, Constants.CursorColorIntensity, 0f, 1f);
+				gl.glColor4f(Constants.CursorColorIntensity, Constants.CursorColorIntensity, 0f, 0.8f);
 				break;
 		}
 		
