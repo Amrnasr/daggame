@@ -80,6 +80,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private Bitmap powerUpBitmap;
 	
+	private Bitmap powerUpUpBitmap;
+	
 	/**
 	 * Map vertex buffer
 	 */
@@ -104,6 +106,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * Id of the texture of the cursor
 	 */
 	private int powerUpTextureId;
+	
+	private int powerUpUpTextureID;
 	
 	/**
 	 * Length of the tile map array
@@ -210,6 +214,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.map = null;
 		this.cursorBitmap = null;
 		this.powerUpBitmap = null;
+		this.powerUpUpBitmap = null;
 		this.cursorsRef = new Vector<Cursor>();
 		this.powerUps = new Vector<PowerUp>();
 		this.players = null;
@@ -300,6 +305,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		// Store the PowerUp bitmap
 		this.powerUpBitmap = initData.GetPowerUpBitmap();
+		
+		this.powerUpUpBitmap = initData.GetCursorBitmap();
 		
 		showMinimap = (!Preferences.Get().multiplayerGame && Preferences.Get().singleShowMinimap) || (Preferences.Get().multiplayerGame && Preferences.Get().multiShowMinimap);
 		//Log.i("DagRenderer","multiplayerGame: " + Preferences.Get().multiplayerGame + ", singleShowMinimap: " + Preferences.Get().singleShowMinimap + ", multiShowMinimap:" + Preferences.Get().multiShowMinimap);
@@ -492,8 +499,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private void DrawCursors(GL10 gl)
 	{			
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
-		
+		//gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, powerUpUpTextureID);
 		for(int i = 0; i < this.cursorsRef.size(); i++ )
 		{
 			Cursor cursor = this.cursorsRef.elementAt(i);
@@ -503,6 +510,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			gl.glTranslatef(x,y,1);
 
 			SetCursorColor(gl,i);
+			//gl.glColor4f(1, 1, 1, 1);
 			
 			//Set the vertices
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursor.GetBuffer());
@@ -532,11 +540,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			float y = (float)powerUp.Pos().Y();
 			
 			gl.glTranslatef(x,y,-0.5f);
+
 			gl.glColor4f(
 					Constants.CursorColorIntensity, 
 					Constants.CursorColorIntensity, 
 					Constants.CursorColorIntensity, 
 					powerUp.GetAlpha());
+
 			
 			//Set the vertices
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, powerUp.GetBuffer());
@@ -875,12 +885,48 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		colorArray[count+23] = a; 
 	}
 	
+	// Get a new texture id:
+	private static int NewTextureID(GL10 gl) 
+	{
+	    int[] temp = new int[1];
+	    gl.glGenTextures(1, temp, 0);
+	    return temp[0];        
+	}
+	
+	private int LoadTexture(GL10 gl, Bitmap bitmap)
+	{
+		int id = NewTextureID(gl);
+		
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, id);
+	    
+	    // Set all of our texture parameters:
+	    gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+	    gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+	    gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
+	    gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
+	    gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,	GL10.GL_MODULATE); 
+	    
+	    GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, bitmap, 0);
+	    
+	    return id;
+	}
+	
 	/**
 	 * Loads the textures needed into Opengl
 	 * @param gl Opengl context.
 	 */
 	private void SetTextures(GL10 gl)
 	{			
+		this.mapTextureId = LoadTexture(gl, this.map.getBitmap());
+		this.cursorTextureId = LoadTexture(gl, this.cursorBitmap);
+		this.powerUpTextureId = LoadTexture(gl, this.powerUpBitmap);
+		this.powerUpUpTextureID = LoadTexture(gl, this.powerUpUpBitmap);
+		
+		Log.i("DagRenderer", "Cursor: " + this.cursorBitmap.getWidth() + " Map: " + this.map.getBitmap().getWidth());
+		
+		//Log.i("DagRenderer", "DEBUG!! Map: " + this.mapTextureId +" Cursor: " + this.cursorTextureId + " PowerUp: " + this.powerUpTextureId);
+		
+		/*
 		//Generate the texture vector
 		int[] tmp_tex = new int[3];
 		gl.glGenTextures(3, tmp_tex, 0); 
@@ -927,6 +973,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 
 		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.powerUpBitmap, 0);
 		this.powerUpBitmap.recycle();
+		*/
 		
 		//Set the rendering parameters
 		gl.glEnable(GL10.GL_CULL_FACE);

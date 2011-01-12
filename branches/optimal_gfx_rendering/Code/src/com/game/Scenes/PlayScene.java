@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
@@ -243,11 +244,14 @@ public class PlayScene extends Scene
         		
         		renderInitData.SetPlayers(players);
         		
-        		Bitmap cursorBitmap=BitmapFactory.decodeResource(refActivity.getResources(), R.drawable.cursor);
-        		renderInitData.SetCursorBitmap(cursorBitmap);
+        		//Bitmap powerUpBitmap=BitmapFactory.decodeResource(refActivity.getResources(), R.drawable.powerup);
+        		//renderInitData.SetPowerUpBitmap(powerUpBitmap);
+        		renderInitData.SetPowerUpBitmap(CreateBitmap(R.drawable.powerup));
+        		renderInitData.SetCursorBitmap(CreateBitmap(R.drawable.powerupup));
         		
-        		Bitmap powerUpBitmap=BitmapFactory.decodeResource(refActivity.getResources(), R.drawable.powerup);
-        		renderInitData.SetPowerUpBitmap(powerUpBitmap);
+        		//Bitmap cursorBitmap=BitmapFactory.decodeResource(refActivity.getResources(), R.drawable.cursor);
+        		//renderInitData.SetCursorBitmap(cursorBitmap);
+        		//renderInitData.SetCursorBitmap(CreateBitmap(R.drawable.cursor));
             	
             	// Set the initial pos for all the cursors
         		for(int i= 0; i < players.size(); i++)
@@ -275,6 +279,27 @@ public class PlayScene extends Scene
             }
         };
         t.start();		
+	}
+	
+	private Bitmap CreateBitmap(int resource)
+	{
+		/*
+		 // This will tell the BitmapFactory to not scale based on the device's pixel density:
+	    BitmapFactory.Options opts = new BitmapFactory.Options();
+	    opts.inScaled = false;
+	    
+	    // We need to flip the textures vertically:
+	    Matrix flip = new Matrix();
+	    flip.postScale(1f, -1f);
+	    
+	    // Load up, and flip the texture:
+	    Bitmap temp = BitmapFactory.decodeResource(this.refActivity.getResources(), resource, opts);
+	    Bitmap bmp = Bitmap.createBitmap(temp, 0, 0, temp.getWidth(), temp.getHeight(), flip, true);
+	    temp.recycle();
+	    
+	    return bmp;
+	    */
+		return BitmapFactory.decodeResource(this.refActivity.getResources(), resource);
 	}
 
 	/**
