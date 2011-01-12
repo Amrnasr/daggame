@@ -985,7 +985,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 				Preferences.Get().mapWidth,0f,1.0f,
 				0f,0f,1.0f};
 		Log.i("DagRenderer","Map width: " + Preferences.Get().mapWidth + " height: " + Preferences.Get().mapHeight);
-		float textureArray[] = {1.0f,1.0f,0.0f,1.0f,1.0f,0.0f,0.0f,0.0f};
+		float textureArray[] = {1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 		
 		this.vertexMapBuffer = makeFloatBuffer(VertexMapArray);
 		this.textureMapBuffer = makeFloatBuffer(textureArray);
