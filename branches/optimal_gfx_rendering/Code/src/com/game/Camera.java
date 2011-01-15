@@ -222,6 +222,7 @@ public class Camera
 			int xHeight = (int) (maxY - minY);
 			xWidth = Math.max(xWidth, this.screenW);
 			xHeight = Math.max(xHeight, this.screenH);
+			
 			//Log.i("Camera", "Viewport: " + xWidth  + ", " + xHeight);
 			
 			// Set X and y

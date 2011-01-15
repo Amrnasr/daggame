@@ -51,6 +51,14 @@
 				android:layout_gravity="center_horizontal"
 				>
 			</TextView>
+			<TextView
+				android:id="@+id/widget32"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="Help: Mario Zechner"
+				android:layout_gravity="center_horizontal"
+				>
+			</TextView>
 		</LinearLayout>
 	</ScrollView>
 	<Button
