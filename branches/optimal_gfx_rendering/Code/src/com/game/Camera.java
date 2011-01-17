@@ -3,6 +3,8 @@ package com.game;
 
 import java.util.Vector;
 
+import com.game.MessageHandler.MsgReceiver;
+
 import android.util.Log;
 
 /**
@@ -96,6 +98,12 @@ public class Camera
 	private static final int NORMAL_SPEED = 5;
 	
 	/**
+	 * Distance to the border of the screen allowed for the cursors
+	 * If the cursor(s) is closer to the edge of the screen than this, we move the camera.
+	 */
+	private int borderMargin;
+	
+	/**
 	 * Prevents the instantiation of an object of the Camera class
 	 */
 	protected Camera() 
@@ -105,8 +113,8 @@ public class Camera
 		screenH = 0;
 		screenW = 0;
 		
-		minZ = 0;
-		maxZ = 0;
+		minZ = 10;
+		maxZ = 20;
 		
 		minRatio = 1;
 		maxRatio = 0;
@@ -154,8 +162,18 @@ public class Camera
 		this.screenH = h;
 		this.screenW = w;
 		
+		this.borderMargin = screenW / 5;
+		
 		// Set initial z then:
-		this.minZ = 2* this.screenH;		
+		//this.minZ = 2* this.screenH;		
+	}
+	
+	public void SetCameraZLimits()
+	{
+		this.minZ = 2* ((this.screenW * Preferences.Get().mapHeight)/this.screenH);
+		this.maxZ = 2* Preferences.Get().mapWidth;		
+		
+		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.RENDERER_REQUEST_SURFACE_UPDATED);
 	}
 	
 	/**
@@ -205,7 +223,7 @@ public class Camera
 		
 		if(cursorCount == 0)
 		{
-			// No human players, just watch the whole damm thing
+			// No human players, just watch the whole damn thing
 			this.pos.Set(0, 0, this.maxZ);
 		}
 		else
@@ -220,38 +238,48 @@ public class Camera
 			// Make it so the camera viewport is at least as big as the physical screen
 			int xWidth = (int) (maxX - minX);
 			int xHeight = (int) (maxY - minY);
-			xWidth = Math.max(xWidth, this.screenW);
-			xHeight = Math.max(xHeight, this.screenH);
 			
-			//Log.i("Camera", "Viewport: " + xWidth  + ", " + xHeight);
+			xHeight = Math.max(xHeight, Preferences.Get().mapHeight);
+			xWidth = Math.max(xWidth, (Preferences.Get().mapHeight * this.screenW)/this.screenH);
+			
+			//Log.i("Camera", "xH = " + Preferences.Get().mapHeight + " xW = " + (Preferences.Get().mapHeight * this.screenW)/this.screenH);
+			// Fit map to screen
+			//xWidth = Math.max(xWidth, this.screenW);
+			//xHeight = Math.max(xHeight, this.screenH);
+			
+			Log.i("Camera", "Viewport: " + xWidth  + ", " + xHeight);
 			
 			// Set X and y
-			destination.SetX((centerX - xWidth/2) + this.screenW/2);
-			destination.SetY((centerY - xHeight/2) + this.screenH/2);
+			destination.SetX(centerX);
+			destination.SetY(centerY);
+			
 			
 			// Set Z  (xDDD)			
 			xWidth = Math.max(1, xWidth); // To avoid /0 errors while loading
 			
 			// Get the ratio map/screen
 			float ratio = (float)((float)(xWidth) / (float)(this.screenW)); 
-			//Log.i("Camera", "Ratio: " + ratio);
+			Log.i("Camera", "Ratio: " + ratio);
 			
+			this.minRatio = (float)((float)((float)((float)this.screenW/(float)this.screenH)*(float)Preferences.Get().mapHeight) / (float)(screenW));
 			this.maxRatio = (float)((float)(Preferences.Get().mapWidth) / (float)(screenW));
 			ratio = ratio - this.minRatio;
+			ratio = Math.max(0f, ratio);
+			Log.i("Camera", "Ratio: " + ratio);
 			float ratioRange = this.maxRatio - this.minRatio;
-			//Log.i("Camera", "Ratio: [" + this.minRatio + ", " + this.maxRatio + "], range: " + ratioRange);
+			Log.i("Camera", "Ratio: [" + this.minRatio + ", " + this.maxRatio + "], range: " + ratioRange);
 			
 			
 			ratio = ratio / ratioRange; // % of the total ratio range
-			//Log.i("Camera", "Ratio %:" + ratio);
+			Log.i("Camera", "Ratio %:" + ratio);
 			
-			this.maxZ = 2*Preferences.Get().mapWidth;			
+			//this.maxZ = 2*Preferences.Get().mapWidth;			
 			float zRange = this.maxZ - this.minZ;
 			//Log.i("Camera", "Z: [" + this.minZ + ", " + this.maxZ + "] range: " + zRange );
 			
 			// Now we've got the % of ratio, just apply it to the allowed Z interval.
 			destination.SetZ(this.minZ + (zRange * ratio));
-			//destination.Print("Camera", "Destination:");
+			destination.Print("Camera", "Destination:");
 			
 			// Once the destination point is calculated, request to move there.
 			MoveTo(destination);			
@@ -351,6 +379,6 @@ public class Camera
 	/**
 	 * Gets the maximum z
 	 */
-	public int GetMaxZ() { return 2*Preferences.Get().mapWidth; }
+	public int GetMaxZ() { return this.maxZ; }
 
 }

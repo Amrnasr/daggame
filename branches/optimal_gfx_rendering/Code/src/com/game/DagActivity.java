@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.widget.RelativeLayout;
 import android.os.Bundle;
 import android.os.Debug;
@@ -363,7 +364,6 @@ public class DagActivity extends Activity
     	if(nextScene == SceneType.PLAY_SCENE)
     	{
     		this.showDialog(LOAD_DIALOG);
-    		
     		//dialog.show();   
     				
     	}

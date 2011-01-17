@@ -20,7 +20,7 @@ public class BallInputDevice extends InputDevice
 	/**
 	 * Modifies the ball input to give it a little more force.
 	 */
-	private static final int SCALE_FACTOR = 5;
+	private static final int SCALE_FACTOR = 15;
 
 	/**
 	 * Creates the Handler and assigns it.
