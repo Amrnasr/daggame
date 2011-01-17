@@ -444,9 +444,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		// Draw textured elements
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
-		DrawPowerUps(gl);
-		
-		DrawCursors(gl);
+
 		
 		//DrawJoyStick(gl);
 		
@@ -466,6 +464,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexMapBuffer);		
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.tileMapBufferLength/3);
 		}	
+		
+		DrawPowerUps(gl);
+		
+		DrawCursors(gl);
 		
 		getCurrentProjection(gl);
 		getCurrentModelView(gl);
@@ -546,7 +548,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			float x =(float)powerUp.Pos().X();
 			float y = (float)powerUp.Pos().Y();
 			
-			gl.glTranslatef(x,y,-0.5f);
+			gl.glTranslatef(x,y,0.5f);
 
 			gl.glColor4f(
 					Constants.CursorColorIntensity, 
@@ -563,7 +565,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 			
-			gl.glTranslatef(-x,-y,0.5f);
+			gl.glTranslatef(-x,-y,-0.5f);
 		}
 	}
 	
