@@ -247,8 +247,8 @@ public class PlayScene extends Scene
         		
         		//Bitmap powerUpBitmap=BitmapFactory.decodeResource(refActivity.getResources(), R.drawable.powerup);
         		//renderInitData.SetPowerUpBitmap(powerUpBitmap);
-        		renderInitData.SetPowerUpBitmap(CreateBitmap(R.drawable.powerup));
-        		renderInitData.SetCursorBitmap(CreateBitmap(R.drawable.powerupup));
+        		renderInitData.SetPowerUpBitmap(CreateBitmap(R.drawable.powerup2));
+        		renderInitData.SetCursorBitmap(CreateBitmap(R.drawable.cursor3));
         		
         		//Bitmap cursorBitmap=BitmapFactory.decodeResource(refActivity.getResources(), R.drawable.cursor);
         		//renderInitData.SetCursorBitmap(cursorBitmap);
