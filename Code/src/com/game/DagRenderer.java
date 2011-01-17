@@ -277,6 +277,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        			state = RenderState.RENDERING;
 	        		}
 	        	}
+	        	else if(msg.what == MsgType.RENDERER_REQUEST_SURFACE_UPDATED.ordinal())
+	        	{
+	        		surfaceUpdatePending = true;
+	        		minZ = Camera.Get().GetMinZ() - camZOffset;
+	        		maxZ = 2*Camera.Get().GetMaxZ() + camZOffset;
+	        		Log.i("DagRenderer", "zMin: " + minZ + " zMax: " + maxZ);
+	        	}
 	        }
 	    };
 	    
@@ -309,7 +316,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.powerUpUpBitmap = initData.GetCursorBitmap();
 		
 		showMinimap = (!Preferences.Get().multiplayerGame && Preferences.Get().singleShowMinimap) || (Preferences.Get().multiplayerGame && Preferences.Get().multiShowMinimap);
-		//Log.i("DagRenderer","multiplayerGame: " + Preferences.Get().multiplayerGame + ", singleShowMinimap: " + Preferences.Get().singleShowMinimap + ", multiShowMinimap:" + Preferences.Get().multiShowMinimap);
+
 		//Store the players vector
 		this.players = initData.GetPlayers();
 		

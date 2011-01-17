@@ -135,7 +135,7 @@ public class PlayScene extends Scene
 		this.trackballEvent = null;
 		this.touchEvent = null;
 		this.gameplayRegulator = new Regulator(60);
-		this.cameraZoomRegulator = new Regulator(1);
+		this.cameraZoomRegulator = new Regulator(3);
 		this.messageManagerRegulator = new Regulator(1);
 		this.mapFile =  MapsImageAdapter.getImageID(Preferences.Get().singleCurrentMap);
 		this.tileMapFile = MapsImageAdapter.getTilemapID(Preferences.Get().singleCurrentMap);
@@ -187,6 +187,7 @@ public class PlayScene extends Scene
 	        		// The renderer is done, so start has been done as well.
 	        		if(gameState == LogicState.UNINITIALIZED)
 	        		{
+	        			Camera.Get().SetCameraZLimits();
 	        			gameState = LogicState.PLAYING;
 	        		}
 	        	}

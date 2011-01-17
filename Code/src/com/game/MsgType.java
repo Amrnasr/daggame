@@ -153,4 +153,9 @@ public enum MsgType
 	 * obj: The PowerUp to stop displaying
 	 */
 	STOP_DISPLAYING_POWERUP,
+	
+	/**
+	 * Sent when the Camera has changed the min/max z. 
+	 */
+	RENDERER_REQUEST_SURFACE_UPDATED,
 }
