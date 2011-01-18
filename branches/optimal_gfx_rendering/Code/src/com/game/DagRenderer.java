@@ -435,6 +435,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		// Draw non-textured elements
 		gl.glDisable(GL10.GL_TEXTURE_2D);
+		DrawBackgroundRect(gl);
+		
 		synchronized (map) 
 		{
 			DrawMap(gl);
@@ -742,12 +744,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private void DrawBackgroundRect(GL10 gl)
 	{
-		gl.glDisable(GL10.GL_TEXTURE_2D);
-		gl.glTranslatef(0f,0f,-1f);
-		gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+		gl.glTranslatef(0f,0f,-3f);
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexMapBuffer);		
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-		gl.glTranslatef(0f,0f,1f);
+		gl.glTranslatef(0f,0f,3f);
 	}
 	
 	/**

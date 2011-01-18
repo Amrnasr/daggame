@@ -183,7 +183,7 @@ public class Map {
 				if(tile.HasBeenColorUpdated())
 				{
 					float density = 1 - (tile.GetCurrentDensity() / tile.GetMaxCapacity());
-					SetColor(tile.GetRealPos(), 1, 0, 0, density);
+					SetColor(tile.GetRealPos(), density, 0, 0, density);
 				}
 				else
 				{
