@@ -17,6 +17,8 @@ import com.game.Scenes.PlayScene;
  */
 public class TouchInputDevice extends InputDevice 
 {
+	private int movePadding = 5;
+	
 	/**
 	 * Creates the handler and links it to the appropriate one in PlayScene
 	 * @param playScene to listen in
@@ -40,7 +42,29 @@ public class TouchInputDevice extends InputDevice
 				}
 				if(msg.what == MsgType.REPLY_WCS_TRANSFORM_REQUEST.ordinal())
 				{
-					parent.GetCursor().MoveTo((Vec2)msg.obj);
+					// Add some padding
+					Vec2 dest = (Vec2)msg.obj;
+					//dest.Print("TouchInmputDevice", "1 - Requested coords");
+					/*
+					if(dest.X() > parent.GetCursor().GetPosition().X())
+					{
+						dest.Offset(movePadding, 0);
+					}
+					else if(dest.X() < parent.GetCursor().GetPosition().X())
+					{
+						dest.Offset(-movePadding, 0);
+					}
+					
+					if(dest.Y() > parent.GetCursor().GetPosition().Y())
+					{
+						dest.Offset(0, movePadding);
+					}
+					else if(dest.Y() < parent.GetCursor().GetPosition().Y())
+					{
+						dest.Offset(0, -movePadding);
+					}
+					*/
+					parent.GetCursor().MoveTo(dest);
 				}
 			}
 		};

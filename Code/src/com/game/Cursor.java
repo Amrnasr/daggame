@@ -30,12 +30,29 @@ public class Cursor
 	/** Normal speed constant. To turn into a valued enum if there is more than one**/
 	private static final int NORMAL_SPEED  = 2;
 	
+	private float rotationAngle;
+	private final float pi = 3.14f;
+	private boolean rotating;
+	private float currentRotationUpdate;
+	private final float rotationUpdates = 60;
+	private final float rotateIncrement = 10;
+	private int rotationDirection;
+
 	/** Buffer for the cursor square in ogl **/
 	private static final FloatBuffer cursorBuff = DagRenderer.makeFloatBuffer(new float[] 
-	      { 30f, 30f, 1.0f,
+	      { 15f, 15f, 1.0f,
+			-15f, 15f, 1.0f,
+			15f, -15f, 1.0f,
+			-15f, -15f, 1.0f });
+	
+	private float [] incrementTable;
+	
+	/*
+	{ 30f, 30f, 1.0f,
 			0f, 30f, 1.0f,
 			30f, 0f, 1.0f,
 			0f, 0f, 1.0f });
+	*/
 	
 	/**
 	 * Creates an instance of the Cursor class
@@ -49,6 +66,15 @@ public class Cursor
 		this.speed = NORMAL_SPEED;
 		this.direction = null;
 		this.distance = 0;
+		this.rotationAngle = 0;
+		this.rotating = false;
+		this.currentRotationUpdate = 0;
+		this.rotationDirection = 1;
+		this.incrementTable = new float[(int) this.rotationUpdates];
+		for(int i = 0; i < this.rotationUpdates; i++)
+		{
+			incrementTable[i] = this.rotateIncrement*(float) Math.sin((this.pi * i)/this.rotationUpdates);
+		}
 	}
 	
 	/**
@@ -68,7 +94,7 @@ public class Cursor
 	 */
 	public void Update()
 	{
-		// If the cursor has been givven a initial pos
+		// If the cursor has been given a initial pos
 		if(InitialPositionSet())
 		{
 			// And it has to move
@@ -81,6 +107,33 @@ public class Cursor
 	}
 	
 	/**
+	 * Updates the cursor so it rotates when asked to move.
+	 */
+	public void RenderUpdate()
+	{
+		if(rotating)
+		{
+			//float sinArg = ((float)this.rotationDirection)*(this.pi * this.currentRotationUpdate)/this.rotationUpdates;
+			this.rotationAngle += ((float)this.rotationDirection)*incrementTable[(int) this.currentRotationUpdate];
+			
+			/*
+			 * float sinArg = ((float)this.rotationDirection)*(this.pi * this.currentRotationUpdate)/this.rotationUpdates;
+			this.rotationAngle += rotateIncrement*Math.sin(sinArg);
+			*/
+			this.currentRotationUpdate++;
+			if( this.currentRotationUpdate >= this.rotationUpdates)
+			{
+				this.rotating = false;
+				
+			}
+			if(parent.GetID()==0)
+			{
+				//Log.i("Cursor", "Rotating: " + sinArg +", " + Math.sin(sinArg)+ "," + rotateIncrement*Math.sin(sinArg) + ", " + currentRotationUpdate);
+			}
+		}
+	}
+	
+	/**
 	 * Called to request the cursor to move to a specified position, in a straight line, to the max of it's speed.
 	 * @param destination is the point we want the Cursor to translate to
 	 */
@@ -88,9 +141,22 @@ public class Cursor
 	{
 		if(! this.pos.Equals(destination))
 		{
-			// move in that direction	
+			// move in that direction
+			//destination.Print("Cursor", "2 - Requesting move to ");
 			MoveInDirection(this.pos.GetVectorTo(destination));
+			StartRotating();
 		}
+	}
+	
+	public void StartRotating()
+	{
+		if(rotating)
+		{
+			return;
+		}
+		this.rotating = true;
+		this.currentRotationUpdate = 0;
+		this.rotationDirection *= -1;
 	}
 	
 	/**
@@ -192,5 +258,17 @@ public class Cursor
 	 * @return Parent of the cursor
 	 */
 	public Player GetPlayer() { return this.parent; }
+	
+	/**
+	 * Gets the current rotation angle of the cursor
+	 * @return The rotation angle in degrees
+	 */
+	public float GetRotationAngle() { return this.rotationAngle; }
+	
+	/**
+	 * Indicates whether the cursor is rotating or not
+	 * @return True if it is, false otherwise.
+	 */
+	public boolean Rotating() { return this.rotating; }
 
 }

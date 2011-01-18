@@ -104,6 +104,11 @@ public class Camera
 	private int borderMargin;
 	
 	/**
+	 * The width and height of the last camera viewport
+	 */
+	private Vec2 lastCameraSize;
+	
+	/**
 	 * Prevents the instantiation of an object of the Camera class
 	 */
 	protected Camera() 
@@ -122,6 +127,8 @@ public class Camera
 		direction = new Vec3();
 		distance = 0;
 		speed = NORMAL_SPEED;
+		
+		lastCameraSize = new Vec2();
 	}
 	
 	/**
@@ -215,19 +222,37 @@ public class Camera
 				minX = (float) Math.min(minX, cursor.GetPosition().X());
 				minY = (float) Math.min(minY, cursor.GetPosition().Y());
 				
+				
 				centerX += cursor.GetPosition().X();
 				centerY += cursor.GetPosition().Y();
 				cursorCount += 1;
 			}
 		}
 		
+		//Log.i("Camera", "3 - Original bounding box: (" + minX + ", " + minY + "),  (" + maxX + ", " + maxY + ")");
+		
+		// Give padding to multiplayer
+		/*
+		if(cursorCount > 1)
+		{
+			minX -= borderMargin;
+			maxX += borderMargin;
+			minY -= borderMargin;
+			maxY += borderMargin;
+			
+			Log.i("Camera", "4 - Extended bounding box: (" + minX + ", " + minY + "),  (" + maxX + ", " + maxY + ")");
+		}
+		*/
+		
 		if(cursorCount == 0)
 		{
 			// No human players, just watch the whole damn thing
 			this.pos.Set(0, 0, this.maxZ);
 		}
-		else
+		else if (CursorsCloseToBorder(minX, maxX, minY, maxY))
 		{
+			//Log.i("Camera", "5 - Close to border!");
+			
 			// Point to go
 			Vec3 destination = new Vec3();
 			
@@ -241,37 +266,33 @@ public class Camera
 			
 			xHeight = Math.max(xHeight, Preferences.Get().mapHeight);
 			xWidth = Math.max(xWidth, (Preferences.Get().mapHeight * this.screenW)/this.screenH);
+
+			this.lastCameraSize.Set(xWidth, xHeight);
 			
-			//Log.i("Camera", "xH = " + Preferences.Get().mapHeight + " xW = " + (Preferences.Get().mapHeight * this.screenW)/this.screenH);
-			// Fit map to screen
-			//xWidth = Math.max(xWidth, this.screenW);
-			//xHeight = Math.max(xHeight, this.screenH);
-			
-			Log.i("Camera", "Viewport: " + xWidth  + ", " + xHeight);
+			//Log.i("Camera", "6 - Viewport: " + xWidth  + ", " + xHeight);
+			//Log.i("Camera", "7 - Center: " + centerX  + ", " + centerY);
 			
 			// Set X and y
 			destination.SetX(centerX);
 			destination.SetY(centerY);
-			
 			
 			// Set Z  (xDDD)			
 			xWidth = Math.max(1, xWidth); // To avoid /0 errors while loading
 			
 			// Get the ratio map/screen
 			float ratio = (float)((float)(xWidth) / (float)(this.screenW)); 
-			Log.i("Camera", "Ratio: " + ratio);
+			//Log.i("Camera", "Ratio: " + ratio);
 			
 			this.minRatio = (float)((float)((float)((float)this.screenW/(float)this.screenH)*(float)Preferences.Get().mapHeight) / (float)(screenW));
 			this.maxRatio = (float)((float)(Preferences.Get().mapWidth) / (float)(screenW));
 			ratio = ratio - this.minRatio;
 			ratio = Math.max(0f, ratio);
-			Log.i("Camera", "Ratio: " + ratio);
 			float ratioRange = this.maxRatio - this.minRatio;
-			Log.i("Camera", "Ratio: [" + this.minRatio + ", " + this.maxRatio + "], range: " + ratioRange);
+			//Log.i("Camera", "Ratio: [" + this.minRatio + ", " + this.maxRatio + "], range: " + ratioRange);
 			
 			
 			ratio = ratio / ratioRange; // % of the total ratio range
-			Log.i("Camera", "Ratio %:" + ratio);
+			//Log.i("Camera", "Ratio %:" + ratio);
 			
 			//this.maxZ = 2*Preferences.Get().mapWidth;			
 			float zRange = this.maxZ - this.minZ;
@@ -279,12 +300,44 @@ public class Camera
 			
 			// Now we've got the % of ratio, just apply it to the allowed Z interval.
 			destination.SetZ(this.minZ + (zRange * ratio));
-			destination.Print("Camera", "Destination:");
+			//destination.Print("Camera", "Destination:");
+			
+			//destination.Print("Camera", "8 - Destination");
 			
 			// Once the destination point is calculated, request to move there.
 			MoveTo(destination);			
 		}
+	}
+	
+	/**
+	 * Checks to see if the bounding box defined by it's 4 sides
+	 * is near to the edge of the screen
+	 * @param minX
+	 * @param maxX
+	 * @param minY
+	 * @param maxY
+	 * @return True if is, false if it isn't.
+	 */
+	private boolean CursorsCloseToBorder(float minX, float maxX, float minY, float maxY)
+	{
+		if(minX < pos.X() + borderMargin - lastCameraSize.X()/2)
+		{
+			return true;
+		}
+		if( maxX > pos.X() + lastCameraSize.X()/2 - borderMargin)
+		{
+			return true;
+		}
+		if(minY < pos.Y() + borderMargin - lastCameraSize.Y()/2)
+		{
+			return true;
+		}
+		if(maxY > pos.Y() + lastCameraSize.Y()/2 - borderMargin)
+		{
+			return true;
+		}
 		
+		return false;
 	}
 	
 	/**

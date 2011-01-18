@@ -134,7 +134,7 @@ public class MultiSelectScene extends Scene {
 			break;
 		case R.id.op_multi_spin:
 			Log.i("MultiSelectScene", "Opponents spinner handler called");
-			Preferences.Get().multiNumberOpponents = position + 1; // Because pos == 0 means numb oponents = 1
+			Preferences.Get().multiNumberOpponents = position; // Because pos == 0 means numb oponents = 1
 			break;
 		case R.id.control_multi_spin:
 			Log.i("MultiSelectScene", "Control spinner handler called");
