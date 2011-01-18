@@ -46,6 +46,7 @@ public class MoveToDestinationTask extends LeafTask
 	{
 		LogTask("Doing action");
 		bb.player.GetCursor().MoveInDirection(bb.moveDirection);
+		bb.player.GetCursor().StartRotating();
 		control.FinishWithSuccess();
 	}
 

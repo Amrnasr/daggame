@@ -27,6 +27,11 @@ public class RenderInitData
 	private Bitmap cursorBitmap;
 	
 	/**
+	 * Cursor shadow bitmap for rendering
+	 */
+	private Bitmap cursorShadowBitmap;
+	
+	/**
 	 * PowerUp bitmap for rendering
 	 */
 	private Bitmap powerUpBitmap;
@@ -71,6 +76,12 @@ public class RenderInitData
 	public void SetCursorBitmap(Bitmap cursorBitmap) { this.cursorBitmap = cursorBitmap; }
 	
 	/**
+	 * Sets the cursor shadow bitmap
+	 * @param cursorBitmap
+	 */
+	public void SetCursorShadowBitmap(Bitmap cursorShadowBitmap) { this.cursorShadowBitmap = cursorShadowBitmap; }
+	
+	/**
 	 * Sets the PowerUp bitmap
 	 * @param cursorBitmap
 	 */
@@ -100,6 +111,12 @@ public class RenderInitData
 	 * @return
 	 */
 	public Bitmap GetCursorBitmap() { return this.cursorBitmap; }
+	
+	/**
+	 * Gets the cursor shadow bitmap
+	 * @return
+	 */
+	public Bitmap GetCursorShadowBitmap() { return this.cursorShadowBitmap; }
 	
 	/**
 	 * Gets the PowerUp bitmap

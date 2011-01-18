@@ -135,7 +135,7 @@ public class PlayScene extends Scene
 		this.trackballEvent = null;
 		this.touchEvent = null;
 		this.gameplayRegulator = new Regulator(60);
-		this.cameraZoomRegulator = new Regulator(3);
+		this.cameraZoomRegulator = new Regulator(1);
 		this.messageManagerRegulator = new Regulator(1);
 		this.mapFile =  MapsImageAdapter.getImageID(Preferences.Get().singleCurrentMap);
 		this.tileMapFile = MapsImageAdapter.getTilemapID(Preferences.Get().singleCurrentMap);
@@ -188,6 +188,7 @@ public class PlayScene extends Scene
 	        		if(gameState == LogicState.UNINITIALIZED)
 	        		{
 	        			Camera.Get().SetCameraZLimits();
+	        			//Debug.startMethodTracing("lena");
 	        			gameState = LogicState.PLAYING;
 	        		}
 	        	}
@@ -249,6 +250,7 @@ public class PlayScene extends Scene
         		//renderInitData.SetPowerUpBitmap(powerUpBitmap);
         		renderInitData.SetPowerUpBitmap(CreateBitmap(R.drawable.powerup2));
         		renderInitData.SetCursorBitmap(CreateBitmap(R.drawable.cursor3));
+        		renderInitData.SetCursorShadowBitmap(CreateBitmap(R.drawable.cursorshadow));
         		
         		//Bitmap cursorBitmap=BitmapFactory.decodeResource(refActivity.getResources(), R.drawable.cursor);
         		//renderInitData.SetCursorBitmap(cursorBitmap);
@@ -276,7 +278,6 @@ public class PlayScene extends Scene
         		// Done initializing logic, get the word out to the renderer.
         		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.INITIALIZE_RENDERER, renderInitData); 
         		Log.i("PlayScene", "Start function finished");
-        		//Debug.startMethodTracing("lena");
             }
         };
         t.start();		
