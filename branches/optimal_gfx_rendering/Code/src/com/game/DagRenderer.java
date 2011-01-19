@@ -14,10 +14,8 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
-import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
-import android.test.IsolatedContext;
 import android.util.Log;
 
 import com.game.InputDevice.JoystickInputDevice;
@@ -230,6 +228,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private Vector<PowerUp> powerUps;
 	
 	/**
+	 * List of JoystickInputDevice in the renderer
+	 */
+	private Vector<JoystickInputDevice> joysticks;
+	
+	/**
 	 * Initializes the renderer and sets the handler callbacks.
 	 */
 	public DagRenderer()
@@ -246,6 +249,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.joystickSmallBitmap = null;
 		this.cursorsRef = new Vector<Cursor>();
 		this.powerUps = new Vector<PowerUp>();
+		this.joysticks = new Vector<JoystickInputDevice>();
 		this.players = null;
 		this.texReady = false;	
 		this.lastWidth = 0;
@@ -361,15 +365,16 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		// Z's changed, so tell the update to update the surface perspective.
 		this.surfaceUpdatePending = true;		
 		
-		// Check to see if we have to draw Joystick
-		/*
-		if(this.players.firstElement().GetInputDevice() instanceof JoystickInputDevice)
+		// Check to see if we have to draw Joysticks
+		for (Player player : players) 
 		{
-			// If so, get the references to the position of the Joystick
-			this.mainJoystickPos = ((JoystickInputDevice)this.players.firstElement().GetInputDevice()).GetMainCirclePos();
-			this.dirJoystickPos = ((JoystickInputDevice)this.players.firstElement().GetInputDevice()).GetDirCirclePos();
+			if(player.GetInputDevice() instanceof JoystickInputDevice)
+			{
+				// If so, get the references to the Joystick
+				joysticks.add((JoystickInputDevice)player.GetInputDevice());
+			}
 		}
-	    */
+	    
 	    MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG);
 	    MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.RENDERER_INITIALIZATION_DONE);		    
 	    this.state = RenderState.RENDERING;
@@ -480,10 +485,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		// Draw textured elements
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
-
-		
-		//DrawJoyStick(gl);
-		
 		// Draw the corresponding data, debug or not.
 		
 		if(!Constants.DebugMode )
@@ -510,6 +511,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		getCurrentProjection(gl);
 		getCurrentModelView(gl);
 		
+		
+		DrawJoyStick(gl);
 		/*
 		if(showMinimap)
 		{
@@ -733,7 +736,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	
 	private void DrawJoyStick(GL10 gl)
 	{
-		//TODO: Not call if there are no joysticks
+		//Not call if there are no joysticks
+		if(joysticks.size() == 0)
+		{
+			return;
+		}
+		
 		//Change to orthogonal projection
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
@@ -744,7 +752,32 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		// Draw the joystick
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
-		// TODO
+		
+		for(int i = 0; i < joysticks.size(); i++)
+		{
+			JoystickInputDevice js = joysticks.elementAt(i);
+			float x = (float)js.GetMainCirclePos().X();
+			float y = (float)js.GetMainCirclePos().Y();
+			
+			gl.glTranslatef(x,y,1f);
+
+			gl.glColor4f(1,1,1,1);
+			
+			//Set the vertices
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, JoystickInputDevice.GetMainTextureBuffer());
+			
+			//Set the texture coordinates
+			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
+			
+			// Set the texture
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, joystickMainTextureId);
+			
+			// Draw
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+			
+			
+			gl.glTranslatef(-x,-y,-1f);
+		}
 		
 		//Return to a perspective projection
 		gl.glMatrixMode(GL10.GL_PROJECTION);
@@ -754,72 +787,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		GLU.gluPerspective(gl, 45.0f, ((float)this.lastWidth)/this.lastHeight, this.minZ, this.maxZ);
 	}
 	
-	/**
-	 * Creates the players vertex buffer
-	 * @deprecated
-	 */
-	private void LoadPlayers(GL10 gl){
-		//Calculate the size of the vertex array 
-		float[] tilesPerPlayer = new float[Constants.MaxPlayers];
-		for(int i = 0; i < players.size(); i++)
-		{
-			int size = this.players.elementAt(i).GetTiles().size();
-			this.playersBufferLength[i] = size*18;
-			tilesPerPlayer[i]=size;
-			
-		}
-		
-		// For each player	
-		for(int i = 0; i < players.size(); i++)
-		{	
-			float[] floatVertexArray= new float[playersBufferLength[i]]; 
-			float[] floatColorArray= new float[playersBufferLength[i] + playersBufferLength[i]/3]; 
-			
-			int count = 0;
-			
-			
-			Vector<Tile> playerTiles = this.players.elementAt(i).GetTiles();
-			// For each tile occupied by the player
- 			for(int j = 0; j < tilesPerPlayer[i] && j < this.players.elementAt(i).GetTiles().size() && count < playersBufferLength[i]; j++)
-			{
-				Tile curTile = playerTiles.elementAt(j);
-				
-				float tileX = ((float)curTile.GetPos().X());
-				float tileY = ((float)curTile.GetPos().Y());
-				//calculate the position of the vertices
-				floatVertexArray[count] = tileX*Constants.TileWidth; 
-				floatVertexArray[count+1] = tileY*Constants.TileWidth;
-				floatVertexArray[count+2] = 0.5f; 
-							
-				floatVertexArray[count+3] = tileX*Constants.TileWidth+Constants.TileWidth; 
-				floatVertexArray[count+4] = tileY*Constants.TileWidth;
-				floatVertexArray[count+5] = 0.5f; 
-							
-				floatVertexArray[count+6] = tileX*Constants.TileWidth; 
-				floatVertexArray[count+7] = tileY*Constants.TileWidth+Constants.TileWidth;
-				floatVertexArray[count+8] = 0.5f; 
-							
-				floatVertexArray[count+9] = tileX*Constants.TileWidth+Constants.TileWidth; 
-				floatVertexArray[count+10] = tileY*Constants.TileWidth;
-				floatVertexArray[count+11] = 0.5f; 
-							
-				floatVertexArray[count+12] = tileX*Constants.TileWidth+Constants.TileWidth; 
-				floatVertexArray[count+13] = tileY*Constants.TileWidth+Constants.TileWidth;
-				floatVertexArray[count+14] = 0.5f; 
-							
-				floatVertexArray[count+15] = tileX*Constants.TileWidth; 
-				floatVertexArray[count+16] = tileY*Constants.TileWidth+Constants.TileWidth;
-				floatVertexArray[count+17] = 0.5f; 
-				
-				LoadPlayerColor(gl, curTile, count + count/3, floatColorArray);
-				
-				count += 18;
-			}
- 			//Store it in a float buffer
- 			this.playersVertexBuffer[i] = makeFloatBuffer(floatVertexArray);
- 			this.playersColorBuffer[i] = makeFloatBuffer(floatColorArray);
-		}	
-	}
+	
 	
 	/**
 	 * Draws a background map-sized rectangle
@@ -866,117 +834,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 	}
 	
-	/**
-	 * Creates the color array used for rendering the players armies
-	 * @param gl Opengl context
-	 * @param tile The tile to be rendered
-	 * @param count Initial position to store values in the array
-	 * @param colorArray  The array to store the color values
-	 * @deprecated
-	 */
-	private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
-	{
-		float r = 0f, g = 0f, b = 0f, a=0f;
-		
-		int playersCount = 0;
-		int playerWithDensity = -1;
-		int totalDensity = 0;
-		//calculate the intensity of the color
-		for(int i=0; i < players.size(); i++){
-			if(tile.GetDensityFrom(i) > 0){
-				playersCount++;
-				totalDensity += tile.GetDensityFrom(i);
-				playerWithDensity = i;
-			}
-		}
-		
-		if(playersCount > 1){
-			r += 0.25f;
-			
-			a += 0.25f;
-		}
-		else if(playersCount == 1){
-			int colorIndex = players.elementAt(playerWithDensity).GetColorIndex();
-			float intensityChange = tile.GetDensityFrom(playerWithDensity) * 0.25f / tile.GetMaxCapacity();
-			if(intensityChange > 0f){
-				switch(colorIndex){
-					case 0: //Brown
-						r += intensityChange + 0.1f;
-						g += intensityChange + 0.43f;
-						b += intensityChange + 0.62f;
-						
-						a += intensityChange;
-						break;
-					case 1: //Green
-						g += intensityChange;
-						
-						a += intensityChange;
-						break;
-					case 2: //Blue
-						b += intensityChange;
-						
-						a += intensityChange;
-						break;	
-					case 3: //Cyan
-						g += intensityChange;
-						b += intensityChange;
-						
-						a += intensityChange;
-						break;
-					case 4: //Purple
-						r += intensityChange;
-						b += intensityChange;
-						
-						a += intensityChange;
-						break;
-					case 5: //Yellow
-						r += intensityChange;
-						g += intensityChange;
-						
-						a += intensityChange;
-						break;
-				}		
-			}
-		}
-		
-		//Add the base intensity if necessary
-		r = (r > 0f) ? (0.75f - r) : 0f; 
-		g = (g > 0f) ? (0.75f - g) : 0f;
-		b = (b > 0f) ? (0.75f - b) : 0f;
-		a = (r+g+b > 0f) ? 0.75f + a : 0f;
-		
-		//TODO: Check that the alpha doesn't accumulate because it's drawn one time per player with units in the tile
-		//Store the color values
-		colorArray[count] = r; 
-		colorArray[count+1] = g;
-		colorArray[count+2] = b; 
-		colorArray[count+3] = a; 
-		
-		colorArray[count+4] = r;
-		colorArray[count+5] = g; 
-		colorArray[count+6] = b; 
-		colorArray[count+7] = a;
-		
-		colorArray[count+8] = r; 
-		colorArray[count+9] = g; 
-		colorArray[count+10] = b;
-		colorArray[count+11] = a; 
-					
-		colorArray[count+12] = r; 
-		colorArray[count+13] = g;
-		colorArray[count+14] = b; 
-		colorArray[count+15] = a; 
-		
-		colorArray[count+16] = r;
-		colorArray[count+17] = g; 
-		colorArray[count+18] = b;
-		colorArray[count+19] = a; 
-		
-		colorArray[count+20] = r;
-		colorArray[count+21] = g; 
-		colorArray[count+22] = b;
-		colorArray[count+23] = a; 
-	}
+	
 	
 	// Get a new texture id:
 	private static int NewTextureID(GL10 gl) 
@@ -1272,4 +1130,183 @@ private void DrawCursorShadows(GL10 gl)
 		gl.glTranslatef(-x,-y,-1);
 	}
 }
+
+/**
+	 * Creates the players vertex buffer
+	 * @deprecated
+	 
+	private void LoadPlayers(GL10 gl){
+		//Calculate the size of the vertex array 
+		float[] tilesPerPlayer = new float[Constants.MaxPlayers];
+		for(int i = 0; i < players.size(); i++)
+		{
+			int size = this.players.elementAt(i).GetTiles().size();
+			this.playersBufferLength[i] = size*18;
+			tilesPerPlayer[i]=size;
+			
+		}
+		
+		// For each player	
+		for(int i = 0; i < players.size(); i++)
+		{	
+			float[] floatVertexArray= new float[playersBufferLength[i]]; 
+			float[] floatColorArray= new float[playersBufferLength[i] + playersBufferLength[i]/3]; 
+			
+			int count = 0;
+			
+			
+			Vector<Tile> playerTiles = this.players.elementAt(i).GetTiles();
+			// For each tile occupied by the player
+ 			for(int j = 0; j < tilesPerPlayer[i] && j < this.players.elementAt(i).GetTiles().size() && count < playersBufferLength[i]; j++)
+			{
+				Tile curTile = playerTiles.elementAt(j);
+				
+				float tileX = ((float)curTile.GetPos().X());
+				float tileY = ((float)curTile.GetPos().Y());
+				//calculate the position of the vertices
+				floatVertexArray[count] = tileX*Constants.TileWidth; 
+				floatVertexArray[count+1] = tileY*Constants.TileWidth;
+				floatVertexArray[count+2] = 0.5f; 
+							
+				floatVertexArray[count+3] = tileX*Constants.TileWidth+Constants.TileWidth; 
+				floatVertexArray[count+4] = tileY*Constants.TileWidth;
+				floatVertexArray[count+5] = 0.5f; 
+							
+				floatVertexArray[count+6] = tileX*Constants.TileWidth; 
+				floatVertexArray[count+7] = tileY*Constants.TileWidth+Constants.TileWidth;
+				floatVertexArray[count+8] = 0.5f; 
+							
+				floatVertexArray[count+9] = tileX*Constants.TileWidth+Constants.TileWidth; 
+				floatVertexArray[count+10] = tileY*Constants.TileWidth;
+				floatVertexArray[count+11] = 0.5f; 
+							
+				floatVertexArray[count+12] = tileX*Constants.TileWidth+Constants.TileWidth; 
+				floatVertexArray[count+13] = tileY*Constants.TileWidth+Constants.TileWidth;
+				floatVertexArray[count+14] = 0.5f; 
+							
+				floatVertexArray[count+15] = tileX*Constants.TileWidth; 
+				floatVertexArray[count+16] = tileY*Constants.TileWidth+Constants.TileWidth;
+				floatVertexArray[count+17] = 0.5f; 
+				
+				LoadPlayerColor(gl, curTile, count + count/3, floatColorArray);
+				
+				count += 18;
+			}
+ 			//Store it in a float buffer
+ 			this.playersVertexBuffer[i] = makeFloatBuffer(floatVertexArray);
+ 			this.playersColorBuffer[i] = makeFloatBuffer(floatColorArray);
+		}	
+	}
+	
+	/**
+	 * Creates the color array used for rendering the players armies
+	 * @param gl Opengl context
+	 * @param tile The tile to be rendered
+	 * @param count Initial position to store values in the array
+	 * @param colorArray  The array to store the color values
+	 * @deprecated
+	 
+	private void LoadPlayerColor(GL10 gl, Tile tile, int count, float[] colorArray)
+	{
+		float r = 0f, g = 0f, b = 0f, a=0f;
+		
+		int playersCount = 0;
+		int playerWithDensity = -1;
+		int totalDensity = 0;
+		//calculate the intensity of the color
+		for(int i=0; i < players.size(); i++){
+			if(tile.GetDensityFrom(i) > 0){
+				playersCount++;
+				totalDensity += tile.GetDensityFrom(i);
+				playerWithDensity = i;
+			}
+		}
+		
+		if(playersCount > 1){
+			r += 0.25f;
+			
+			a += 0.25f;
+		}
+		else if(playersCount == 1){
+			int colorIndex = players.elementAt(playerWithDensity).GetColorIndex();
+			float intensityChange = tile.GetDensityFrom(playerWithDensity) * 0.25f / tile.GetMaxCapacity();
+			if(intensityChange > 0f){
+				switch(colorIndex){
+					case 0: //Brown
+						r += intensityChange + 0.1f;
+						g += intensityChange + 0.43f;
+						b += intensityChange + 0.62f;
+						
+						a += intensityChange;
+						break;
+					case 1: //Green
+						g += intensityChange;
+						
+						a += intensityChange;
+						break;
+					case 2: //Blue
+						b += intensityChange;
+						
+						a += intensityChange;
+						break;	
+					case 3: //Cyan
+						g += intensityChange;
+						b += intensityChange;
+						
+						a += intensityChange;
+						break;
+					case 4: //Purple
+						r += intensityChange;
+						b += intensityChange;
+						
+						a += intensityChange;
+						break;
+					case 5: //Yellow
+						r += intensityChange;
+						g += intensityChange;
+						
+						a += intensityChange;
+						break;
+				}		
+			}
+		}
+		
+		//Add the base intensity if necessary
+		r = (r > 0f) ? (0.75f - r) : 0f; 
+		g = (g > 0f) ? (0.75f - g) : 0f;
+		b = (b > 0f) ? (0.75f - b) : 0f;
+		a = (r+g+b > 0f) ? 0.75f + a : 0f;
+		
+		//TODO: Check that the alpha doesn't accumulate because it's drawn one time per player with units in the tile
+		//Store the color values
+		colorArray[count] = r; 
+		colorArray[count+1] = g;
+		colorArray[count+2] = b; 
+		colorArray[count+3] = a; 
+		
+		colorArray[count+4] = r;
+		colorArray[count+5] = g; 
+		colorArray[count+6] = b; 
+		colorArray[count+7] = a;
+		
+		colorArray[count+8] = r; 
+		colorArray[count+9] = g; 
+		colorArray[count+10] = b;
+		colorArray[count+11] = a; 
+					
+		colorArray[count+12] = r; 
+		colorArray[count+13] = g;
+		colorArray[count+14] = b; 
+		colorArray[count+15] = a; 
+		
+		colorArray[count+16] = r;
+		colorArray[count+17] = g; 
+		colorArray[count+18] = b;
+		colorArray[count+19] = a; 
+		
+		colorArray[count+20] = r;
+		colorArray[count+21] = g; 
+		colorArray[count+22] = b;
+		colorArray[count+23] = a; 
+	}
 */
