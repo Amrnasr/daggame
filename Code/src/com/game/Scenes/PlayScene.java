@@ -400,36 +400,34 @@ public class PlayScene extends Scene
 			// Multiplayer game
 			
 			// Player 1 gets to choose input device
-			Player player1;
+			Player player1 = null;
+			Player player2 = null;
 			InputDevice player1ID = null;
+			InputDevice player2ID = null;
 			
 			switch (Preferences.Get().multiControlMode) 
 			{ 
 				case 0:
-					// Touch mode
+					// Touch and Trackball
 					player1ID = new TouchInputDevice(this);
+					player2ID = new BallInputDevice(this);
 					break;
 				
 				case 1:
-					// Trackball
-					player1ID = new BallInputDevice(this);
-					break;
-				
-				case 2:
-					// Joystick
-					player1ID = new JoystickInputDevice(this);
+					// Dual joystick
+					player1ID = new JoystickInputDevice(this, JoystickInputDevice.LEFT);
+					player2ID = new JoystickInputDevice(this, JoystickInputDevice.RIGHT);
 					break;
 	
 				default:
 					Log.e("PlayScene", "Input device requested for player not implemented yet!");				
 					break;
 			}
+			
 			player1 = new Player(0, player1ID, true, Preferences.Get().multiPlayer1Color);
 			this.players.add(player1);
 			
-			// Player 2 gets stuck with trackball.
-
-			Player player2 = new Player(1, new BallInputDevice(this), true, Preferences.Get().multiPlayer2Color);
+			player2 = new Player(1, player2ID, true, Preferences.Get().multiPlayer2Color);
 			this.players.add(player2);
 			
 			// Add all the opponents
@@ -470,7 +468,7 @@ public class PlayScene extends Scene
 				
 				case 2:
 					// Joystick
-					inputDevice = new JoystickInputDevice(this);
+					inputDevice = new JoystickInputDevice(this, JoystickInputDevice.LEFT);
 					break;
 	
 				default:
