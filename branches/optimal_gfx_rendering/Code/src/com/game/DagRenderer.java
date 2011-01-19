@@ -81,9 +81,24 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private Bitmap cursorShadowBitmap;
 	
 	/**
-	 * Cursor bitmap for rendering
+	 * PowerUp bitmap for rendering
 	 */
 	private Bitmap powerUpBitmap;
+	
+	/**
+	 * PowerUp shadow bitmap for rendering
+	 */
+	private Bitmap powerUpShadowBitmap;
+	
+	/**
+	 * Joystick main bitmap for rendering
+	 */
+	private Bitmap joystickMainBitmap;
+	
+	/**
+	 * Joystick small bitmap for rendering
+	 */
+	private Bitmap joystickSmallBitmap;
 	
 	/**
 	 * Map vertex buffer
@@ -111,9 +126,24 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private int cursorShadowTextureId;
 	
 	/**
-	 * Id of the texture of the cursor
+	 * Id of the texture of the PowerUp
 	 */
 	private int powerUpTextureId;
+	
+	/**
+	 * Id of the texture of the PowerUp shadow
+	 */
+	private int powerUpShadowTextureId;
+	
+	/**
+	 * Id of the texture of the cursor
+	 */
+	private int joystickMainTextureId;
+	
+	/**
+	 * Id of the texture of the cursor
+	 */
+	private int joystickSmallTextureId;
 	
 	/**
 	 * Length of the tile map array
@@ -200,16 +230,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private Vector<PowerUp> powerUps;
 	
 	/**
-	 * Joystick main circle position reference
-	 */
-	private Vec2 mainJoystickPos = null;
-
-	/**
-	 * Joystick direction circle position reference
-	 */
-	private Vec2 dirJoystickPos = null;
-	
-	/**
 	 * Initializes the renderer and sets the handler callbacks.
 	 */
 	public DagRenderer()
@@ -221,6 +241,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.cursorBitmap = null;
 		this.cursorShadowBitmap = null;
 		this.powerUpBitmap = null;
+		this.powerUpShadowBitmap = null;
+		this.joystickMainBitmap = null;
+		this.joystickSmallBitmap = null;
 		this.cursorsRef = new Vector<Cursor>();
 		this.powerUps = new Vector<PowerUp>();
 		this.players = null;
@@ -319,6 +342,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		// Store the PowerUp bitmap
 		this.powerUpBitmap = initData.GetPowerUpBitmap();
+		this.powerUpShadowBitmap = initData.GetPowerUpShadowBitmap();
+		
+		// Store the joystick
+		this.joystickMainBitmap = initData.GetJoystickMainBitmap();
+		this.joystickSmallBitmap = initData.GetJoystickSmallBitmap();
 		
 		showMinimap = (!Preferences.Get().multiplayerGame && Preferences.Get().singleShowMinimap) || (Preferences.Get().multiplayerGame && Preferences.Get().multiShowMinimap);
 
@@ -334,13 +362,14 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.surfaceUpdatePending = true;		
 		
 		// Check to see if we have to draw Joystick
+		/*
 		if(this.players.firstElement().GetInputDevice() instanceof JoystickInputDevice)
 		{
 			// If so, get the references to the position of the Joystick
 			this.mainJoystickPos = ((JoystickInputDevice)this.players.firstElement().GetInputDevice()).GetMainCirclePos();
 			this.dirJoystickPos = ((JoystickInputDevice)this.players.firstElement().GetInputDevice()).GetDirCirclePos();
 		}
-	    
+	    */
 	    MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_DISMISS_LOAD_DIALOG);
 	    MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.RENDERER_INITIALIZATION_DONE);		    
 	    this.state = RenderState.RENDERING;
@@ -474,7 +503,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		DrawPowerUps(gl);
 		
-		DrawCursorShadows(gl);
+		//DrawCursorShadows(gl);
 		DrawCursors(gl);
 		
 		
@@ -517,74 +546,63 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private void DrawCursors(GL10 gl)
 	{			
-		//gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
+		
+		Cursor.AlphaRenderUpdate();
 		for(int i = 0; i < this.cursorsRef.size(); i++ )
 		{
 			Cursor cursor = this.cursorsRef.elementAt(i);
+			
+			float oldX =(float)cursor.GetPosition().X();
+			float oldY = (float)cursor.GetPosition().Y();
 			
 			cursor.RenderUpdate();
-			boolean rotating = cursor.Rotating();
 			
 			float x =(float)cursor.GetPosition().X();
 			float y = (float)cursor.GetPosition().Y();
+			
+			boolean rotating = cursor.Rotating();
 			
 				
-			gl.glTranslatef(x,y,2);
-			if(rotating)
-			{
-				gl.glRotatef(cursor.GetRotationAngle(), 0, 0, 1);
-			}
-
-			SetCursorColor(gl,i);
-			
-			//Set the vertices
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursor.GetBuffer());
-			
-			//Set the texture coordinates
-			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
-			
-			// Draw
-			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
-			
-			if(rotating)
-			{
-				gl.glRotatef(-cursor.GetRotationAngle(), 0, 0, 1);
-			}
-			gl.glTranslatef(-x,-y,-2);
-		}
-	}
-	
-	private void DrawCursorShadows(GL10 gl)
-	{			
-		//gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorShadowTextureId);
-		for(int i = 0; i < this.cursorsRef.size(); i++ )
-		{
-			Cursor cursor = this.cursorsRef.elementAt(i);
-			
-			boolean rotating = cursor.Rotating();
-			
-			float x =(float)cursor.GetPosition().X();
-			float y = (float)cursor.GetPosition().Y();
-			
 			gl.glTranslatef(x,y,1);
 			if(rotating)
 			{
 				gl.glRotatef(cursor.GetRotationAngle(), 0, 0, 1);
 			}
-			
-			
+
+			// --------
 			//Set the vertices
+			float shadowX = x-oldX;
+			float shadowY = y-oldY;
+			gl.glTranslatef(shadowX,shadowY,-0.2f);
+			
+			gl.glColor4f(
+					Constants.CursorColorIntensity, 
+					Constants.CursorColorIntensity, 
+					Constants.CursorColorIntensity, 
+					Cursor.GetAlpha());
+			
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursor.GetBuffer());
 			
 			//Set the texture coordinates
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
 			
+			//Set texture
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorShadowTextureId);
+			
+			// Draw
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+			gl.glTranslatef(-shadowX,-shadowY,0.2f);
+			
+			//---------
+			SetCursorColor(gl,i);
+			
+			// Set the texture
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
+			
 			// Draw
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 			
-			
+			//----------
 			if(rotating)
 			{
 				gl.glRotatef(-cursor.GetRotationAngle(), 0, 0, 1);
@@ -599,11 +617,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	private void DrawPowerUps(GL10 gl)
 	{
-		gl.glBindTexture(GL10.GL_TEXTURE_2D, powerUpTextureId);
+		PowerUp.AlphaRenderUpdate();
 		for(int i = 0; i < this.powerUps.size(); i++ )
 		{			
 			PowerUp powerUp = this.powerUps.elementAt(i);
-			powerUp.RenderUpdate();
+			//powerUp.RenderUpdate();
 			
 			float x =(float)powerUp.Pos().X();
 			float y = (float)powerUp.Pos().Y();
@@ -614,16 +632,28 @@ public class DagRenderer implements GLSurfaceView.Renderer
 					Constants.CursorColorIntensity, 
 					Constants.CursorColorIntensity, 
 					Constants.CursorColorIntensity, 
-					powerUp.GetAlpha());
+					PowerUp.GetAlpha());
 
 			
+			gl.glTranslatef(0, 0, -0.2f);
 			//Set the vertices
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, powerUp.GetBuffer());
 			
 			//Set the texture coordinates
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
 			
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, powerUpShadowTextureId);
+			
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+			gl.glTranslatef(0, 0, 0.2f);
+			
+			// ------------
+			gl.glColor4f(1, 1, 1, 1);
+			
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, powerUpTextureId);
+			
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+			
 			
 			gl.glTranslatef(-x,-y,-0.5f);
 		}
@@ -703,11 +733,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	
 	private void DrawJoyStick(GL10 gl)
 	{
-		if(this.mainJoystickPos == null)
-		{
-			return;
-		}
-		
+		//TODO: Not call if there are no joysticks
 		//Change to orthogonal projection
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
@@ -988,8 +1014,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.cursorTextureId = LoadTexture(gl, this.cursorBitmap);
 		this.cursorShadowTextureId = LoadTexture(gl, this.cursorShadowBitmap);
 		this.powerUpTextureId = LoadTexture(gl, this.powerUpBitmap);
-		
-		Log.i("DagRenderer", "Cursor: " + this.cursorBitmap.getWidth() + " Map: " + this.map.getBitmap().getWidth());
+		this.powerUpShadowTextureId = LoadTexture(gl, this.powerUpShadowBitmap);
+		this.joystickMainTextureId = LoadTexture(gl, this.joystickMainBitmap);
+		this.joystickSmallTextureId = LoadTexture(gl, this.joystickSmallBitmap);
 		
 		//Set the rendering parameters
 		gl.glEnable(GL10.GL_CULL_FACE);
@@ -1165,3 +1192,84 @@ public class DagRenderer implements GLSurfaceView.Renderer
    }
 }
 
+/**
+ * Draw the player cursors.
+ * @param gl is the opengl context
+ 
+private void DrawCursors(GL10 gl)
+{			
+	gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
+	for(int i = 0; i < this.cursorsRef.size(); i++ )
+	{
+		Cursor cursor = this.cursorsRef.elementAt(i);
+		
+		cursor.RenderUpdate();
+		boolean rotating = cursor.Rotating();
+		
+		float x =(float)cursor.GetPosition().X();
+		float y = (float)cursor.GetPosition().Y();
+		
+			
+		gl.glTranslatef(x,y,2);
+		if(rotating)
+		{
+			gl.glRotatef(cursor.GetRotationAngle(), 0, 0, 1);
+		}
+
+		SetCursorColor(gl,i);
+		
+		//Set the vertices
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursor.GetBuffer());
+		
+		//Set the texture coordinates
+		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
+		
+		// Draw
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		
+		if(rotating)
+		{
+			gl.glRotatef(-cursor.GetRotationAngle(), 0, 0, 1);
+		}
+		gl.glTranslatef(-x,-y,-2);
+	}
+}
+
+private void DrawCursorShadows(GL10 gl)
+{			
+	//gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorTextureId);
+	gl.glBindTexture(GL10.GL_TEXTURE_2D, cursorShadowTextureId);
+	for(int i = 0; i < this.cursorsRef.size(); i++ )
+	{
+		Cursor cursor = this.cursorsRef.elementAt(i);
+		
+		boolean rotating = cursor.Rotating();
+		
+		float x =(float)cursor.GetPosition().X();
+		float y = (float)cursor.GetPosition().Y();
+		
+		gl.glTranslatef(x,y,1);
+		if(rotating)
+		{
+			gl.glRotatef(cursor.GetRotationAngle(), 0, 0, 1);
+		}
+		
+		
+		//Set the vertices
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, cursor.GetBuffer());
+		
+		//Set the texture coordinates
+		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
+		
+		// Draw
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+		
+		
+		if(rotating)
+		{
+			gl.glRotatef(-cursor.GetRotationAngle(), 0, 0, 1);
+		}
+		gl.glTranslatef(-x,-y,-1);
+	}
+}
+*/

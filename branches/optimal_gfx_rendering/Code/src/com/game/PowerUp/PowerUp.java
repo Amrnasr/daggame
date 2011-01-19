@@ -49,30 +49,34 @@ public  abstract class PowerUp
 	 * Buffer for the cursor square in ogl 
 	 * **/
 	public static final FloatBuffer cursorBuff = DagRenderer.makeFloatBuffer(new float[] 
-	      { 30f, 30f, 1.0f,
+	       { 15f, 15f, 1.0f,
+			-15f, 15f, 1.0f,
+			15f, -15f, 1.0f,
+			-15f, -15f, 1.0f });                                                                            
+	      /*{ 30f, 30f, 1.0f,
 			0f, 30f, 1.0f,
 			30f, 0f, 1.0f,
-			0f, 0f, 1.0f });
+			0f, 0f, 1.0f });*/
 	
 	/**
 	 * Current transparency of the powerup.
 	 */
-	private float alpha;
+	private static float alpha = 0.1f;
 	
 	/**
 	 * Flag to indicate if the alpha increases or decreases. Must be 1 or -1;
 	 */
-	private float alphaDir;
+	private static float alphaDir = 1f;
 	
 	/**
 	 * Lower bound for the alpha
 	 */
-	private final float minAlpha;
+	private static final float minAlpha = 0.1f;
 	
 	/**
 	 * Upper bound for the alpha
 	 */
-	private final float maxAlpha;
+	private static final float maxAlpha = 1;
 	
 	/**
 	 * Creates a instance of the PoerUp class
@@ -82,10 +86,6 @@ public  abstract class PowerUp
 		this.parent = null;
 		this.done = false;
 		this.mapPos = startingPos;
-		this.alpha = 0.1f;
-		this.alphaDir = 1f;
-		this.minAlpha = 0.1f;
-		this.maxAlpha = 1;
 	}
 	
 	/**
@@ -192,24 +192,24 @@ public  abstract class PowerUp
 	 * Gets the alpha value
 	 * @return
 	 */
-	public float GetAlpha() { return this.alpha; }
+	public static float GetAlpha() { return alpha; }
 	
 	/**
 	 * Updates the render image
 	 */
-	public void RenderUpdate() 
+	public static void AlphaRenderUpdate() 
 	{
-		this.alpha += this.alphaDir*Constants.PowerUpAlphaIncrease;
+		alpha += alphaDir*Constants.PowerUpAlphaIncrease;
 		
-		if(this.alpha >= this.maxAlpha)
+		if(alpha >= maxAlpha)
 		{
-			this.alpha = this.maxAlpha;
-			this.alphaDir = -1;
+			alpha = maxAlpha;
+			alphaDir = -1;
 		}
-		else if (this.alpha <= this.minAlpha)
+		else if (alpha <= minAlpha)
 		{
-			this.alpha = this.minAlpha;
-			this.alphaDir = 1;
+			alpha = minAlpha;
+			alphaDir = 1;
 		}
 	}
 }

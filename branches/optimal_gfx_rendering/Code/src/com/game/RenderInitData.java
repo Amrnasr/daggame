@@ -37,6 +37,21 @@ public class RenderInitData
 	private Bitmap powerUpBitmap;
 	
 	/**
+	 * PowerUp shadow bitmap for rendering
+	 */
+	private Bitmap powerUpShadowBitmap;
+	
+	/**
+	 * Joystick main bitmap for rendering
+	 */
+	private Bitmap joystickMainBitmap;
+	
+	/**
+	 * Joystick small bitmap for rendering 
+	 */
+	private Bitmap joystickSmallBitmap;
+	
+	/**
 	 * Vector of players to check for which tiles to render
 	 */
 	private Vector<Player> players;
@@ -83,10 +98,27 @@ public class RenderInitData
 	
 	/**
 	 * Sets the PowerUp bitmap
-	 * @param cursorBitmap
+	 * @param powerUpBitmap
 	 */
 	public void SetPowerUpBitmap(Bitmap powerUpBitmap) { this.powerUpBitmap = powerUpBitmap; }
 	
+	/**
+	 * Sets the PowerUp shadow bitmap
+	 * @param powerUpShadowBitmap
+	 */
+	public void SetPowerUpShadowBitmap(Bitmap powerUpShadowBitmap) { this.powerUpShadowBitmap = powerUpShadowBitmap; }
+	
+	/**
+	 * Sets the joystick main bitmap
+	 * @param joystickMainBitmap
+	 */
+	public void SetJoysticMainBitmap(Bitmap joystickMainBitmap) { this.joystickMainBitmap = joystickMainBitmap; }
+	
+	/**
+	 * Sets the joystick small bitmap
+	 * @param joystickSmallBitmap
+	 */
+	public void SetJoystickSmallBitmap(Bitmap joystickSmallBitmap) { this.joystickSmallBitmap = joystickSmallBitmap; }
 	
 	/**
 	 * Gets the player vector
@@ -123,4 +155,23 @@ public class RenderInitData
 	 * @return
 	 */
 	public Bitmap GetPowerUpBitmap() { return this.powerUpBitmap; }
+	
+	/**
+	 * Gets the PowerUp shadow bitmap
+	 * @return
+	 */
+	public Bitmap GetPowerUpShadowBitmap() { return this.powerUpShadowBitmap; }
+	
+	/**
+	 * Gets the Joystick main bitmap
+	 * @return
+	 */
+	public Bitmap GetJoystickMainBitmap() { return this.joystickMainBitmap; }
+	
+	/**
+	 * Gets the Joystick small bitmap
+	 * @return
+	 */
+	public Bitmap GetJoystickSmallBitmap() { return this.joystickSmallBitmap; }
+	
 }

@@ -188,7 +188,7 @@ public class PlayScene extends Scene
 	        		if(gameState == LogicState.UNINITIALIZED)
 	        		{
 	        			Camera.Get().SetCameraZLimits();
-	        			//Debug.startMethodTracing("lena");
+	        			//Debug.startMethodTracing("lena2");
 	        			gameState = LogicState.PLAYING;
 	        		}
 	        	}
@@ -251,11 +251,10 @@ public class PlayScene extends Scene
         		renderInitData.SetPowerUpBitmap(CreateBitmap(R.drawable.powerup2));
         		renderInitData.SetCursorBitmap(CreateBitmap(R.drawable.cursor3));
         		renderInitData.SetCursorShadowBitmap(CreateBitmap(R.drawable.cursorshadow));
+        		renderInitData.SetPowerUpShadowBitmap(CreateBitmap(R.drawable.powerupshadow));
+        		renderInitData.SetJoysticMainBitmap(CreateBitmap(R.drawable.joystickmain));
+        		renderInitData.SetJoystickSmallBitmap(CreateBitmap(R.drawable.joysticksecondary));
         		
-        		//Bitmap cursorBitmap=BitmapFactory.decodeResource(refActivity.getResources(), R.drawable.cursor);
-        		//renderInitData.SetCursorBitmap(cursorBitmap);
-        		//renderInitData.SetCursorBitmap(CreateBitmap(R.drawable.cursor));
-            	
             	// Set the initial pos for all the cursors
         		for(int i= 0; i < players.size(); i++)
         		{
