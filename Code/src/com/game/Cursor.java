@@ -47,12 +47,25 @@ public class Cursor
 	
 	private float [] incrementTable;
 	
-	/*
-	{ 30f, 30f, 1.0f,
-			0f, 30f, 1.0f,
-			30f, 0f, 1.0f,
-			0f, 0f, 1.0f });
-	*/
+	/**
+	 * Current transparency of the powerup.
+	 */
+	private static float alpha = 0.1f;
+	
+	/**
+	 * Flag to indicate if the alpha increases or decreases. Must be 1 or -1;
+	 */
+	private static float alphaDir = 1f;
+	
+	/**
+	 * Lower bound for the alpha
+	 */
+	private static final float minAlpha = 0.1f;
+	
+	/**
+	 * Upper bound for the alpha
+	 */
+	private static final float maxAlpha = 1;
 	
 	/**
 	 * Creates an instance of the Cursor class
@@ -234,6 +247,31 @@ public class Cursor
 		//Log.i("Cursor", "New position: " + this.pos.X() + ", " + this.pos.Y());
 	}
 	
+	
+	/**
+	 * Updates the render image
+	 */
+	public static void AlphaRenderUpdate() 
+	{
+		alpha += alphaDir*Constants.PowerUpAlphaIncrease;
+		
+		if(alpha >= maxAlpha)
+		{
+			alpha = maxAlpha;
+			alphaDir = -1;
+		}
+		else if (alpha <= minAlpha)
+		{
+			alpha = minAlpha;
+			alphaDir = 1;
+		}
+	}
+	
+	/**
+	 * Gets the alpha value
+	 * @return
+	 */
+	public static float GetAlpha() { return alpha; }
 	
 	/**
 	 * Gets the cursor position
