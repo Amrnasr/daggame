@@ -40,10 +40,10 @@ public class Cursor
 
 	/** Buffer for the cursor square in ogl **/
 	private static final FloatBuffer cursorBuff = DagRenderer.makeFloatBuffer(new float[] 
-	      { 15f, 15f, 1.0f,
-			-15f, 15f, 1.0f,
-			15f, -15f, 1.0f,
-			-15f, -15f, 1.0f });
+	      { 16f, 16f, 1.0f,
+			-16f, 16f, 1.0f,
+			16f, -16f, 1.0f,
+			-16f, -16f, 1.0f });
 	
 	private float [] incrementTable;
 	
@@ -157,7 +157,7 @@ public class Cursor
 			// move in that direction
 			//destination.Print("Cursor", "2 - Requesting move to ");
 			MoveInDirection(this.pos.GetVectorTo(destination));
-			StartRotating();
+			
 		}
 	}
 	
@@ -180,6 +180,7 @@ public class Cursor
 	 */
 	public void MoveInDirection(Vec2 direction)
 	{
+		StartRotating();
 		this.distance = direction.Length();
 		
 		this.direction  = direction;

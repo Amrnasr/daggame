@@ -94,6 +94,16 @@ public class PlayScene extends Scene
 	public Handler touchEvent;
 	
 	/**
+	 * Sends a message when a touch message arrives via the handler
+	 */
+	public Handler leftJoystickEvent;
+	
+	/**
+	 * Sends a message when a touch message arrives via the handler
+	 */
+	public Handler rightJoystickEvent;
+	
+	/**
 	 * Keeps the gameplay fps stable.
 	 */
 	private Regulator gameplayRegulator;
@@ -134,6 +144,8 @@ public class PlayScene extends Scene
 		this.players = new Vector<Player>();
 		this.trackballEvent = null;
 		this.touchEvent = null;
+		this.leftJoystickEvent = null;
+		this.rightJoystickEvent = null;
 		this.gameplayRegulator = new Regulator(60);
 		this.cameraZoomRegulator = new Regulator(1);
 		this.messageManagerRegulator = new Regulator(1);
@@ -156,6 +168,18 @@ public class PlayScene extends Scene
 	        			// If there is some input event registered to the touch events
 	        			// send him the message. Otherwise we ignore it.
 	        			touchEvent.sendMessage(touchEvent.obtainMessage(MsgType.TOUCH_EVENT.ordinal(), msg.obj));
+	        		}
+	        		if( leftJoystickEvent != null)
+	        		{
+	        			// If there is some input event registered to the touch events
+	        			// send him the message. Otherwise we ignore it.
+	        			leftJoystickEvent.sendMessage(leftJoystickEvent.obtainMessage(MsgType.TOUCH_EVENT.ordinal(), msg.obj));
+	        		}
+	        		if( rightJoystickEvent != null)
+	        		{
+	        			// If there is some input event registered to the touch events
+	        			// send him the message. Otherwise we ignore it.
+	        			rightJoystickEvent.sendMessage(rightJoystickEvent.obtainMessage(MsgType.TOUCH_EVENT.ordinal(), msg.obj));
 	        		}
 	        	}
 	        	else if(msg.what == MsgType.REPLY_WCS_TRANSFORM_REQUEST.ordinal())

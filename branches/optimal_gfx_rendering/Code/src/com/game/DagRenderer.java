@@ -531,8 +531,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		DrawPowerUps(gl);
 		
-		//DrawCursorShadows(gl);
 		DrawCursors(gl);
+		
+		
 		
 		
 		getCurrentProjection(gl);
@@ -658,6 +659,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			
 			// Draw
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+			
+			//----------
 			
 			//----------
 			if(rotating)
@@ -801,8 +804,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glLoadIdentity();
 		gl.glViewport(0,0,this.lastWidth,this.lastHeight);
 
-		gl.glOrthof(-this.lastWidth/2f, this.lastWidth/2f, -this.lastHeight/2f, this.lastHeight/2f, this.minZ, this.maxZ);
+		//gl.glOrthof(-this.lastWidth/2f, this.lastWidth/2f, -this.lastHeight/2f, this.lastHeight/2f, this.minZ, this.maxZ);
+		gl.glOrthof(0, this.lastWidth, 0, this.lastHeight, this.minZ, this.maxZ);
 		
+		//Log.i("DagRenderer", "lastWidth:" + lastWidth + " lastHeight: " + lastHeight);
 		// Draw the joystick
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
@@ -810,14 +815,19 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		for(int i = 0; i < joysticks.size(); i++)
 		{
 			JoystickInputDevice js = joysticks.elementAt(i);
-			float x = (float)js.GetMainCirclePos().X();
-			float y = (float)js.GetMainCirclePos().Y();
+			float mainX = (float)js.GetMainCirclePos().X();
+			float mainY = (float)js.GetMainCirclePos().Y();
+			float mainZ = -this.minZ-2f;
 			
-			// Pos: Left joystick: 448,32; Right joystick: 32,786
+			float smallX = (float)js.GetSmallCirclePos().X() - mainX;
+			float smallY = (float)js.GetSmallCirclePos().Y() - mainY;
+			float smallZ = 1;
 			
-			gl.glTranslatef(x,y,1f);
+			gl.glTranslatef(mainX,mainY,mainZ);
 
+			//---------------- Main texture
 			gl.glColor4f(1,1,1,1);
+			
 			
 			//Set the vertices
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, JoystickInputDevice.GetMainTextureBuffer());
@@ -832,7 +842,21 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 			
 			
-			gl.glTranslatef(-x,-y,-1f);
+			//-------------------- Small texture
+			gl.glTranslatef(smallX, smallY, smallZ);
+			//Set the vertices
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, JoystickInputDevice.GetSmallTextureBuffer());
+			
+			// Set the texture
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, joystickSmallTextureId);
+			
+			// Draw
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+			gl.glTranslatef(-smallX, -smallY, -smallZ);
+			
+			
+			
+			gl.glTranslatef(-mainX,-mainY,-mainZ);
 		}
 		
 		//Return to a perspective projection
