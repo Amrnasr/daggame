@@ -759,6 +759,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			float x = (float)js.GetMainCirclePos().X();
 			float y = (float)js.GetMainCirclePos().Y();
 			
+			// Pos: Left joystick: 448,32; Right joystick: 32,786
+			
 			gl.glTranslatef(x,y,1f);
 
 			gl.glColor4f(1,1,1,1);
