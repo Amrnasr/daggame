@@ -59,6 +59,22 @@
 				android:layout_gravity="center_horizontal"
 				>
 			</TextView>
+			<TextView
+				android:id="@+id/widget32"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="images of: Matt Walkden"
+				android:layout_gravity="center_horizontal"
+				>
+			</TextView>
+			<TextView
+				android:id="@+id/widget32"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="http://industrialsmokeandmirrors.blogspot.com/"
+				android:layout_gravity="center_horizontal"
+				>	
+			</TextView>
 		</LinearLayout>
 	</ScrollView>
 	<Button
