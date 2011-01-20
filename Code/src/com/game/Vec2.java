@@ -205,5 +205,11 @@ public class Vec2
 	{
 		return ( (Math.round(this.x) == Math.round(vec.X())) && (Math.round(this.y) == Math.round(vec.Y())));
 	}
+	
+	/**
+	 * Gets a copy of the vector
+	 * @return A copy in new memory of the vector
+	 */
+	public Vec2 GetCopy() { return new Vec2(x,y);}
 
 }

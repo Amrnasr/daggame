@@ -49,10 +49,10 @@ public  abstract class PowerUp
 	 * Buffer for the cursor square in ogl 
 	 * **/
 	public static final FloatBuffer cursorBuff = DagRenderer.makeFloatBuffer(new float[] 
-	       { 15f, 15f, 1.0f,
-			-15f, 15f, 1.0f,
-			15f, -15f, 1.0f,
-			-15f, -15f, 1.0f });                                                                            
+	       { 16f, 16f, 1.0f,
+			-16f, 16f, 1.0f,
+			16f, -16f, 1.0f,
+			-16f, -16f, 1.0f });                                                                            
 	      /*{ 30f, 30f, 1.0f,
 			0f, 30f, 1.0f,
 			30f, 0f, 1.0f,
