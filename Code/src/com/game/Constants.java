@@ -39,7 +39,7 @@ public class Constants
 	/**
 	 * Probability of appearance of the combat effect
 	 */
-	public static final float CombatEffectChance = 0.1f;
+	public static final float CombatEffectChance = 0.05f;
 	
 	/**
 	 * Number of images of the combat effect
