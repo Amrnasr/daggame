@@ -69,6 +69,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private Map map;
 	
 	/**
+	 * Combat bitmap for rendering
+	 */
+	private Bitmap combatBitmap;
+	
+	/**
 	 * Cursor bitmap for rendering
 	 */
 	private Bitmap cursorBitmap;
@@ -109,9 +114,24 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private FloatBuffer textureMapBuffer;
 	
 	/**
+	 * Combat effects vertex buffer
+	 */
+	private FloatBuffer vertexCombatBuffer;
+	
+	/**
+	 * Combat effects texture coordinates buffer array
+	 */
+	private FloatBuffer[] textureCombatBuffer;
+	
+	/**
 	 * Id of the texture of the map
 	 */
 	private int mapTextureId;
+	
+	/**
+	 * Id of the texture of the combat bitmap
+	 */
+	private int combatTextureId;
 	
 	/**
 	 * Id of the texture of the cursor
@@ -255,6 +275,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.lastWidth = 0;
 		this.lastHeight = 0;
 	    this.showMinimap = false;
+	    
+	    this.textureCombatBuffer = new FloatBuffer[4];
 		
 		this.playersVertexBuffer = new FloatBuffer[Constants.MaxPlayers];
 		this.playersColorBuffer = new FloatBuffer[Constants.MaxPlayers];
@@ -340,6 +362,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
     		LoadTileMap(map.getTileMap());
 		}
 
+		// Store the combat bitmap
+		this.combatBitmap = initData.GetCombatBitmap();
+		
 		// Store the cursor bitmap
 		this.cursorBitmap = initData.GetCursorBitmap();
 		this.cursorShadowBitmap = initData.GetCursorShadowBitmap();
@@ -502,6 +527,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.tileMapBufferLength/3);
 		}	
 		
+		DrawCombatEffects(gl);
+		
 		DrawPowerUps(gl);
 		
 		//DrawCursorShadows(gl);
@@ -541,6 +568,31 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		
 		//gl.glTranslatef(-10f,0f,0f);
+	}
+	
+	private void DrawCombatEffects(GL10 gl){
+		Vector<Vec2> combatPosVector = map.getCombatPosVector();
+		
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.combatTextureId);
+		
+		for(int i = 0; i < combatPosVector.size(); i++)
+		{
+			Vec2 curCombatPos = combatPosVector.elementAt(i);
+			
+			gl.glTranslatef((float) curCombatPos.X(), (float) curCombatPos.Y() - Constants.TileWidth, 0.3f);
+			
+			//Set the vertices
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexCombatBuffer);
+			
+			//Set the texture coordinates
+			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, this.textureCombatBuffer[1]);
+			
+			//Draw the bitmap
+			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
+			
+			gl.glTranslatef((float) -curCombatPos.X(), (float) -curCombatPos.Y() + Constants.TileWidth, -0.3f);
+		}
+		
 	}
 	
 	/**
@@ -871,12 +923,67 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private void SetTextures(GL10 gl)
 	{			
 		this.mapTextureId = LoadTexture(gl, this.map.getBitmap());
+		this.combatTextureId = LoadTexture(gl, this.combatBitmap);
 		this.cursorTextureId = LoadTexture(gl, this.cursorBitmap);
 		this.cursorShadowTextureId = LoadTexture(gl, this.cursorShadowBitmap);
 		this.powerUpTextureId = LoadTexture(gl, this.powerUpBitmap);
 		this.powerUpShadowTextureId = LoadTexture(gl, this.powerUpShadowBitmap);
 		this.joystickMainTextureId = LoadTexture(gl, this.joystickMainBitmap);
 		this.joystickSmallTextureId = LoadTexture(gl, this.joystickSmallBitmap);
+		
+		
+		Log.i("DagRenderer", "Cursor: " + this.cursorBitmap.getWidth() + " Map: " + this.map.getBitmap().getWidth());
+		
+		//Log.i("DagRenderer", "DEBUG!! Map: " + this.mapTextureId +" Cursor: " + this.cursorTextureId + " PowerUp: " + this.powerUpTextureId);
+		
+		/*
+		//Generate the texture vector
+		int[] tmp_tex = new int[3];
+		gl.glGenTextures(3, tmp_tex, 0); 
+		
+		/// MAP
+		this.mapTextureId = tmp_tex[0];
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.mapTextureId);
+		
+		//Set the texture parameters
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE); 
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,	GL10.GL_MODULATE); 
+		
+		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.map.getBitmap(), 0);
+		
+		this.map.getBitmap().recycle();
+		
+		/// CURSOR
+		this.cursorTextureId = tmp_tex[1];		
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.cursorTextureId);
+		
+		//Set the texture parameters
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE); 
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,	GL10.GL_MODULATE); 
+		
+		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.cursorBitmap, 0);
+		this.cursorBitmap.recycle();
+		
+		/// POWERUP
+		this.powerUpTextureId = tmp_tex[2];
+		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.powerUpTextureId);
+		
+		//Set the texture parameters
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE); 
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+		gl.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE,	GL10.GL_MODULATE); 
+
+		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, this.powerUpBitmap, 0);
+		this.powerUpBitmap.recycle();
+		*/
 		
 		//Set the rendering parameters
 		gl.glEnable(GL10.GL_CULL_FACE);
@@ -889,9 +996,23 @@ public class DagRenderer implements GLSurfaceView.Renderer
 				0f,0f,1.0f};
 		Log.i("DagRenderer","Map width: " + Preferences.Get().mapWidth + " height: " + Preferences.Get().mapHeight);
 		float textureArray[] = {1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
+		float VertexCombatArray[] = {Constants.TileWidth,Constants.TileWidth,1.0f,
+				0f,Constants.TileWidth,1.0f,
+				Constants.TileWidth,0f,1.0f,
+				0f,0f,1.0f};
+		
+		float textureCombatArray1[] = {0.25f,0.0f,0.0f,0.0f,0.25f,1.0f,0.0f,1.0f};
+		float textureCombatArray2[] = {0.5f,0.0f,0.25f,0.0f,0.5f,1.0f,0.25f,1.0f};
+		float textureCombatArray3[] = {0.75f,0.0f,0.5f,0.0f,0.75f,1.0f,0.5f,1.0f};
+		float textureCombatArray4[] = {1.0f,0.0f,0.75f,0.0f,1.0f,1.0f,0.75f,1.0f};
 		
 		this.vertexMapBuffer = makeFloatBuffer(VertexMapArray);
 		this.textureMapBuffer = makeFloatBuffer(textureArray);
+		this.vertexCombatBuffer = makeFloatBuffer(VertexCombatArray);
+		this.textureCombatBuffer[0]= makeFloatBuffer(textureCombatArray1);
+		this.textureCombatBuffer[1]= makeFloatBuffer(textureCombatArray2);
+		this.textureCombatBuffer[2]= makeFloatBuffer(textureCombatArray3);
+		this.textureCombatBuffer[3]= makeFloatBuffer(textureCombatArray4);
 		
 		texReady=true;
 	}

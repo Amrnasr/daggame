@@ -13,6 +13,8 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Vector;
 
+import com.game.PowerUp.PowerUp;
+
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -77,6 +79,7 @@ public class Map {
 	private int indexSize;
 	private FloatBuffer vertexBuffer;
 	private FloatBuffer colorBuffer;
+	private Vector<Vec2> combatPosVector;
 	
 	/**
 	 * Initializes the map
@@ -139,6 +142,8 @@ public class Map {
 		// Create the data for map drawing
 		GenerateDrawMesh();
 		
+		this.combatPosVector = new Vector<Vec2>();
+		
 		Log.i("Map", "Tiles: " + tilesPerRow + ", " + tilesPerColumn + " total: " + tileMap.size());
 	}
 	
@@ -162,6 +167,13 @@ public class Map {
 	public Vector<Tile> getTileMap(){
 		return tileMap;
 	}
+	/**
+	 * Returns the current combat position vector
+	 * @return the related vector.
+	 */
+	public Vector<Vec2> getCombatPosVector(){
+		return combatPosVector;
+	}
 	
 	public void Start() {
 		// TODO Auto-generated method stub
@@ -170,6 +182,9 @@ public class Map {
 	public void Update(Vector<Player> players) 
 	{
 		if(players == null) { return; }
+		
+		//clean the fighting tiles vector
+		combatPosVector.removeAllElements(); 
 		
 		// Set the tile colors
 		for(int i = 0; i < players.size(); i++)
@@ -184,6 +199,8 @@ public class Map {
 				{
 					float density = 1 - (tile.GetCurrentDensity() / tile.GetMaxCapacity());
 					SetColor(tile.GetRealPos(), density, 0, 0, density);
+					
+					combatPosVector.addElement(tile.GetRealPos());
 				}
 				else
 				{

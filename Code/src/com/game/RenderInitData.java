@@ -22,6 +22,11 @@ public class RenderInitData
 	private Vector<Cursor> cursors;
 	
 	/**
+	 * Combat bitmap for rendering
+	 */
+	private Bitmap combatBitmap;
+	
+	/**
 	 * Cursor bitmap for rendering
 	 */
 	private Bitmap cursorBitmap;
@@ -85,6 +90,12 @@ public class RenderInitData
 	public void SetMap(Map map) { this.map = map; }
 	
 	/**
+	 * Sets the combat bitmap
+	 * @param combatBitmap
+	 */
+	public void SetCombatBitmap(Bitmap combatBitmap) { this.combatBitmap = combatBitmap; }
+	
+	/**
 	 * Sets the cursor bitmap
 	 * @param cursorBitmap
 	 */
@@ -137,6 +148,12 @@ public class RenderInitData
 	 * @return
 	 */
 	public Map GetMap() { return this.map; }
+	
+	/**
+	 * Gets the combat bitmap
+	 * @return
+	 */
+	public Bitmap GetCombatBitmap() { return this.combatBitmap; }
 	
 	/**
 	 * Gets the cursor bitmap

@@ -250,6 +250,7 @@ public class PlayScene extends Scene
         		//renderInitData.SetPowerUpBitmap(powerUpBitmap);
         		renderInitData.SetPowerUpBitmap(CreateBitmap(R.drawable.powerup2));
         		renderInitData.SetCursorBitmap(CreateBitmap(R.drawable.cursor3));
+        		renderInitData.SetCombatBitmap(CreateBitmap(R.drawable.smoke));
         		renderInitData.SetCursorShadowBitmap(CreateBitmap(R.drawable.cursorshadow));
         		renderInitData.SetPowerUpShadowBitmap(CreateBitmap(R.drawable.powerupshadow));
         		renderInitData.SetJoysticMainBitmap(CreateBitmap(R.drawable.joystickmain));
