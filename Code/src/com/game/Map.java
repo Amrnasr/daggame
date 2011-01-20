@@ -79,7 +79,7 @@ public class Map {
 	private int indexSize;
 	private FloatBuffer vertexBuffer;
 	private FloatBuffer colorBuffer;
-	private Vector<Vec2> combatPosVector;
+	private Vector<Vec3> combatPosVector;
 	
 	/**
 	 * Initializes the map
@@ -142,7 +142,7 @@ public class Map {
 		// Create the data for map drawing
 		GenerateDrawMesh();
 		
-		this.combatPosVector = new Vector<Vec2>();
+		this.combatPosVector = new Vector<Vec3>();
 		
 		Log.i("Map", "Tiles: " + tilesPerRow + ", " + tilesPerColumn + " total: " + tileMap.size());
 	}
@@ -171,7 +171,7 @@ public class Map {
 	 * Returns the current combat position vector
 	 * @return the related vector.
 	 */
-	public Vector<Vec2> getCombatPosVector(){
+	public Vector<Vec3> getCombatPosVector(){
 		return combatPosVector;
 	}
 	
@@ -184,7 +184,13 @@ public class Map {
 		if(players == null) { return; }
 		
 		//clean the fighting tiles vector
-		combatPosVector.removeAllElements(); 
+		for(int i = 0; i < combatPosVector.size(); i++){
+			if(combatPosVector.elementAt(i).Z() >= Constants.CombatEffectImgNum){
+				combatPosVector.remove(i);
+			}	
+		}
+		
+		Random r = new Random();
 		
 		// Set the tile colors
 		for(int i = 0; i < players.size(); i++)
@@ -200,7 +206,15 @@ public class Map {
 					float density = 1 - (tile.GetCurrentDensity() / tile.GetMaxCapacity());
 					SetColor(tile.GetRealPos(), density, 0, 0, density);
 					
-					combatPosVector.addElement(tile.GetRealPos());
+					boolean exists = false;
+					
+					for(int k = 0; k < combatPosVector.size(); k++){
+						if(combatPosVector.elementAt(k).X() == tile.GetRealPos().X() && combatPosVector.elementAt(k).Y() == tile.GetRealPos().Y()){
+							exists = true;
+						}	
+					}
+					if (!exists && r.nextFloat() < Constants.CombatEffectChance)
+						combatPosVector.addElement(new Vec3(tile.GetRealPos().X(),tile.GetRealPos().Y(),0));
 				}
 				else
 				{

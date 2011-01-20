@@ -276,7 +276,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.lastHeight = 0;
 	    this.showMinimap = false;
 	    
-	    this.textureCombatBuffer = new FloatBuffer[4];
+	    this.textureCombatBuffer = new FloatBuffer[Constants.CombatEffectImgNum];
 		
 		this.playersVertexBuffer = new FloatBuffer[Constants.MaxPlayers];
 		this.playersColorBuffer = new FloatBuffer[Constants.MaxPlayers];
@@ -571,26 +571,28 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	}
 	
 	private void DrawCombatEffects(GL10 gl){
-		Vector<Vec2> combatPosVector = map.getCombatPosVector();
+		Vector<Vec3> combatPosVector = map.getCombatPosVector();
 		
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.combatTextureId);
 		
 		for(int i = 0; i < combatPosVector.size(); i++)
 		{
-			Vec2 curCombatPos = combatPosVector.elementAt(i);
-			
+			Vec3 curCombatPos = combatPosVector.elementAt(i);
+			if(curCombatPos.Z() >= Constants.CombatEffectImgNum) continue;
+				
 			gl.glTranslatef((float) curCombatPos.X(), (float) curCombatPos.Y() - Constants.TileWidth, 0.3f);
 			
 			//Set the vertices
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexCombatBuffer);
 			
 			//Set the texture coordinates
-			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, this.textureCombatBuffer[1]);
+			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, this.textureCombatBuffer[(int) curCombatPos.Z()]);
 			
 			//Draw the bitmap
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 			
 			gl.glTranslatef((float) -curCombatPos.X(), (float) -curCombatPos.Y() + Constants.TileWidth, -0.3f);
+			curCombatPos.SetZ(curCombatPos.Z()+1);
 		}
 		
 	}

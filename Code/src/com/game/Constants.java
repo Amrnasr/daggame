@@ -30,9 +30,20 @@ public class Constants
 	 * Maximum number of players.
 	 */
 	public static final int MaxPlayers = 6;
+	
 	/**
 	 * Size of a map tile.
 	 */
 	public static final int TileWidth = 16;
+	
+	/**
+	 * Probability of appearance of the combat effect
+	 */
+	public static final float CombatEffectChance = 0.1f;
+	
+	/**
+	 * Number of images of the combat effect
+	 */
+	public static final int CombatEffectImgNum = 4;
 
 }
