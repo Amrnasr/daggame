@@ -12,7 +12,10 @@ def GenerateTileMap(graphic,tileWidth,tilesPerRow,tilesPerColumn):
                     pixel= graphic.get_at((i*tileWidth+k,j*tileWidth+l))
                     if not(pixel.r == 0 and pixel.g == 0 and pixel.b == 0):
                         count+=1
-            tileMap[j*tilesPerRow+i]=count
+            if count >= (tileWidth*tileWidth*50) / 100 :           
+                tileMap[j*tilesPerRow+i]=count
+            else:
+                tileMap[j*tilesPerRow+i]=0
     return tileMap
 
 def SaveTileMap(tileMap,fileName,tilesPerRow,tilesPerColumn):
