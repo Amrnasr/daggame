@@ -18,6 +18,7 @@ import com.game.PowerUp.PowerUp;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
@@ -143,8 +144,30 @@ public class Map {
 		GenerateDrawMesh();
 		
 		this.combatPosVector = new Vector<Vec3>();
+		//DrawDebugLines(bitmap);
 		
 		Log.i("Map", "Tiles: " + tilesPerRow + ", " + tilesPerColumn + " total: " + tileMap.size());
+	}
+	
+	private void DrawDebugLines(Bitmap bitmap2)
+	{
+		Bitmap bitmap = bitmap2.copy(Bitmap.Config.ARGB_4444, true);
+		for(int i = 0; i< bitmap.getWidth(); i += 100)
+		{
+			for(int j = 0; j < bitmap.getHeight(); j++)
+			{
+				bitmap.setPixel(i, j, Color.MAGENTA);
+			}
+		}
+		
+		for(int i = 0; i < bitmap.getHeight(); i += 100)
+		{
+			for(int j = 0; j < bitmap.getWidth(); j++)
+			{
+				bitmap.setPixel(j, i, Color.MAGENTA);
+			}
+		}
+		bitmap2 = bitmap;
 	}
 	
 	public CharBuffer GetIndexBuffer() { return this.indexBuffer; }

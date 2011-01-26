@@ -233,7 +233,7 @@ public class Camera
 		
 		// Give padding to multiplayer
 		/*
-		if(cursorCount > 1)
+		if(cursorCount > 1 && Preferences.Get().multiplayerGame)
 		{
 			minX -= borderMargin;
 			maxX += borderMargin;
