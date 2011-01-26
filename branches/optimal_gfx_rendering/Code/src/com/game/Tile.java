@@ -524,12 +524,20 @@ public class Tile
 	{
 		int leftovers = 0;
 		
+		// To avoid it moving so much in a straight line, and more to the sides.
+		if(isAttackDir && totalDensity > 10)
+		{
+			int rest = totalDensity /4; // Make it 75% only
+			leftovers += rest;
+			totalDensity -= rest;
+		}
+		
 		Tile toMove = this.mapRef.AtTile((int)(this.position.X() + dirX), (int)(this.position.Y()+dirY));
 		
 		if(toMove == null)
 		{
 			// No available tile, return all density
-			leftovers = (int) totalDensity;
+			leftovers += (int) totalDensity;
 		}
 		else
 		{
@@ -553,7 +561,7 @@ public class Tile
 				toMove.AddDensity(player, toAdd);
 			}
 			
-			leftovers = (int) Math.max(0, totalDensity-toAdd);
+			leftovers += (int) Math.max(0, totalDensity-toAdd);
 
 		}
 		
