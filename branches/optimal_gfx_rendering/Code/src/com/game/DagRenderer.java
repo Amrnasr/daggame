@@ -497,6 +497,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		// Camera transform
 		gl.glTranslatef(-Camera.Get().X(),-Camera.Get().Y(),-Camera.Get().Z());	
 		
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		
 		// Draw non-textured elements
 		gl.glDisable(GL10.GL_TEXTURE_2D);
 		DrawBackgroundRect(gl);
@@ -541,12 +543,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		
 		DrawJoyStick(gl);
-		/*
+		
 		if(showMinimap)
 		{
-			//DrawMinimap(gl);
+			DrawMinimap(gl);
 		}
-		*/
+		
     }
 	
 	/**
@@ -743,6 +745,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private void DrawMinimap(GL10 gl)
 	{
 		//Change to orthogonal projection
+		
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
 		gl.glViewport(0,0,this.lastWidth,this.lastHeight);
@@ -756,15 +759,41 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glScalef(this.lastWidth/(Preferences.Get().mapWidth*3f), this.lastWidth/(Preferences.Get().mapWidth*3f), 1f);
 		gl.glTranslatef((Preferences.Get().mapWidth*3f/this.lastWidth)*this.lastWidth/2f-Preferences.Get().mapWidth,(Preferences.Get().mapWidth*3f/this.lastWidth)*this.lastHeight/2f-Preferences.Get().mapHeight,-this.minZ-2f);	
 		
+
 		gl.glDisable(GL10.GL_TEXTURE_2D);
-		DrawPlayers(gl);
+		
+		gl.glColor4f(0.8f, 0.3f, 0.0f, 1.0f);
+		
+		gl.glPushMatrix();
+		gl.glScalef(1.5f,1.5f,1f);
+		gl.glTranslatef(-15f,-10f,-1f);
+		DrawBackgroundRect(gl);
+		gl.glPopMatrix();
+		
+		/*gl.glTranslatef(-20f,-15f,-1f);
+		DrawBackgroundRect(gl);
+		gl.glTranslatef(20f,15f,0f);
+		DrawBackgroundRect(gl);
+		gl.glTranslatef(0f,0f,1f);*/
+		
+		//gl.glTranslatef(0,0,-3f);
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		DrawBackgroundRect(gl);
+		
+		
+
+		
+		DrawMap(gl);
 		
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		
-		DrawCursors(gl);
-		
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 0.3f);
+		gl.glTranslatef(0,0,3f);
 		DrawTexturedMap(gl);
+		gl.glTranslatef(0,0,-3f);	
+		
+		DrawPowerUps(gl);
+		
+		DrawCursors(gl);
 		
 		//Return to a perspective projection
 		gl.glMatrixMode(GL10.GL_PROJECTION);
@@ -876,7 +905,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private void DrawBackgroundRect(GL10 gl)
 	{
 		gl.glTranslatef(0f,0f,-3f);
-		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexMapBuffer);		
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 		gl.glTranslatef(0f,0f,3f);
@@ -1039,7 +1067,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.textureCombatBuffer[0]= makeFloatBuffer(textureCombatArray1);
 		this.textureCombatBuffer[1]= makeFloatBuffer(textureCombatArray2);
 		this.textureCombatBuffer[2]= makeFloatBuffer(textureCombatArray3);
-		this.textureCombatBuffer[3]= makeFloatBuffer(textureCombatArray4);
+		this.textureCombatBuffer[3]= makeFloatBuffer(textureCombatArray4);	
 		
 		texReady=true;
 	}
