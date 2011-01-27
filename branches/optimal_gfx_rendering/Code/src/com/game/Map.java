@@ -206,13 +206,14 @@ public class Map {
 	{
 		if(players == null) { return; }
 		
-		//clean the fighting tiles vector
-		for(int i = 0; i < combatPosVector.size(); i++){
-			if(combatPosVector.elementAt(i).Z() >= Constants.CombatEffectImgNum){
-				combatPosVector.remove(i);
-			}	
+		synchronized (combatPosVector){
+			//clean the fighting tiles vector
+			for(int i = 0; i < combatPosVector.size(); i++){
+				if(combatPosVector.elementAt(i).Z() >= Constants.CombatEffectImgNum){
+					combatPosVector.remove(i);
+				}	
+			}
 		}
-		
 		Random r = new Random();
 		
 		// Set the tile colors

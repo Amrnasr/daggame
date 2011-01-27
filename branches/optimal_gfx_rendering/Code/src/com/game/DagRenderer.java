@@ -529,14 +529,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.tileMapBufferLength/3);
 		}	
 		
-		DrawCombatEffects(gl);
+		synchronized (map.getCombatPosVector()){
+			DrawCombatEffects(gl);
+		}
 		
 		DrawPowerUps(gl);
 		
 		DrawCursors(gl);
-		
-		
-		
 		
 		getCurrentProjection(gl);
 		getCurrentModelView(gl);
@@ -770,18 +769,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		DrawBackgroundRect(gl);
 		gl.glPopMatrix();
 		
-		/*gl.glTranslatef(-20f,-15f,-1f);
-		DrawBackgroundRect(gl);
-		gl.glTranslatef(20f,15f,0f);
-		DrawBackgroundRect(gl);
-		gl.glTranslatef(0f,0f,1f);*/
-		
-		//gl.glTranslatef(0,0,-3f);
 		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		DrawBackgroundRect(gl);
-		
-		
-
 		
 		DrawMap(gl);
 		
