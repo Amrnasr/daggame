@@ -24,6 +24,7 @@ import com.game.Preferences;
 import com.game.R;
 import com.game.Regulator;
 import com.game.RenderInitData;
+import com.game.Tile;
 import com.game.AI.Blackboard;
 import com.game.DagActivity.SceneType;
 import com.game.InputDevice.AIInputDevice;
@@ -299,6 +300,9 @@ public class PlayScene extends Scene
         		Blackboard.players = players;
         		Blackboard.map = map;
         		
+        		// Set the tile index vector
+        		Tile.InitIndexVector(players.size());
+        		
         		// Done initializing logic, get the word out to the renderer.
         		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.INITIALIZE_RENDERER, renderInitData); 
         		Log.i("PlayScene", "Start function finished");
@@ -376,6 +380,8 @@ public class PlayScene extends Scene
 		{
 			return;
 		}		
+		
+		Tile.ShuffleIndexVector();
 		
 		PrepareUpdate();
 		

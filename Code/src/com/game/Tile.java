@@ -1,5 +1,7 @@
 package com.game;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Vector;
 
 import android.util.Log;
@@ -61,6 +63,13 @@ public class Tile
 	 */
 	private PowerUp powerUpRef;
 	
+	private static final float AIBonusDensityMovement = 3f;
+	
+	/**
+	 * Player index vector to randomize the order of the players update every cycle.
+	 */
+	private static Vector<Integer> playerIndex = new Vector<Integer>();
+	
 	/**
 	 * Initializes the tile
 	 * @param x coordinates
@@ -96,6 +105,26 @@ public class Tile
 	}
 	
 	/**
+	 * Initializes the static index vector of the Tile class 
+	 * @param numberPlayers Number of players in the PlayScene
+	 */
+	public static void InitIndexVector(int numberPlayers)
+	{
+		for(int i = 0; i < numberPlayers; i++)
+		{
+			Tile.playerIndex.add(i);
+		}
+	}
+	
+	/**
+	 * Shuffles the order of the index vector
+	 */
+	public static void ShuffleIndexVector()
+	{
+		Collections.shuffle(Tile.playerIndex);
+	}
+	
+	/**
 	 * Updates the tile density flow.
 	 * Uses the following schema for choosing the next tile 
 	 * (Assuming the tile x wants to move density to top-right)
@@ -118,7 +147,8 @@ public class Tile
 		for(int i = 0; i < players.length; i++)
 		{
 			// For each player
-			Player curPlay = players[i];
+			int playPos = Tile.playerIndex.elementAt(i);
+			Player curPlay = players[playPos];
 			if(curPlay != null)
 			{
 				// Find where we have to move it's density
@@ -140,7 +170,14 @@ public class Tile
 				else {dirY = 1;}
 				
 				// Try to move it
-				float requestedDensityToMove = density[i]* players[i].GetDensitySpeed() ; //Math.min(density[i], GetMaxCapacity());
+				float requestedDensityToMove = density[playPos]* players[playPos].GetDensitySpeed();
+				
+				if(!curPlay.IsHuman())
+				{
+					// Give the AI a little edge
+					requestedDensityToMove *= AIBonusDensityMovement;
+				}
+				
 				int densityToMove = 0;
 				if(requestedDensityToMove < 1.0f && requestedDensityToMove > 0.0f )
 				{
@@ -148,7 +185,7 @@ public class Tile
 				}
 				else
 				{
-					densityToMove = Math.min(density[i], (int)requestedDensityToMove);
+					densityToMove = Math.min(density[playPos], (int)requestedDensityToMove);
 				}
 				
 				//int densityToMove = density[i]; 
@@ -177,7 +214,7 @@ public class Tile
 				
 				// Remove total - leftovers
 				int densityMoved = densityToMove - leftovers;
-				density[i] -= densityMoved;
+				density[playPos] -= densityMoved;
 			}
 		}
 	}
