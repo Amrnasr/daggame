@@ -7,6 +7,7 @@ import com.game.Map;
 import com.game.Player;
 import com.game.Tile;
 import com.game.Vec2;
+import com.game.PowerUp.PowerUpManager;
 
 /**
  * Data class for the player AI in the game.
@@ -27,6 +28,11 @@ public class Blackboard
 	 * Reference to the game map
 	 */
 	public static Map map;
+	
+	/**
+	 * Reference to the game PowerUpManager
+	 */
+	public static PowerUpManager powerUpManager;
 	
 	/**
 	 * Closest enemy cursor

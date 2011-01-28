@@ -41,7 +41,7 @@ public  abstract class PowerUp
 	private boolean done;
 	
 	/**
-	 * Position of the PowerUp while it's on the map
+	 * Real position of the PowerUp while it's on the map
 	 */
 	private Vec2 mapPos;
 	
@@ -53,13 +53,9 @@ public  abstract class PowerUp
 			-16f, 16f, 1.0f,
 			16f, -16f, 1.0f,
 			-16f, -16f, 1.0f });                                                                            
-	      /*{ 30f, 30f, 1.0f,
-			0f, 30f, 1.0f,
-			30f, 0f, 1.0f,
-			0f, 0f, 1.0f });*/
 	
 	/**
-	 * Current transparency of the powerup.
+	 * Current transparency of the PowerUp.
 	 */
 	private static float alpha = 0.1f;
 	
@@ -88,20 +84,6 @@ public  abstract class PowerUp
 		this.mapPos = startingPos;
 	}
 	
-	/**
-	 * Makes a float buffer for ogl drawing
-	 * @param arr of floats to turn into a buffer
-	 * @return the float buffer asociated to arr
-	 */
-	protected static FloatBuffer makeFloatBuffer(float[] arr)
-	{
-		ByteBuffer bb = ByteBuffer.allocateDirect(arr.length*4);
-		bb.order(ByteOrder.nativeOrder());
-		FloatBuffer fb = bb.asFloatBuffer();
-		fb.put(arr);
-		fb.position(0);
-		return fb;
-	}
 	
 	/**
 	 * Assigns the regulator to a specific player and starts it with a 
