@@ -14,6 +14,7 @@ import com.game.AI.ParentTaskController;
 import com.game.AI.MoveToDestinationTask;
 import com.game.AI.RegulatorDecorator;
 import com.game.AI.ResetDecorator;
+import com.game.AI.SearchForPowerUpTask;
 import com.game.AI.Selector;
 import com.game.AI.Sequence;
 import com.game.AI.SetEnemyCursorAsDestinationTask;
@@ -63,6 +64,13 @@ public class AIInputDevice extends InputDevice
 		this.planner = new Selector(blackboard, "Planner");
 		this.planner = new ResetDecorator(blackboard, this.planner, "Planner");
 		this.planner = new RegulatorDecorator(blackboard, this.planner, "Planner", 0.1f);
+		
+		// PowerUp search
+		Task powerUpSearch = new Sequence(blackboard, "Get PowerUp sequence");
+		powerUpSearch = new ChanceDecorator(blackboard, powerUpSearch, "Get PowerUp sequence", 20);
+		((ParentTaskController)powerUpSearch.GetControl()).Add( new SearchForPowerUpTask(blackboard, "SearchForPowerUpTask") );
+		((ParentTaskController)powerUpSearch.GetControl()).Add( new MoveToDestinationTask(blackboard, "MoveToDestinationTask") );
+		((ParentTaskController)powerUpSearch.GetControl()).Add( new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestinationTask"));
 		
 		// Attack
 		Task attack = new Selector(blackboard, "Attack");
@@ -115,6 +123,7 @@ public class AIInputDevice extends InputDevice
 		((ParentTaskController)defend.GetControl()).Add(straightFlee);
 		
 		// Add to planner
+		((ParentTaskController)this.planner.GetControl()).Add(powerUpSearch);
 		((ParentTaskController)this.planner.GetControl()).Add(defend);
 		((ParentTaskController)this.planner.GetControl()).Add(attack);
 		

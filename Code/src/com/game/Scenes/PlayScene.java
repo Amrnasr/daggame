@@ -299,6 +299,7 @@ public class PlayScene extends Scene
         		// Set blackboard data for the AI
         		Blackboard.players = players;
         		Blackboard.map = map;
+        		Blackboard.powerUpManager = powerUpManager;
         		
         		// Set the tile index vector
         		Tile.InitIndexVector(players.size());
@@ -550,6 +551,7 @@ public class PlayScene extends Scene
 		boolean gameWon = false;
 		int playersWithNullPoints = 0;
 		int winnerPlayer = -1;
+		boolean humanPlayersLeft = false;
 		
 		// Check everyone's points
 		for(int i= 0; i < this.players.size(); i++)
@@ -560,6 +562,10 @@ public class PlayScene extends Scene
 			}
 			else
 			{
+				if(players.elementAt(i).IsHuman()) // At least 1 human left
+				{	
+					humanPlayersLeft = true;
+				}
 				winnerPlayer = players.elementAt(i).GetID();
 			}
 		}
@@ -567,6 +573,20 @@ public class PlayScene extends Scene
 		// Everyone has 0 points except 1 player, game over
 		if(playersWithNullPoints == (this.players.size() - 1))
 		{
+			Preferences.Get().winnerPlayer = winnerPlayer;
+			gameWon = true;
+		}
+		else if(!humanPlayersLeft) // No humans left, get the AI with the most density
+		{
+			int minDensity = 0;
+			for(int i = 0; i < players.size(); i++)
+			{
+				if(players.elementAt(i).GetTotalDensity() > minDensity)
+				{
+					minDensity = players.elementAt(i).GetTotalDensity();
+					winnerPlayer = players.elementAt(i).GetID();
+				}
+			}
 			Preferences.Get().winnerPlayer = winnerPlayer;
 			gameWon = true;
 		}
