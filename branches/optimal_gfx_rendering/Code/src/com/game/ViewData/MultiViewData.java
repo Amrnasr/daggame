@@ -217,7 +217,7 @@ public class MultiViewData extends ViewData {
         	}
         });
         opponentsSpinner.setSelection(Preferences.Get().multiNumberOpponents-1);
-        
+        /*
         Spinner controlSpinner = (Spinner) xmlLayout.findViewById(R.id.control_multi_spin);
         ArrayAdapter<CharSequence> controlAdapter = ArrayAdapter.createFromResource(
         		activity, R.array.control_multi_mode_array, android.R.layout.simple_spinner_item);
@@ -235,7 +235,32 @@ public class MultiViewData extends ViewData {
         	}
         });
         controlSpinner.setSelection(Preferences.Get().multiControlMode);
-
+        
+        For the xml:
+        <TextView
+				android:id="@+id/control_multi_layout"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Player 1 control mode:"
+				>
+			</TextView>
+			<Spinner
+				android:id="@+id/control_multi_spin"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:prompt="@string/control_prompt"
+				>
+			</Spinner>
+			<TextView
+				android:id="@+id/control2_multi_layout"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Player 2 control mode is the track ball."
+				>
+			</TextView>
+		
+		Remember to edit in MultiSelectScene: handleSpinnerItemClick
+*/
 
         
         return xmlLayout;

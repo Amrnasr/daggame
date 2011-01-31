@@ -38,14 +38,12 @@ public class BallInputDevice extends InputDevice
 				if(msg.what == MsgType.TRACKBALL_EVENT.ordinal())
 				{
 					MotionEvent event = (MotionEvent)msg.obj;
-					//Log.i("BallInputDevice", "Trackball event: " + event.getX() + ", " + event.getY());
 					
 					// Inverted Y to go from android top left to opengl bottom left
 					Vec2 dir = new Vec2(event.getX(),(-1)* event.getY());
 					dir.Normalize();
 					dir.Scale(SCALE_FACTOR);
 					parent.GetCursor().MoveInDirection(dir);
-					//parent.GetCursor().MoveInDirection(new Vec2(event.getX() * SCALE_FACTOR, (-1)* event.getY() * SCALE_FACTOR));
 				}
 			}
 		};
