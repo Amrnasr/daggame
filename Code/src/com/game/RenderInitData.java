@@ -39,12 +39,12 @@ public class RenderInitData
 	/**
 	 * PowerUp bitmap for rendering
 	 */
-	private Bitmap powerUpBitmap;
+	private Vector<Bitmap> powerUpBitmapVec;
 	
 	/**
 	 * PowerUp shadow bitmap for rendering
 	 */
-	private Bitmap powerUpShadowBitmap;
+	private Vector<Bitmap> powerUpShadowBitmapVec;
 	
 	/**
 	 * Joystick main bitmap for rendering
@@ -69,6 +69,8 @@ public class RenderInitData
 		this.map = null;
 		this.cursors = null;
 		this.players = null;
+		this.powerUpBitmapVec = new Vector<Bitmap>();
+		this.powerUpShadowBitmapVec = new Vector<Bitmap>();
 	}
 	
 	/**
@@ -111,13 +113,13 @@ public class RenderInitData
 	 * Sets the PowerUp bitmap
 	 * @param powerUpBitmap
 	 */
-	public void SetPowerUpBitmap(Bitmap powerUpBitmap) { this.powerUpBitmap = powerUpBitmap; }
+	public void SetPowerUpBitmap(Bitmap powerUpBitmap) { this.powerUpBitmapVec.add(powerUpBitmap); }
 	
 	/**
 	 * Sets the PowerUp shadow bitmap
 	 * @param powerUpShadowBitmap
 	 */
-	public void SetPowerUpShadowBitmap(Bitmap powerUpShadowBitmap) { this.powerUpShadowBitmap = powerUpShadowBitmap; }
+	public void SetPowerUpShadowBitmap(Bitmap powerUpShadowBitmap) { this.powerUpShadowBitmapVec.add(powerUpShadowBitmap); }
 	
 	/**
 	 * Sets the joystick main bitmap
@@ -171,13 +173,13 @@ public class RenderInitData
 	 * Gets the PowerUp bitmap
 	 * @return
 	 */
-	public Bitmap GetPowerUpBitmap() { return this.powerUpBitmap; }
+	public Vector<Bitmap> GetPowerUpBitmapVec() { return this.powerUpBitmapVec; }
 	
 	/**
 	 * Gets the PowerUp shadow bitmap
 	 * @return
 	 */
-	public Bitmap GetPowerUpShadowBitmap() { return this.powerUpShadowBitmap; }
+	public Vector<Bitmap> GetPowerUpShadowBitmapVec() { return this.powerUpShadowBitmapVec; }
 	
 	/**
 	 * Gets the Joystick main bitmap

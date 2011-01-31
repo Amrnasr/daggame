@@ -18,9 +18,9 @@ public class SpeedPowerUp extends PowerUp
 	 * Creates a new PowerUp with a specific position.
 	 * @param startingPos Position where to place the PowerUp.
 	 */
-	public SpeedPowerUp(Vec2 startingPos)
+	public SpeedPowerUp(Vec2 startingPos, int type)
 	{
-		super(startingPos);
+		super(startingPos,type, 3);
 		this.speedIncrement = 0.3f;
 	}
 	
