@@ -315,7 +315,6 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        	// Asked to stop drawing a specific PowerUp
 	        	else if(msg.what == MsgType.STOP_DISPLAYING_POWERUP.ordinal())
 	        	{
-	        		Log.i("DagRenderer", "Remove powerup!");
 	        		powerUps.remove((PowerUp)msg.obj);
 	        	}
 	        	else if(msg.what == MsgType.PAUSE_GAME.ordinal())

@@ -47,7 +47,7 @@ public class TouchInputDevice extends InputDevice
 				{
 					MotionEvent event = (MotionEvent)msg.obj;
 					Vec2 newPos = new Vec2(event.getX(),event.getY());
-					newPos.Print("TouchInputDevice", "TouchPos");
+					//newPos.Print("TouchInputDevice", "TouchPos");
 					
 					if(Preferences.Get().multiplayerGame)
 					{
