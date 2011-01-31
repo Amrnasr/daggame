@@ -750,7 +750,7 @@ public class Tile
 	{
 		if(HasPowerUp())
 		{
-			Log.i("Tile", "Giving powerup to Player " + player.GetID() +" !");
+			//Log.i("Tile", "Giving powerup to Player " + player.GetID() +" !");
 			this.powerUpRef.Assign(player, 3f);
 			this.RemovePowerUp();
 		}

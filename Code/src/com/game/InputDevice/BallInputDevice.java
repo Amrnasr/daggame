@@ -19,8 +19,9 @@ public class BallInputDevice extends InputDevice
 {
 	/**
 	 * Modifies the ball input to give it a little more force.
+	 * TODO: Set from map size / device resolution
 	 */
-	private static final int SCALE_FACTOR = 15;
+	private static final int SCALE_FACTOR = 30;
 
 	/**
 	 * Creates the Handler and assigns it.
@@ -40,7 +41,11 @@ public class BallInputDevice extends InputDevice
 					//Log.i("BallInputDevice", "Trackball event: " + event.getX() + ", " + event.getY());
 					
 					// Inverted Y to go from android top left to opengl bottom left
-					parent.GetCursor().MoveInDirection(new Vec2(event.getX() * SCALE_FACTOR, (-1)* event.getY() * SCALE_FACTOR));
+					Vec2 dir = new Vec2(event.getX(),(-1)* event.getY());
+					dir.Normalize();
+					dir.Scale(SCALE_FACTOR);
+					parent.GetCursor().MoveInDirection(dir);
+					//parent.GetCursor().MoveInDirection(new Vec2(event.getX() * SCALE_FACTOR, (-1)* event.getY() * SCALE_FACTOR));
 				}
 			}
 		};
