@@ -12,6 +12,7 @@ import com.game.Player;
 import com.game.Regulator;
 import com.game.Vec2;
 import com.game.MessageHandler.MsgReceiver;
+import com.game.Scenes.PlayScene;
 
 /**
  * A object that gives some kind of special property to a player
@@ -45,6 +46,22 @@ public  abstract class PowerUp
 	 */
 	private Vec2 mapPos;
 	
+	/**
+	 * Indicates the type of PowerUp it is.
+	 * From 0 to PowerUpManager.powerUpTypes
+	 */
+	private int type;
+	
+	/**
+	 * Time this PowerUp should be active on a player, in seconds
+	 */
+	private float duration;
+	
+	/**
+	 * Reference to the PlayScene
+	 */
+	protected PlayScene sceneRef;
+	
 	/** 
 	 * Buffer for the cursor square in ogl 
 	 * **/
@@ -75,15 +92,22 @@ public  abstract class PowerUp
 	private static final float maxAlpha = 1;
 	
 	/**
-	 * Creates a instance of the PoerUp class
+	 * Creates a instance of the PowerUp class
 	 */
-	public PowerUp(Vec2 startingPos) 
+	public PowerUp(Vec2 startingPos, int type, float duration) 
 	{
 		this.parent = null;
 		this.done = false;
 		this.mapPos = startingPos;
+		this.type = type;
+		this.duration = duration;
 	}
 	
+	/**
+	 * Sets the reference to the PlayScene
+	 * @param ref Reference to the PlayScene
+	 */
+	public void SetPlaySceneRef(PlayScene ref ) { this.sceneRef = ref; }
 	
 	/**
 	 * Assigns the regulator to a specific player and starts it with a 
@@ -194,4 +218,16 @@ public  abstract class PowerUp
 			alphaDir = 1;
 		}
 	}
+	
+	/**
+	 * Gets the type of PowerUp
+	 * @return
+	 */
+	public int GetType() { return this.type; }
+
+	/**
+	 * Gets the duration of the PowerUp
+	 * @return the duration
+	 */
+	public float GetDuration() { return this.duration; }
 }

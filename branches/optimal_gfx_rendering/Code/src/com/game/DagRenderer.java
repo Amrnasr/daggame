@@ -86,12 +86,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	/**
 	 * PowerUp bitmap for rendering
 	 */
-	private Bitmap powerUpBitmap;
+	private Vector<Bitmap> powerUpBitmapVec;
 	
 	/**
 	 * PowerUp shadow bitmap for rendering
 	 */
-	private Bitmap powerUpShadowBitmap;
+	private Vector<Bitmap> powerUpShadowBitmapVec;
 	
 	/**
 	 * Joystick main bitmap for rendering
@@ -146,12 +146,12 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	/**
 	 * Id of the texture of the PowerUp
 	 */
-	private int powerUpTextureId;
+	private Vector<Integer> powerUpTextureIdVec;
 	
 	/**
 	 * Id of the texture of the PowerUp shadow
 	 */
-	private int powerUpShadowTextureId;
+	private Vector<Integer>  powerUpShadowTextureIdVec;
 	
 	/**
 	 * Id of the texture of the cursor
@@ -263,8 +263,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.map = null;
 		this.cursorBitmap = null;
 		this.cursorShadowBitmap = null;
-		this.powerUpBitmap = null;
-		this.powerUpShadowBitmap = null;
+		this.powerUpBitmapVec = null;
+		this.powerUpShadowBitmapVec = null;
+		this.powerUpTextureIdVec = new Vector<Integer>();
+		this.powerUpShadowTextureIdVec = new Vector<Integer>();
 		this.joystickMainBitmap = null;
 		this.joystickSmallBitmap = null;
 		this.cursorsRef = new Vector<Cursor>();
@@ -369,8 +371,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.cursorShadowBitmap = initData.GetCursorShadowBitmap();
 		
 		// Store the PowerUp bitmap
-		this.powerUpBitmap = initData.GetPowerUpBitmap();
-		this.powerUpShadowBitmap = initData.GetPowerUpShadowBitmap();
+		this.powerUpBitmapVec = initData.GetPowerUpBitmapVec();
+		this.powerUpShadowBitmapVec = initData.GetPowerUpShadowBitmapVec();
 		
 		// Store the joystick
 		this.joystickMainBitmap = initData.GetJoystickMainBitmap();
@@ -702,7 +704,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			//Set the texture coordinates
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
 			
-			gl.glBindTexture(GL10.GL_TEXTURE_2D, powerUpShadowTextureId);
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, powerUpShadowTextureIdVec.elementAt(powerUp.GetType()));
 			
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 			gl.glTranslatef(0, 0, 0.2f);
@@ -710,7 +712,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			// ------------
 			gl.glColor4f(1, 1, 1, 1);
 			
-			gl.glBindTexture(GL10.GL_TEXTURE_2D, powerUpTextureId);
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, powerUpTextureIdVec.elementAt(powerUp.GetType()));
 			
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 			
@@ -968,8 +970,11 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.combatTextureId = LoadTexture(gl, this.combatBitmap);
 		this.cursorTextureId = LoadTexture(gl, this.cursorBitmap);
 		this.cursorShadowTextureId = LoadTexture(gl, this.cursorShadowBitmap);
-		this.powerUpTextureId = LoadTexture(gl, this.powerUpBitmap);
-		this.powerUpShadowTextureId = LoadTexture(gl, this.powerUpShadowBitmap);
+		for(int i= 0; i < this.powerUpBitmapVec.size(); i++)
+		{
+			this.powerUpTextureIdVec.add( 		LoadTexture(gl, this.powerUpBitmapVec.elementAt(i)));
+			this.powerUpShadowTextureIdVec.add( LoadTexture(gl, this.powerUpShadowBitmapVec.elementAt(i)));
+		}
 		this.joystickMainTextureId = LoadTexture(gl, this.joystickMainBitmap);
 		this.joystickSmallTextureId = LoadTexture(gl, this.joystickSmallBitmap);
 		

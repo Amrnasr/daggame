@@ -271,15 +271,17 @@ public class PlayScene extends Scene
         		
         		renderInitData.SetPlayers(players);
         		
-        		//Bitmap powerUpBitmap=BitmapFactory.decodeResource(refActivity.getResources(), R.drawable.powerup);
-        		//renderInitData.SetPowerUpBitmap(powerUpBitmap);
-        		renderInitData.SetPowerUpBitmap(CreateBitmap(R.drawable.powerup2));
         		renderInitData.SetCursorBitmap(CreateBitmap(R.drawable.cursor3));
         		renderInitData.SetCombatBitmap(CreateBitmap(R.drawable.smoke));
         		renderInitData.SetCursorShadowBitmap(CreateBitmap(R.drawable.cursorshadow));
-        		renderInitData.SetPowerUpShadowBitmap(CreateBitmap(R.drawable.powerupshadow));
         		renderInitData.SetJoysticMainBitmap(CreateBitmap(R.drawable.joystickmain));
         		renderInitData.SetJoystickSmallBitmap(CreateBitmap(R.drawable.joysticksecondary));
+        		renderInitData.SetPowerUpBitmap(CreateBitmap(R.drawable.powerup2));
+        		renderInitData.SetPowerUpBitmap(CreateBitmap(R.drawable.powerup3));
+        		renderInitData.SetPowerUpBitmap(CreateBitmap(R.drawable.powerup4));
+        		renderInitData.SetPowerUpShadowBitmap(CreateBitmap(R.drawable.powerupshadow));
+        		renderInitData.SetPowerUpShadowBitmap(CreateBitmap(R.drawable.powerupshadow3));
+        		renderInitData.SetPowerUpShadowBitmap(CreateBitmap(R.drawable.powerupshadow4));
         		
             	// Set the initial pos for all the cursors
         		for(int i= 0; i < players.size(); i++)

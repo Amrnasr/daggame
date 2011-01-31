@@ -3,6 +3,8 @@ package com.game.PowerUp;
 import java.util.Random;
 import java.util.Vector;
 
+import android.util.Log;
+
 import com.game.MessageHandler;
 import com.game.MsgType;
 import com.game.Preferences;
@@ -45,6 +47,11 @@ public class PowerUpManager
 	private PlayScene playRef;
 	
 	/**
+	 * Number of different PowerUp types.
+	 */
+	private final int powerUpTypes = 3;
+	
+	/**
 	 * Creates a new instance of a PowerUpManager.
 	 * @param playRef Reference to the parent PlayScene
 	 */
@@ -84,6 +91,9 @@ public class PowerUpManager
 
 		// Add to list
 		this.powerUps.add(newPowerUp);
+		
+		// Set references
+		newPowerUp.SetPlaySceneRef(playRef);
 		
 		// Adds to the nearest tile and updates the PowerUp position to match the tile.
 		Tile objectiveTile = this.playRef.GetMap().GetClosestEmptyTile(
@@ -127,8 +137,22 @@ public class PowerUpManager
 		int x = posGen.nextInt(wArea) + wMargin;
 		int y = posGen.nextInt(hArea) + hMargin;
 		
-		// Choose random:
-		newPUP = new SpeedPowerUp(new Vec2(x,y));
+		switch (posGen.nextInt(this.powerUpTypes)) {
+		case 0:
+			newPUP = new SpeedPowerUp(new Vec2(x,y),0);
+			break;
+		case 1:
+			newPUP = new ExtraDensityPowerUp(new Vec2(x,y),1);
+			break;
+		case 2:
+			newPUP = new SlowPowerUp(new Vec2(x,y),2);
+			break;
+
+		default:
+			Log.e("PowerUpManager", "ERROR! No such powerup can be generated");
+			break;
+		}
+		
 		return newPUP;
 	}
 
