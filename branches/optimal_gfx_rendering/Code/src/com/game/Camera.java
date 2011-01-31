@@ -145,7 +145,7 @@ public class Camera
 	}
 	
 	/**
-	 * It updates the camera. If necessary it interplolates it's movement in a straight line
+	 * It updates the camera. If necessary it interpolates it's movement in a straight line
 	 * in the this.direction for this.distance.
 	 */
 	public void Update()
@@ -170,9 +170,6 @@ public class Camera
 		this.screenW = w;
 		
 		this.borderMargin = screenW / 5;
-		
-		// Set initial z then:
-		//this.minZ = 2* this.screenH;		
 	}
 	
 	public void SetCameraZLimits()
@@ -232,7 +229,7 @@ public class Camera
 		//Log.i("Camera", "3 - Original bounding box: (" + minX + ", " + minY + "),  (" + maxX + ", " + maxY + ")");
 		
 		// Give padding to multiplayer
-		/*
+		
 		if(cursorCount > 1 && Preferences.Get().multiplayerGame)
 		{
 			minX -= borderMargin;
@@ -242,7 +239,7 @@ public class Camera
 			
 			Log.i("Camera", "4 - Extended bounding box: (" + minX + ", " + minY + "),  (" + maxX + ", " + maxY + ")");
 		}
-		*/
+		
 		
 		if(cursorCount == 0)
 		{
@@ -433,5 +430,11 @@ public class Camera
 	 * Gets the maximum z
 	 */
 	public int GetMaxZ() { return this.maxZ; }
+	
+	/**
+	 * Gets the last camera size
+	 * @return Camera size from the last update iteration
+	 */
+	public Vec2 LastCamSize() { return this.lastCameraSize; }
 
 }
