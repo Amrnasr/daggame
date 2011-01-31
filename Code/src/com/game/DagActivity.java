@@ -328,8 +328,6 @@ public class DagActivity extends Activity
 	        	else if (msg.what == MsgType.ACTIVITY_DISMISS_LOAD_DIALOG.ordinal())
 	        	{
 	        		removeDialog(LOAD_DIALOG);
-	        		//dialog.dismiss();
-	        		//dialog = null;
 	        	}
 	        }
 	    };
@@ -396,7 +394,6 @@ public class DagActivity extends Activity
 	        menu.add(0, OptionsMenuID.OP_MENU_HOME.ordinal(), 1, "Quit to HOME");
 	        handled = true;
 	        
-	        //MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.PAUSE_GAME);
 	        MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.PAUSE_GAME);
     	}
 
@@ -423,6 +420,12 @@ public class DagActivity extends Activity
     	{    		
     		return super.onOptionsItemSelected(item);
     	}
+    }
+    
+    @Override
+    public void onOptionsMenuClosed(Menu menu)
+    {
+    	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
     }
     
     public void CreateAlert(OptionsMenuID optionsID)
@@ -463,11 +466,5 @@ public class DagActivity extends Activity
     	// Icon for AlertDialog
     	//alert.setIcon(R.drawable.icon);
     	alert.show();
-    }
-    
-    @Override
-    public void onOptionsMenuClosed(Menu menu)
-    {
-    	
     }
 }
