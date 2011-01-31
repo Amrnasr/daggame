@@ -5,10 +5,8 @@
         <item>Finger</item>
         <item>Track Ball</item>
         <item>Joystick</item>
-        <item>Acelerometer</item>
     </string-array>
 <string-array name="control_multi_mode_array">
-        <item>Finger and Trackball</item>
         <item>Dual joystick</item>
     </string-array>
 </resources>

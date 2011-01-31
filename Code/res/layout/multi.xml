@@ -92,27 +92,6 @@
 				android:prompt="@string/op_multi_prompt"
 				>
 			</Spinner>
-			<TextView
-				android:id="@+id/control_multi_layout"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:text="Player 1 control mode:"
-				>
-			</TextView>
-			<Spinner
-				android:id="@+id/control_multi_spin"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:prompt="@string/control_prompt"
-				>
-			</Spinner>
-			<TextView
-				android:id="@+id/control2_multi_layout"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:text="Player 2 control mode is the track ball."
-				>
-			</TextView>
 			<CheckBox
 				android:id="@+id/minimap_multi_check"
 				android:layout_width="fill_parent"
