@@ -135,8 +135,6 @@ public class Camera
 	 * Gets the singleton instance of the camera. Creates the camera if it's
 	 * the first time it's called.
 	 * 
-	 * TODO: Check speed hit for having a sync
-	 * 
 	 * @return the instance of the camera
 	 */
 	public static synchronized Camera Get()
@@ -152,7 +150,7 @@ public class Camera
 	{
 		if(HasToMove())
 		{
-			double increment = Math.min(this.distance, this.speed);				
+			float increment = (float) Math.min(this.distance, this.speed);				
 			this.pos.Offset(this.direction.X()*increment, this.direction.Y()*increment, this.direction.Z()*increment);
 			
 			this.distance -= increment;

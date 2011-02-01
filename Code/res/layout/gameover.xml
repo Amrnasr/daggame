@@ -39,7 +39,7 @@
 				android:id="@+id/gameover_text"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Mother fucka winner:"
+				android:text="Winner is player ..."
 				android:layout_gravity="center_horizontal"
 				>
 			</TextView>

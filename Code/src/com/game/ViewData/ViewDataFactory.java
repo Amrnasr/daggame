@@ -46,7 +46,6 @@ public class ViewDataFactory
 		case PLAY_SCENE:
 	        viewData = new PlayViewData();
 			break;
-		// TODO: Add more xmlviews
 		default:
 			throw new Exception("View data to create is not defined in the Factory yet");
 		}

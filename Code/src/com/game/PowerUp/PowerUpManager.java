@@ -32,7 +32,6 @@ public class PowerUpManager
 	
 	/**
 	 * Maximum number of PowerUp we want
-	 * TODO: Read from file!
 	 */
 	private int recomendedNumberPowerUps;
 	
@@ -120,7 +119,6 @@ public class PowerUpManager
 	 * The position might be changed later on if it's not a viable 
 	 * (with capacity and empty of density) one.
 	 * 
-	 * TODO: Right now it only creates one
 	 * @return A random PowerUp
 	 */
 	private PowerUp ChooseRandomPowerUp() 

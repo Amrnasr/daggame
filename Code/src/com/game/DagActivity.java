@@ -165,9 +165,6 @@ public class DagActivity extends Activity
 
     /**
      * Called when the activity stops, it also stops the thread.
-     * 
-     * TODO: The finish call is a HACKHACK to avoid dealing with
-     * shitty loading of textures onResume.
      */
     @Override protected void onStop()
     {
@@ -239,12 +236,17 @@ public class DagActivity extends Activity
 		// Load layout from xml and create callbacks for the buttons.
     	View xmlLayout = xmlLayoutData.createXMLView(this);
 
-    	// Create profiler
-    	profiler = new Profiler();
+    	
         
     	// Add xml & profiler views to the relative view
     	gameView.addView(xmlLayout);
-    	profiler.Attach(gameView, this);
+    	if(Constants.OnScreenProfiler)
+		{
+    		// Create profiler
+        	profiler = new Profiler();
+        	profiler.Attach(gameView, this);
+		}
+    	
     }
     
     /**
@@ -315,11 +317,17 @@ public class DagActivity extends Activity
 	        	}
 	        	else if(msg.what == MsgType.UPDATE_LOGIC_PROFILER.ordinal())
 	        	{
-	        		profiler.LogicUpdate();
+	        		if(Constants.OnScreenProfiler)
+	        		{
+	        			profiler.LogicUpdate();
+	        		}
 	        	}
 	        	else if(msg.what == MsgType.UPDATE_RENDER_PROFILER.ordinal())
 	        	{
-	        		profiler.RenderUpdate();
+	        		if(Constants.OnScreenProfiler)
+	        		{	        		
+	        			profiler.RenderUpdate();
+	        		}
 	        	}
 	        	else if (msg.what == MsgType.ACTIVITY_SAVE_PREFERENCES.ordinal())
 	        	{

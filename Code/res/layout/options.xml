@@ -50,20 +50,7 @@
 				android:layout_height="wrap_content"
 				>
 			</Spinner>
-			<TextView
-				android:id="@+id/widget42"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="10px"
-				android:text="Unit movement speed:"
-				>
-			</TextView>
-			<Spinner
-				android:id="@+id/move_speed_spin"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				>
-			</Spinner>
+			
 			<TextView
 				android:id="@+id/widget44"
 				android:layout_width="fill_parent"
@@ -78,13 +65,7 @@
 				android:layout_height="wrap_content"
 				>
 			</Spinner>
-			<CheckBox
-				android:id="@+id/sound_mute"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:text="Sound"
-				>
-			</CheckBox>
+			
 			<TextView
 				android:id="@+id/options_bottom_filler_text_do_not_remove"
 				android:layout_width="wrap_content"

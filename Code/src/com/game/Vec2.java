@@ -4,7 +4,6 @@ import android.util.Log;
 
 /**
  * Two dimensional vector class.
- * TODO: Change to float or int even, to ease calculations
  * @author Ying
  *
  */
@@ -13,12 +12,12 @@ public class Vec2
 	/**
 	 * x coordinate of the vector
 	 */
-	private double x;
+	private float x;
 	
 	/**
 	 * y coordinate of the vector
 	 */
-	private double y;
+	private float y;
 	
 	/**
 	 * Empty constructor, initializes to 0
@@ -34,7 +33,7 @@ public class Vec2
 	 * @param x
 	 * @param y
 	 */
-	public Vec2(double x, double y)
+	public Vec2(float x, float y)
 	{
 		this.x = x;
 		this.y = y;
@@ -100,7 +99,7 @@ public class Vec2
 	 * @param x
 	 * @param y
 	 */
-	public void Set(double x, double y)
+	public void Set(float x, float y)
 	{
 		this.x = x;
 		this.y = y;
@@ -110,7 +109,7 @@ public class Vec2
 	 * Sets the x
 	 * @param x
 	 */
-	public void SetX(double x)
+	public void SetX(float x)
 	{
 		this.x = x;
 	}
@@ -119,7 +118,7 @@ public class Vec2
 	 * Sets the y
 	 * @param y
 	 */
-	public void SetY(double y)
+	public void SetY(float y)
 	{
 		this.y = y;
 	}
@@ -139,13 +138,13 @@ public class Vec2
 	 * Gets the x value
 	 * @return x
 	 */
-	public double X() { return this.x; }
+	public float X() { return this.x; }
 	
 	/**
 	 * Gets the y value
 	 * @return y
 	 */
-	public double Y() { return this.y; }
+	public float Y() { return this.y; }
 	
 	/**
 	 * Prints the vector value to the log

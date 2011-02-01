@@ -19,16 +19,13 @@ public class Minimap {
 	}
 	
 	public void Start() {
-		// TODO Auto-generated method stub
 	}
 	
 	public void Update() 
 	{
-		// TODO Auto-generated method stub
 	}
 	
 	public void End(){
-		// TODO Auto-generated method stub
 	}
 	
 

@@ -166,7 +166,6 @@ public class MultiViewData extends ViewData {
 
         });
         
-        //TODO: disabling the color used by the other color spinner
         Spinner color2Spinner = (Spinner) xmlLayout.findViewById(R.id.color2_multi_spin);
         ArrayAdapter<CharSequence> color2Adapter = ArrayAdapter.createFromResource(
         		activity, R.array.color_array, android.R.layout.simple_spinner_item);

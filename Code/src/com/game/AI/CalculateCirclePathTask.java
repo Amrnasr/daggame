@@ -3,9 +3,11 @@ package com.game.AI;
 import java.util.Iterator;
 import java.util.Vector;
 
+import com.game.Camera;
 import com.game.Constants;
 import com.game.Cursor;
 import com.game.Map;
+import com.game.Preferences;
 import com.game.Tile;
 import com.game.Vec2;
 
@@ -24,9 +26,8 @@ public class CalculateCirclePathTask extends LeafTask
 	
 	/**
 	 * Minimum distance at which we attempt to circle
-	 * TODO: Calculate from map size.
 	 */
-	private static final float minDistance = 40;
+	private static final float minDistance = Preferences.Get().mapHeight/10;
 
 	/**
 	 * Creates a new instance of the CalculateCirclePathTask class 

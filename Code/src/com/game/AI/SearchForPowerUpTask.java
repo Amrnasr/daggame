@@ -2,6 +2,7 @@ package com.game.AI;
 
 import java.util.Vector;
 
+import com.game.Preferences;
 import com.game.Vec2;
 import com.game.PowerUp.PowerUp;
 
@@ -13,12 +14,15 @@ import com.game.PowerUp.PowerUp;
  */
 public class SearchForPowerUpTask extends LeafTask 
 {
-	// TODO: Set relative to map size
-	private final int MaxDistanceToSearch = 200;
+	/**
+	 * Maximum distance to search before giving up.
+	 */
+	private int MaxDistanceToSearch = 200;
 
 	public SearchForPowerUpTask(Blackboard blackboard) 
 	{
 		super(blackboard);
+		
 	}
 
 	public SearchForPowerUpTask(Blackboard blackboard, String name) 
@@ -76,6 +80,7 @@ public class SearchForPowerUpTask extends LeafTask
 	public void Start() 
 	{
 		LogTask("Starting");
+		MaxDistanceToSearch = Math.max(Preferences.Get().mapHeight /2, MaxDistanceToSearch);
 	}
 
 }
