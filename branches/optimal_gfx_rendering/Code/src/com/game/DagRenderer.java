@@ -357,11 +357,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.cursorsRef = initData.GetCursors();
 		
 		this.map= initData.GetMap();
+		/*
 		if(Constants.DebugMode)
 		{
 			// Create a debug tile map
     		LoadTileMap(map.getTileMap());
 		}
+		*/
 
 		// Store the combat bitmap
 		this.combatBitmap = initData.GetCombatBitmap();
@@ -424,7 +426,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		
-		gl.glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
+		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		
 		
     }
@@ -470,7 +472,10 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	public void onDrawFrame(GL10 gl) 
     {		
 		// Logic not dependent on game state
-		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_RENDER_PROFILER);
+		if(Constants.OnScreenProfiler)
+		{
+			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_RENDER_PROFILER);
+		}
 		
 		// Update the view if needed.
 		if(this.surfaceUpdatePending)
@@ -483,7 +488,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		if(this.state != RenderState.RENDERING) return;	
 		
 		//Load the texture if it hasn't been loaded and it's necessary
-		if(!Constants.DebugMode && !this.texReady) 
+		if(!this.texReady) 
 		{
 			SetTextures(gl);
 		}
@@ -515,20 +520,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		// Draw the corresponding data, debug or not.
 		
-		if(!Constants.DebugMode )
-		{
-			//Log.i("DagRenderer", "Drawing map");
-			gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-			DrawTexturedMap(gl);
-		}
-		else
-		{
-			// Draw tile map	
-			// TODO: @deprecated code here, fix or remove
-			gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexMapBuffer);		
-			gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.tileMapBufferLength/3);
-		}	
+		//Log.i("DagRenderer", "Drawing map");
+		gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		DrawTexturedMap(gl);
 		
 		synchronized (map.getCombatPosVector()){
 			DrawCombatEffects(gl);
@@ -775,15 +769,15 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		DrawMap(gl);
 		
-		gl.glEnable(GL10.GL_TEXTURE_2D);
+		//gl.glEnable(GL10.GL_TEXTURE_2D);
 		
-		gl.glTranslatef(0,0,3f);
+		/*gl.glTranslatef(0,0,3f);
 		DrawTexturedMap(gl);
-		gl.glTranslatef(0,0,-3f);	
+		gl.glTranslatef(0,0,-3f);	*/
 		
-		DrawPowerUps(gl);
+		//DrawPowerUps(gl);
 		
-		DrawCursors(gl);
+		//DrawCursors(gl);
 		
 		//Return to a perspective projection
 		gl.glMatrixMode(GL10.GL_PROJECTION);
@@ -1448,7 +1442,6 @@ private void DrawCursorShadows(GL10 gl)
 		b = (b > 0f) ? (0.75f - b) : 0f;
 		a = (r+g+b > 0f) ? 0.75f + a : 0f;
 		
-		//TODO: Check that the alpha doesn't accumulate because it's drawn one time per player with units in the tile
 		//Store the color values
 		colorArray[count] = r; 
 		colorArray[count+1] = g;

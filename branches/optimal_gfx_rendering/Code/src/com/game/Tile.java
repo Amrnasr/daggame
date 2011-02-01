@@ -1,11 +1,7 @@
 package com.game;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Vector;
-
-import android.util.Log;
-
 import com.game.PowerUp.PowerUp;
 
 
@@ -63,12 +59,25 @@ public class Tile
 	 */
 	private PowerUp powerUpRef;
 	
-	private static final float AIBonusDensityMovement = 3f;
+	/**
+	 * Bonus multiplier for AI to make it more challenging
+	 */
+	private static final float AIBonusDensityMovement = 2f;
 	
 	/**
 	 * Player index vector to randomize the order of the players update every cycle.
 	 */
 	private static Vector<Integer> playerIndex = new Vector<Integer>();
+	
+	/**
+	 * Maximum density any tile can have
+	 */
+	private static final int TILEMAXCAPACITY = Constants.TileWidth * Constants.TileWidth;
+	
+	/**
+	 * Value over which is ok to divide
+	 */
+	//private static final int DIVIDETHRESHOLD = (2*TileMaxCapacity())/10;
 	
 	/**
 	 * Initializes the tile
@@ -242,185 +251,7 @@ public class Tile
 		
 	}
 	
-	/**
-	 * Trivial fight algorithim for densities
-	 */
-	private void BasicDensityFight()
-	{
-		int maxDensity = 0;
-		int curMaxPlayer = -1;
-		int numbPlayers = 0;
-		for(int i = 0; i < density.length; i++)
-		{
-			if(density[i] > maxDensity )
-			{
-				maxDensity = density[i];
-				curMaxPlayer = i;
-			}
-			numbPlayers++;
-		}
-		
-		// If there is only one player, or the density he has is 0
-		if(numbPlayers <= 1 || curMaxPlayer == -1 || maxDensity == 0)
-		{
-			return;
-		}
-		
-		// For every player...
-		for(int i = 0; i < density.length; i++)
-		{
-			// .. except the max density one 
-			if(i != curMaxPlayer)
-			{
-				// ... if the player has any density
-				if(density[i] > 0)
-				{
-					// .. take a percentage of it.
-					int toTake = Math.min(DivideThreshold(), density[i]);
-					density[i] -= toTake;
-					density[curMaxPlayer] += toTake;
-				}
-			}
-		}
-	}
 	
-	
-	/**
-	 * TODO: Make it just for 2 players to optimize 
-	 * How many densities do you think there are going to be in a tile normally anyhow?
-	 * 
-	 * TODO: Refactor this monster function. Damn it's ugly.
-	 */
-	private void MovementDensityFigth()
-	{
-		Vector<Integer> toFight = null;
-
-		// Find all who wish to fight! SPARTA!
-		for(int i = 0; i < density.length; i++)
-		{
-			if(density[i] > 0)
-			{
-				if(toFight == null) { toFight = new Vector<Integer>(); }
-				toFight.add(i);
-			}
-		}
-		
-		// Remember, there is only lazy evaluation for &&, not for ||
-		if(toFight == null ) { return; }
-		if(toFight.size() <= 1) { return; }
-		
-		Vec2 tileToCur1 = new Vec2();
-		Vec2 tileToCur2 = new Vec2(); 
-		float tileX = (float) (this.position.X()*Constants.TileWidth);
-		float tileY = (float) (this.position.Y()*Constants.TileWidth);
-		int densityP1 = 0;
-		int densityP2 = 0;
-		
-		// Fight among all the densities
-		for(int i = 0; i< toFight.size(); i++)
-		{
-			for(int j = i; j < toFight.size(); j++)
-			{
-				tileToCur1.SetX(this.players[toFight.elementAt(i)].GetCursor().GetPosition().X() - tileX);
-				tileToCur1.SetY(this.players[toFight.elementAt(i)].GetCursor().GetPosition().Y() - tileY);
-				
-				tileToCur2.SetX(this.players[toFight.elementAt(j)].GetCursor().GetPosition().X() - tileX);
-				tileToCur2.SetY(this.players[toFight.elementAt(j)].GetCursor().GetPosition().Y() - tileY);
-				
-				// Both densities are moving in the same direction
-				if(tileToCur1.Dot(tileToCur2) > 0)
-				{
-					// Get the direction of the sum of vectors, and size it to tile length
-					tileToCur2.Add(tileToCur1);
-					tileToCur2.Normalize();
-					tileToCur2.Scale(Constants.TileWidth);
-					
-					// Get the next tile in the direction
-					Tile next = this.mapRef.AtWorld((int)(tileX + tileToCur2.X()), (int)(tileY + tileToCur2.Y()));
-					
-					if(next != null)
-					{
-						// Next tile has {enemy density / mixed density / no density} ?
-						densityP1 = next.GetDensityFrom(toFight.elementAt(i));
-						densityP2 = next.GetDensityFrom(toFight.elementAt(j));
-						
-						if(densityP1 == 0 && densityP2 == 0)
-						{
-							// Check backwards
-							Tile prev = this.mapRef.AtWorld((int)(tileX - tileToCur2.X()), (int)(tileY - tileToCur2.Y()));
-							if(prev == null)
-							{
-								// Density fight
-								SameDensityFight(toFight.elementAt(i), toFight.elementAt(j));
-							}
-							else
-							{
-								densityP1 = prev.GetDensityFrom(toFight.elementAt(i));
-								densityP2 = prev.GetDensityFrom(toFight.elementAt(j));
-								
-								if(densityP1 == 0 && densityP2 == 0)
-								{
-									// Density fight!
-									SameDensityFight(toFight.elementAt(i), toFight.elementAt(j));
-								}
-								else if(densityP1 > densityP2)
-								{
-									// P2 is bitch, P1 is rapist
-									StealDensity(toFight.elementAt(j), toFight.elementAt(i), DivideThreshold());
-								}
-								else
-								{
-									// P1 is bitch, P2 is rapist
-									StealDensity(toFight.elementAt(i), toFight.elementAt(j), DivideThreshold());
-								}
-							}
-						}
-						else if(densityP1 > densityP2)
-						{
-							// P1 is bitch, P2 is rapist
-							StealDensity(toFight.elementAt(i), toFight.elementAt(j), DivideThreshold());
-						}
-						else
-						{
-							// P2 is bitch, P1 is rapist
-							StealDensity(toFight.elementAt(j), toFight.elementAt(i), DivideThreshold());
-						}
-					}
-					else
-					{
-						// Check backwards
-						Tile prev = this.mapRef.AtWorld((int)(tileX - tileToCur2.X()), (int)(tileY - tileToCur2.Y()));
-						if(prev == null)
-						{
-							// Density fight
-							SameDensityFight(toFight.elementAt(i), toFight.elementAt(j));
-						}
-						else
-						{
-							densityP1 = prev.GetDensityFrom(toFight.elementAt(i));
-							densityP2 = prev.GetDensityFrom(toFight.elementAt(j));
-							
-							if(densityP1 == 0 && densityP2 == 0)
-							{
-								// Density fight!
-								SameDensityFight(toFight.elementAt(i), toFight.elementAt(j));
-							}
-							else if(densityP1 > densityP2)
-							{
-								// P2 is bitch, P1 is rapist
-								StealDensity(toFight.elementAt(j), toFight.elementAt(i), DivideThreshold());
-							}
-							else
-							{
-								// P1 is bitch, P2 is rapist
-								StealDensity(toFight.elementAt(i), toFight.elementAt(j), DivideThreshold());
-							}
-						}
-					}
-				}
-			}
-		}
-	}
 	
 	/**
 	 * Steals density from the specified player to another player in the same tile.
@@ -440,24 +271,7 @@ public class Tile
 		return cuantity - realDensity;
 	}
 	
-	/**
-	 * Trivial fight for two players. The one who has more density steals
-	 * from the one who has less.
-	 * 
-	 * @param player1 The id of one of the players who fights
-	 * @param player2 The id of the other player who fights
-	 */
-	private void SameDensityFight(int player1, int player2)
-	{
-		if(density[player1] > density[player2])
-		{
-			StealDensity(player2, player1, DivideThreshold());
-		}
-		else
-		{
-			StealDensity(player1, player2, DivideThreshold());
-		}
-	}
+
 	
 	/**
 	 * Checks if the player has to unlink from this tile.
@@ -500,54 +314,12 @@ public class Tile
 		return TryAgressiveMoveDensity(player, dirX, dirY, totalDensity, isAttackDir);
 	}
 	
-	/**
-	 * Tries to move the density if it fits.
-	 * 
-	 * @param player Player who owns the density we are trying to move.
-	 * @param dirX X direction regarding where to move the density. [1,0,-1]
-	 * @param dirY Y direction regarding where to move the density. [1,0,-1]
-	 * @param totalDensity We want to attempt to move
-	 * @return The leftovers we weren't able to move to the specified tile.
-	 * @return
-	 */
 	
-	private int TryPassiveMoveDensity(Player player, int dirX, int dirY, int totalDensity)
-	{
-		int leftovers = 0;
-		
-		Tile toMove = this.mapRef.AtTile((int)(this.position.X() + dirX), (int)(this.position.Y()+dirY));
-		
-		if(toMove == null)
-		{
-			// No available tile, return all density
-			leftovers = (int) totalDensity;
-		}
-		else
-		{
-			// Put as much density as we can, return the rest
-			int maxCap = toMove.GetCurrentCapacity();
-			maxCap = Math.max(0, maxCap);
-			int toAdd = (int) Math.min(maxCap, totalDensity);
-			
-			if(toAdd > 0)
-			{
-				toMove.AddDensity(player, toAdd);
-			}
-			
-			leftovers = (int) Math.max(0, totalDensity-toAdd);
-			//leftovers = totalDensity-toAdd;
-		}
-		
-		return leftovers;
-	}
 	
 	/**
 	 * Tries to move the density and steal density from the tile it's moving to, 
 	 * if there is any enemy there.
 	 * 
-	 * TODO: Turn isAttackDir into a fuzzy instead of a hard decision. Add:
-	 * - How near the cursor is
-	 * - Lateral also eat, but less.
 	 * 
 	 * @param player Player who owns the density we are trying to move.
 	 * @param dirX X direction regarding where to move the density. [1,0,-1]
@@ -662,22 +434,9 @@ public class Tile
 	 * Does NOT return the maximum density of this particular tile
 	 * see GetMaxCapacity() for that.
 	 * 
-	 * TODO: Precompute at the beginning
-	 * 
 	 * @return Absolute maximum density of ANY tile.
 	 */
-	public static int TileMaxCapacity() { return Constants.TileWidth * Constants.TileWidth;}
-	
-	/**
-	 * The threshold above which is ok to divide the density
-	 * TODO: Confirm tentative value. Set to 20% of the maximum
-	 * TODO: Precompute at the beginning
-	 * @return Divide threshold
-	 */
-	private int DivideThreshold() 
-	{
-		return (2*TileMaxCapacity())/10;
-	}
+	public static int TileMaxCapacity() { return TILEMAXCAPACITY;}
 	
 	/**
 	 * Gets the maxCapacity of this tile.
@@ -744,7 +503,6 @@ public class Tile
 	
 	/**
 	 * If the tile has a PowerUp it links it to a player.
-	 * TODO: Read duration from constants, file, or somewhere!
 	 */
 	private void PowerUpLink(Player player)
 	{
@@ -829,3 +587,251 @@ public class Tile
 	public void FlagAsColorUpdated()  { this.densityColorUpdated = true; }
 }
 
+/**
+ * Trivial fight algorithim for densities
+ 
+private void BasicDensityFight()
+{
+	int maxDensity = 0;
+	int curMaxPlayer = -1;
+	int numbPlayers = 0;
+	for(int i = 0; i < density.length; i++)
+	{
+		if(density[i] > maxDensity )
+		{
+			maxDensity = density[i];
+			curMaxPlayer = i;
+		}
+		numbPlayers++;
+	}
+	
+	// If there is only one player, or the density he has is 0
+	if(numbPlayers <= 1 || curMaxPlayer == -1 || maxDensity == 0)
+	{
+		return;
+	}
+	
+	// For every player...
+	for(int i = 0; i < density.length; i++)
+	{
+		// .. except the max density one 
+		if(i != curMaxPlayer)
+		{
+			// ... if the player has any density
+			if(density[i] > 0)
+			{
+				// .. take a percentage of it.
+				int toTake = Math.min(DivideThreshold(), density[i]);
+				density[i] -= toTake;
+				density[curMaxPlayer] += toTake;
+			}
+		}
+	}
+}
+
+
+/**
+ * How many densities do you think there are going to be in a tile normally anyhow?
+ * 
+ 
+private void MovementDensityFigth()
+{
+	Vector<Integer> toFight = null;
+
+	// Find all who wish to fight! SPARTA!
+	for(int i = 0; i < density.length; i++)
+	{
+		if(density[i] > 0)
+		{
+			if(toFight == null) { toFight = new Vector<Integer>(); }
+			toFight.add(i);
+		}
+	}
+	
+	// Remember, there is only lazy evaluation for &&, not for ||
+	if(toFight == null ) { return; }
+	if(toFight.size() <= 1) { return; }
+	
+	Vec2 tileToCur1 = new Vec2();
+	Vec2 tileToCur2 = new Vec2(); 
+	float tileX = (float) (this.position.X()*Constants.TileWidth);
+	float tileY = (float) (this.position.Y()*Constants.TileWidth);
+	int densityP1 = 0;
+	int densityP2 = 0;
+	
+	// Fight among all the densities
+	for(int i = 0; i< toFight.size(); i++)
+	{
+		for(int j = i; j < toFight.size(); j++)
+		{
+			tileToCur1.SetX(this.players[toFight.elementAt(i)].GetCursor().GetPosition().X() - tileX);
+			tileToCur1.SetY(this.players[toFight.elementAt(i)].GetCursor().GetPosition().Y() - tileY);
+			
+			tileToCur2.SetX(this.players[toFight.elementAt(j)].GetCursor().GetPosition().X() - tileX);
+			tileToCur2.SetY(this.players[toFight.elementAt(j)].GetCursor().GetPosition().Y() - tileY);
+			
+			// Both densities are moving in the same direction
+			if(tileToCur1.Dot(tileToCur2) > 0)
+			{
+				// Get the direction of the sum of vectors, and size it to tile length
+				tileToCur2.Add(tileToCur1);
+				tileToCur2.Normalize();
+				tileToCur2.Scale(Constants.TileWidth);
+				
+				// Get the next tile in the direction
+				Tile next = this.mapRef.AtWorld((int)(tileX + tileToCur2.X()), (int)(tileY + tileToCur2.Y()));
+				
+				if(next != null)
+				{
+					// Next tile has {enemy density / mixed density / no density} ?
+					densityP1 = next.GetDensityFrom(toFight.elementAt(i));
+					densityP2 = next.GetDensityFrom(toFight.elementAt(j));
+					
+					if(densityP1 == 0 && densityP2 == 0)
+					{
+						// Check backwards
+						Tile prev = this.mapRef.AtWorld((int)(tileX - tileToCur2.X()), (int)(tileY - tileToCur2.Y()));
+						if(prev == null)
+						{
+							// Density fight
+							SameDensityFight(toFight.elementAt(i), toFight.elementAt(j));
+						}
+						else
+						{
+							densityP1 = prev.GetDensityFrom(toFight.elementAt(i));
+							densityP2 = prev.GetDensityFrom(toFight.elementAt(j));
+							
+							if(densityP1 == 0 && densityP2 == 0)
+							{
+								// Density fight!
+								SameDensityFight(toFight.elementAt(i), toFight.elementAt(j));
+							}
+							else if(densityP1 > densityP2)
+							{
+								// P2 is bitch, P1 is rapist
+								StealDensity(toFight.elementAt(j), toFight.elementAt(i), DivideThreshold());
+							}
+							else
+							{
+								// P1 is bitch, P2 is rapist
+								StealDensity(toFight.elementAt(i), toFight.elementAt(j), DivideThreshold());
+							}
+						}
+					}
+					else if(densityP1 > densityP2)
+					{
+						// P1 is bitch, P2 is rapist
+						StealDensity(toFight.elementAt(i), toFight.elementAt(j), DivideThreshold());
+					}
+					else
+					{
+						// P2 is bitch, P1 is rapist
+						StealDensity(toFight.elementAt(j), toFight.elementAt(i), DivideThreshold());
+					}
+				}
+				else
+				{
+					// Check backwards
+					Tile prev = this.mapRef.AtWorld((int)(tileX - tileToCur2.X()), (int)(tileY - tileToCur2.Y()));
+					if(prev == null)
+					{
+						// Density fight
+						SameDensityFight(toFight.elementAt(i), toFight.elementAt(j));
+					}
+					else
+					{
+						densityP1 = prev.GetDensityFrom(toFight.elementAt(i));
+						densityP2 = prev.GetDensityFrom(toFight.elementAt(j));
+						
+						if(densityP1 == 0 && densityP2 == 0)
+						{
+							// Density fight!
+							SameDensityFight(toFight.elementAt(i), toFight.elementAt(j));
+						}
+						else if(densityP1 > densityP2)
+						{
+							// P2 is bitch, P1 is rapist
+							StealDensity(toFight.elementAt(j), toFight.elementAt(i), DivideThreshold());
+						}
+						else
+						{
+							// P1 is bitch, P2 is rapist
+							StealDensity(toFight.elementAt(i), toFight.elementAt(j), DivideThreshold());
+						}
+					}
+				}
+			}
+		}
+	}
+}
+	/**
+	 * Trivial fight for two players. The one who has more density steals
+	 * from the one who has less.
+	 * 
+	 * @param player1 The id of one of the players who fights
+	 * @param player2 The id of the other player who fights
+	 
+	private void SameDensityFight(int player1, int player2)
+	{
+		if(density[player1] > density[player2])
+		{
+			StealDensity(player2, player1, DivideThreshold());
+		}
+		else
+		{
+			StealDensity(player1, player2, DivideThreshold());
+		}
+	}
+	
+	/**
+	 * Tries to move the density if it fits.
+	 * 
+	 * @param player Player who owns the density we are trying to move.
+	 * @param dirX X direction regarding where to move the density. [1,0,-1]
+	 * @param dirY Y direction regarding where to move the density. [1,0,-1]
+	 * @param totalDensity We want to attempt to move
+	 * @return The leftovers we weren't able to move to the specified tile.
+	 * @return
+	 
+	
+	private int TryPassiveMoveDensity(Player player, int dirX, int dirY, int totalDensity)
+	{
+		int leftovers = 0;
+		
+		Tile toMove = this.mapRef.AtTile((int)(this.position.X() + dirX), (int)(this.position.Y()+dirY));
+		
+		if(toMove == null)
+		{
+			// No available tile, return all density
+			leftovers = (int) totalDensity;
+		}
+		else
+		{
+			// Put as much density as we can, return the rest
+			int maxCap = toMove.GetCurrentCapacity();
+			maxCap = Math.max(0, maxCap);
+			int toAdd = (int) Math.min(maxCap, totalDensity);
+			
+			if(toAdd > 0)
+			{
+				toMove.AddDensity(player, toAdd);
+			}
+			
+			leftovers = (int) Math.max(0, totalDensity-toAdd);
+			//leftovers = totalDensity-toAdd;
+		}
+		
+		return leftovers;
+	}
+	
+	/**
+	 * The threshold above which is ok to divide the density
+	 * @return Divide threshold
+	 
+	private int DivideThreshold() 
+	{
+		return DIVIDETHRESHOLD;
+	}
+*
+*
+*/

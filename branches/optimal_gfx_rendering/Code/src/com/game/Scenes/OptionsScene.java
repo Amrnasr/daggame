@@ -35,21 +35,25 @@ public class OptionsScene extends Scene
 	        	{
 	        		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.MENU_SCENE.ordinal());	        		
 	        	}
+	        	/*
 	        	if(msg.what == MsgType.CHECKBOX_CLICK.ordinal())
 	        	{
 	        		// Some operator magic to turn a int into a boolean
 	        		Preferences.Get().optionsSoundMute = (msg.arg2 != 0);
 	        	}
+	        	*/
 	        	if(msg.what == MsgType.SPINNER_ITEM_CLICK.ordinal())
 	        	{
 	        		if(msg.arg1 == R.id.eat_speed_spin)
 	        		{
 	        			Preferences.Get().optionsUnitEatSpeed = msg.arg2;
 	        		}
+	        		/*
 	        		if(msg.arg1 == R.id.move_speed_spin)
 	        		{
 	        			Preferences.Get().optionsUnitMoveSpeed = msg.arg2;
 	        		}
+	        		*/
 	        		if(msg.arg1 == R.id.num_units_spin)
 	        		{
 	        			Preferences.Get().optionsUnitCuantity = msg.arg2;
@@ -74,7 +78,6 @@ public class OptionsScene extends Scene
 
 	@Override
 	public void Start() {
-		// TODO Auto-generated method stub
 
 	}
 

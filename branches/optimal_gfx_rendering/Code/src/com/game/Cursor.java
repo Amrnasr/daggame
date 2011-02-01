@@ -95,7 +95,7 @@ public class Cursor
 	 * @param x coordinates
 	 * @param y coordinates
 	 */
-	public synchronized void SetPosition(double x, double y)
+	public synchronized void SetPosition(float x, float y)
 	{
 		this.pos = new Vec2(x, y);
 		
@@ -218,7 +218,6 @@ public class Cursor
 	 * 
 	 * Syncronized so we don't change the position while the renderer is looking at it
 	 * 
-	 * TODO: Take into consideration the w & h of the cursor.
 	 */
 	private synchronized void Move()
 	{

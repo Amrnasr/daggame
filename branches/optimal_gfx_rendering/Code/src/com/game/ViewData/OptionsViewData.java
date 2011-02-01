@@ -83,6 +83,7 @@ public class OptionsViewData extends ViewData
         });
         numberUnitsSpin.setSelection(Preferences.Get().optionsUnitCuantity);
         
+        /*
         Spinner moveSpeedSpin = (Spinner) xmlLayout.findViewById(R.id.move_speed_spin);
         ArrayAdapter moveSpeedAdapter = ArrayAdapter.createFromResource(	activity, R.array.speed_names, android.R.layout.simple_spinner_item);
         moveSpeedAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -102,6 +103,23 @@ public class OptionsViewData extends ViewData
 
         });
         moveSpeedSpin.setSelection(Preferences.Get().optionsUnitMoveSpeed);
+        
+        <TextView
+				android:id="@+id/widget42"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="10px"
+				android:text="Unit movement speed:"
+				>
+			</TextView>
+			<Spinner
+				android:id="@+id/move_speed_spin"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				>
+			</Spinner>
+			
+        */
         
         Spinner eatSpeedSpin = (Spinner) xmlLayout.findViewById(R.id.eat_speed_spin);
         ArrayAdapter eatSpeedAdapter = ArrayAdapter.createFromResource(	activity, R.array.speed_names, android.R.layout.simple_spinner_item);
@@ -124,6 +142,7 @@ public class OptionsViewData extends ViewData
         eatSpeedSpin.setSelection(Preferences.Get().optionsUnitEatSpeed);
         
         // Callback for the checkboxes
+        /*
         CheckBox soundCheckBox = (CheckBox) xmlLayout.findViewById(R.id.sound_mute);
         soundCheckBox.setChecked(Preferences.Get().optionsSoundMute);
         
@@ -147,6 +166,15 @@ public class OptionsViewData extends ViewData
 				MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.CHECKBOX_CLICK, R.id.sound_mute, checked);	
 			}
 		});
+		
+		<CheckBox
+				android:id="@+id/sound_mute"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Sound"
+				>
+			</CheckBox>
+		*/
         
 		return xmlLayout;
 	}

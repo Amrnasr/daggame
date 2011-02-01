@@ -49,7 +49,6 @@ public class Player
 	
 	/**
 	 * The initial density for the player
-	 * TODO: Read from preferences!!
 	 */
 	private int initialDensity;
 	
@@ -87,8 +86,6 @@ public class Player
 	/**
 	 * The speed of the density movement of this player.
 	 * From 0 to 1.
-	 * 
-	 * TODO: Initialize from preferences
 	 */
 	private float densitySpeed;
 	
@@ -118,11 +115,10 @@ public class Player
 		
 		// Tiles
 		tiles = new Vector<Tile>();
-		tileUpdateRegulator = new Regulator(5); // TODO: Put a decent update speed.
+		tileUpdateRegulator = new Regulator(10);
 		
-		// TODO: Read from preferences!
-		this.initialDensity = 3000;
-		this.densitySpeed = 0.5f;
+		this.initialDensity = 2000 + 200*Preferences.Get().optionsUnitCuantity; 
+		this.densitySpeed = (float) (0.2f + 0.1*Preferences.Get().optionsUnitEatSpeed);
 		
 		this.totalDensity = 0;
 		this.previousDensity = initialDensity;
@@ -252,13 +248,6 @@ public class Player
 		for(int i = this.tiles.size()-1; i >= 0; i--)
 		{
 			this.tiles.elementAt(i).MoveDensity();
-		}
-		
-		// Fight the density
-		// TODO: Remove if not needed in the final version (fighting in movement)
-		for(int i = 0; i < this.tiles.size(); i++)
-		{
-			tiles.elementAt(i).DensityFight();
 		}
 		
 		// Once updated, eliminate those with no density

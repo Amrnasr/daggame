@@ -10,7 +10,7 @@
 		android:id="@+id/how_title"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="20px"
+		android:layout_marginTop="30px"
 		android:text="@string/about_title"
 		android:textSize="18sp"
 		android:layout_centerHorizontal="true"		
@@ -32,48 +32,76 @@
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
 			android:orientation="vertical"
+			android:layout_marginLeft="110px"
 			xmlns:android="http://schemas.android.com/apk/res/android"
 			>
 			
 			<TextView
+				android:id="@+id/widget301"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="50px"
+				android:layout_gravity="left"
+				android:layout_marginLeft="50px"
+				android:text="PROGRAMMING"
+				
+				>
+			</TextView>
+			<TextView
 				android:id="@+id/widget30"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Jaime Barrachina Verdia"
-				android:layout_gravity="center_horizontal"
+				android:text="  - Jaime Barrachina Verdia"
+				android:layout_gravity="left"
+				android:layout_marginLeft="50px"
 				>
 			</TextView>
 			<TextView
 				android:id="@+id/widget31"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Javier Belenguer Faguas"
-				android:layout_gravity="center_horizontal"
+				android:text="  - Javier Belenguer Faguas"
+				android:layout_gravity="left"
+				android:layout_marginLeft="50px"
+				>
+			</TextView>
+			<TextView
+				android:id="@+id/widget321"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="50px"
+				android:text="ADITIONAL HELP"
+				android:layout_gravity="left"
+				android:layout_marginLeft="50px"
 				>
 			</TextView>
 			<TextView
 				android:id="@+id/widget32"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Help: Mario Zechner"
-				android:layout_gravity="center_horizontal"
+				android:text="  - Mario Zechner"
+				android:layout_gravity="left"
+				android:layout_marginLeft="50px"
+				>
+			</TextView>
+			<TextView
+				android:id="@+id/widget322"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="50px"
+				android:text="STOCK ART"
+				android:layout_gravity="left"
+				android:layout_marginLeft="50px"
 				>
 			</TextView>
 			<TextView
 				android:id="@+id/widget32"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="images of: Matt Walkden"
-				android:layout_gravity="center_horizontal"
+				android:text="  - Matt Walkden"
+				android:layout_gravity="left"
+				android:layout_marginLeft="50px"
 				>
-			</TextView>
-			<TextView
-				android:id="@+id/widget32"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="http://industrialsmokeandmirrors.blogspot.com/"
-				android:layout_gravity="center_horizontal"
-				>	
 			</TextView>
 		</LinearLayout>
 	</ScrollView>

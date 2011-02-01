@@ -48,7 +48,6 @@ public class CalculateFleeDestinationTask extends LeafTask
 	@Override
 	public boolean CheckConditions() 
 	{
-		// TODO Auto-generated method stub
 		LogTask("Cheking conditions");
 		return Blackboard.players.size() > 1;
 	}

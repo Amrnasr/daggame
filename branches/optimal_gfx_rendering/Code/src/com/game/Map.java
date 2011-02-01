@@ -199,7 +199,6 @@ public class Map {
 	}
 	
 	public void Start() {
-		// TODO Auto-generated method stub
 	}
 	
 	public void Update(Vector<Player> players) 
@@ -308,7 +307,6 @@ public class Map {
 	}
 	
 	public void End(){
-		// TODO Auto-generated method stub
 	}
 	
 	/**

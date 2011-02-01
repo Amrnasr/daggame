@@ -1,6 +1,7 @@
 package com.game.InputDevice;
 
 import com.game.MsgType;
+import com.game.Preferences;
 import com.game.Vec2;
 import com.game.Scenes.PlayScene;
 
@@ -19,9 +20,8 @@ public class BallInputDevice extends InputDevice
 {
 	/**
 	 * Modifies the ball input to give it a little more force.
-	 * TODO: Set from map size / device resolution
 	 */
-	private static final int SCALE_FACTOR = 30;
+	private int scaleFactor = 50;
 
 	/**
 	 * Creates the Handler and assigns it.
@@ -42,7 +42,7 @@ public class BallInputDevice extends InputDevice
 					// Inverted Y to go from android top left to opengl bottom left
 					Vec2 dir = new Vec2(event.getX(),(-1)* event.getY());
 					dir.Normalize();
-					dir.Scale(SCALE_FACTOR);
+					dir.Scale(scaleFactor);
 					parent.GetCursor().MoveInDirection(dir);
 				}
 			}
@@ -58,7 +58,7 @@ public class BallInputDevice extends InputDevice
 	@Override
 	public void Start() 
 	{
-		
+		scaleFactor = Math.max(Preferences.Get().mapHeight/10, scaleFactor);
 	}
 
 	@Override

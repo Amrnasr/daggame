@@ -43,7 +43,7 @@ public class JoystickInputDevice extends InputDevice
 			20f, -20f, 1.0f,
 			-20f, -20f, 1.0f });
 	
-	private final int touchMargin = 300;
+	private final int touchMargin;
 	
 	private final int cursorSpeed = 10;
 	
@@ -54,6 +54,7 @@ public class JoystickInputDevice extends InputDevice
 		this.side = side;
 		screenH = Camera.Get().GetScreenHeight();
 		screenW = Camera.Get().GetScreenWidth();
+		touchMargin = (int) (screenW / 1.6);
 		
 		this.deviceHandler = new Handler()
 		{			
@@ -97,7 +98,6 @@ public class JoystickInputDevice extends InputDevice
 
 	private void MoveCursor(Vec2 pos)
 	{
-		// TODO: use relative positions for stuff (careful of screen resolutions)
 		if(	(side == LEFT && pos.X() < touchMargin && pos.Y() < touchMargin) ||
 			(side == RIGHT && pos.X() > (screenW - touchMargin) && pos.Y() > (screenH - touchMargin) ))
 		{
@@ -120,14 +120,12 @@ public class JoystickInputDevice extends InputDevice
 	@Override
 	public void Start() 
 	{
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void Update() 
 	{
-		// TODO Auto-generated method stub
 
 	}
 	

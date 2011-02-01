@@ -42,7 +42,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:padding="10px"
-				android:text="Points follow their cursor on the screen, eat other points from other players if they are moving away from them, and get eaten otherwise. An eaten point joins the army that ate it. Wins whoever gets all the points."
+				android:text="Move the cursor arround the map, leading your pixel army behind it! Take retreating armies from behind to do extra damage. Last army standing wins."
 				>
 			</TextView>
 			<TextView
@@ -50,7 +50,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:padding="10px"
-				android:text="In single player mode, the camera stays centered on the player’s cursor, and doesn’t zoom. In multiplayer, as both players must see their cursors, map zooms out if players get far from each other, and zooms back if they get closer."
+				android:text="Use the different power-ups to your advantage:"
 				>
 			</TextView>
 			<TextView
@@ -58,15 +58,23 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:padding="10px"
-				android:text="When the game loads, a big “START!” message appears on screen and the game doesn’t start until the player clicks the screen. This is done so the start of the game doesn’t catch the player by surprise."
+				android:text="- Speed: Gives your army extra movement speed."
 				>
 			</TextView>
 			<TextView
-				android:id="@+id/par3_text"
+				android:id="@+id/par4_text"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:padding="10px"
-				android:text="When the game loads, a big “START!” message appears on screen and the game doesn’t start until the player clicks the screen. This is done so the start of the game doesn’t catch the player by surprise."
+				android:text="- Slow: Slow down all the other enemy armies."
+				>
+			</TextView>
+			<TextView
+				android:id="@+id/par5_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="10px"
+				android:text="- Life: Get extra units for your army. They will come handy!"
 				>
 			</TextView>
 			<TextView

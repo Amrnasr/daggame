@@ -8,8 +8,6 @@ import android.graphics.Rect;
  * It is used to force the planner to wait until the current strategy
  * has been completely carried out before starting on the next one.
  * 
- * TODO: Add timeout
- * 
  * @author Ying
  *
  */
@@ -18,7 +16,14 @@ public class WaitTillNearDestinationTask extends LeafTask
 	/**
 	 * Error allowed to the end distance point. 
 	 */
-	private final int PADDING_DISTANCE = 5;
+	private static final int PADDING_DISTANCE = 5;
+	
+	/**
+	 * Time to wait till evaluating again
+	 */
+	private static final float TIMEOUT = 4000;
+	
+	private float initialTime;
 	
 	/**
 	 * Rectangle defining the end area
@@ -68,6 +73,12 @@ public class WaitTillNearDestinationTask extends LeafTask
 		{
 			control.FinishWithSuccess();
 		}
+		
+		// Check for a timeout of the wait
+		if(System.currentTimeMillis() - this.initialTime > TIMEOUT)
+		{
+			control.FinishWithFailure();
+		}
 	}
 
 	/**
@@ -91,5 +102,6 @@ public class WaitTillNearDestinationTask extends LeafTask
 				(int)(bb.destination.Y() - PADDING_DISTANCE),
 				(int)(bb.destination.X() + PADDING_DISTANCE),
 				(int)(bb.destination.Y() + PADDING_DISTANCE));
+		this.initialTime = System.currentTimeMillis();
 	}
 }

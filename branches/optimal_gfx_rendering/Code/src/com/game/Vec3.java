@@ -4,7 +4,6 @@ import android.util.Log;
 
 /**
  * Two dimensional vector class.
- * TODO: Change to float or int even, to ease calculations
  * @author Ying
  *
  */
@@ -13,17 +12,17 @@ public class Vec3
 	/**
 	 * x coordinate of the vector
 	 */
-	private double x;
+	private float x;
 	
 	/**
 	 * y coordinate of the vector
 	 */
-	private double y;
+	private float y;
 	
 	/**
 	 * z coordinate of the vector
 	 */
-	private double z;
+	private float z;
 	
 	/**
 	 * Empty constructor, initializes to 0
@@ -40,7 +39,7 @@ public class Vec3
 	 * @param x
 	 * @param y
 	 */
-	public Vec3(double x, double y, double z)
+	public Vec3(float x, float y, float z)
 	{
 		this.x = x;
 		this.y = y;
@@ -99,7 +98,7 @@ public class Vec3
 	 * @param x
 	 * @param y
 	 */
-	public void Set(double x, double y, double z)
+	public void Set(float x, float y, float z)
 	{
 		this.x = x;
 		this.y = y;
@@ -110,7 +109,7 @@ public class Vec3
 	 * Sets the x
 	 * @param x
 	 */
-	public void SetX(double x)
+	public void SetX(float x)
 	{
 		this.x = x;
 	}
@@ -119,7 +118,7 @@ public class Vec3
 	 * Sets the y
 	 * @param y
 	 */
-	public void SetY(double y)
+	public void SetY(float y)
 	{
 		this.y = y;
 	}
@@ -128,7 +127,7 @@ public class Vec3
 	 * Sets the z
 	 * @param z
 	 */
-	public void SetZ(double z)
+	public void SetZ(float z)
 	{
 		this.z = z;
 	}
@@ -138,7 +137,7 @@ public class Vec3
 	 * @param x to add to the x component
 	 * @param y to add to the y component
 	 */
-	public void Offset(double x, double y, double z)
+	public void Offset(float x, float y, float z)
 	{
 		this.x += x;
 		this.y += y;
@@ -149,19 +148,19 @@ public class Vec3
 	 * Gets the x value
 	 * @return x
 	 */
-	public double X() { return this.x; }
+	public float X() { return this.x; }
 	
 	/**
 	 * Gets the y value
 	 * @return y
 	 */
-	public double Y() { return this.y; }
+	public float Y() { return this.y; }
 	
 	/**
 	 * Gets the z value
 	 * @return z
 	 */
-	public double Z() { return this.z; }
+	public float Z() { return this.z; }
 	
 	/**
 	 * Prints the vector value to the log

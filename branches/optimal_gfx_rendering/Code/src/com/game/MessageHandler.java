@@ -7,11 +7,9 @@ import android.os.Message;
 import android.util.Log;
 
 /**
- * Singleton message handler, to comunicate all the systems in the game.
+ * Singleton message handler, to communicate all the systems in the game.
  * @author Ying
  * 
- * TODO: Instead of 2 switches (send, trysend), do a lookup table
- *
  */
 public class MessageHandler 
 {

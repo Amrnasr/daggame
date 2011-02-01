@@ -341,9 +341,12 @@ public class PlayScene extends Scene
 	@Override
 	public void Update() 
 	{
-		long startTime = System.currentTimeMillis();
+		//long startTime = System.currentTimeMillis();
 		// Logic not dependent on game state
-		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_LOGIC_PROFILER);
+		if(Constants.OnScreenProfiler)
+		{
+			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.UPDATE_LOGIC_PROFILER);
+		}
 		
 		// Update the message handler.
 		if(messageManagerRegulator.IsReady())
@@ -357,7 +360,7 @@ public class PlayScene extends Scene
 			Gameplay();
 		}
 		
-		long totalTime = System.currentTimeMillis() - startTime;
+		//long totalTime = System.currentTimeMillis() - startTime;
 		//Log.i("A", ""+ totalTime);
 		
 		/*if( totalTime < 16)
@@ -403,7 +406,11 @@ public class PlayScene extends Scene
 			Camera.Get().Update();
 		}
 		
-		this.powerUpManager.Update();
+		if(	(Preferences.Get().multiplayerGame && Preferences.Get().multiPowerups) ||
+			(!Preferences.Get().multiplayerGame && Preferences.Get().singlePowerups))
+		{
+			this.powerUpManager.Update();
+		}
 		
 		this.map.Update(this.players);
 		

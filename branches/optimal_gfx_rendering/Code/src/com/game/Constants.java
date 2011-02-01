@@ -14,7 +14,7 @@ public class Constants
 	/**
 	 * Debug mode check.
 	 */
-	public static final boolean DebugMode = false;
+	//public static final boolean DebugMode = false;
 	
 	/**
 	 * Color Intensity of the cursors
@@ -39,11 +39,16 @@ public class Constants
 	/**
 	 * Probability of appearance of the combat effect
 	 */
-	public static final float CombatEffectChance = 0.05f;
+	public static final float CombatEffectChance = 0.03f;
 	
 	/**
 	 * Number of images of the combat effect
 	 */
 	public static final int CombatEffectImgNum = 4;
+	
+	/**
+	 * To show the profiler onscreen
+	 */
+	public static final boolean OnScreenProfiler = false;
 
 }

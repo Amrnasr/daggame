@@ -44,13 +44,11 @@ public class HowScene extends Scene
 	@Override
 	public void End() 
 	{
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void Start() {
-		// TODO Auto-generated method stub
 
 	}
 

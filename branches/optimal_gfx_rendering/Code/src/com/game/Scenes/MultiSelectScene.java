@@ -150,7 +150,6 @@ public class MultiSelectScene extends Scene {
 	
 	@Override
 	public void Start() {
-		// TODO Auto-generated method stub
 
 	}
 
