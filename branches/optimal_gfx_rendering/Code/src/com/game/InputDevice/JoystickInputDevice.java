@@ -23,25 +23,18 @@ public class JoystickInputDevice extends InputDevice
 	private Vec2 smallCirclePos;
 	
 	// Half of the big texture width
-	private final int radius = 100;
-	private final int radiusOffset = radius + 20;
+	private int radius;
+	private int radiusOffset;
 	
 	private int screenH;
 	private int screenW; 
 	
+	
 	/** Buffer for the big joystick texture in ogl **/
-	private static final FloatBuffer mainJoystickBuff = DagRenderer.makeFloatBuffer(new float[] 
-	      { 100f, 100f, 1.0f,
-			-100f, 100f, 1.0f,
-			100f, -100f, 1.0f,
-			-100f, -100f, 1.0f });
+	private FloatBuffer mainJoystickBuff;
 	
 	/** Buffer for the small joystick texture in ogl **/
-	private static final FloatBuffer smallJoystickBuff = DagRenderer.makeFloatBuffer(new float[] 
-	      { 20f, 20f, 1.0f,
-			-20f, 20f, 1.0f,
-			20f, -20f, 1.0f,
-			-20f, -20f, 1.0f });
+	private FloatBuffer smallJoystickBuff;
 	
 	private final int touchMargin;
 	
@@ -55,6 +48,8 @@ public class JoystickInputDevice extends InputDevice
 		screenH = Camera.Get().GetScreenHeight();
 		screenW = Camera.Get().GetScreenWidth();
 		touchMargin = (int) (screenW / 1.6);
+		
+		CreateBuffers();
 		
 		this.deviceHandler = new Handler()
 		{			
@@ -92,8 +87,26 @@ public class JoystickInputDevice extends InputDevice
 			Log.e("JoystickInputDevice", "ERROR! No side selected for the Joystick!");
 			break;
 		}
+	}
+
+	private void CreateBuffers() 
+	{
+		int mainRadius = (int) (screenW / 4.8);
+		mainJoystickBuff = DagRenderer.makeFloatBuffer(new float[] 
+		                                                	      { mainRadius, mainRadius, 1.0f,
+		                                                			-mainRadius, mainRadius, 1.0f,
+		                                                			mainRadius, -mainRadius, 1.0f,
+		                                                			-mainRadius, -mainRadius, 1.0f });
+		 
+		int smallRadius = mainRadius / 5;
+		smallJoystickBuff = DagRenderer.makeFloatBuffer(new float[] 
+		                                                 	      { smallRadius, smallRadius, 1.0f,
+		                                                 			-smallRadius, smallRadius, 1.0f,
+		                                                 			smallRadius, -smallRadius, 1.0f,
+		                                                 			-smallRadius, -smallRadius, 1.0f });
 		
-		
+		this.radius = mainRadius;
+		this.radiusOffset =radius + (radius / 5);
 	}
 
 	private void MoveCursor(Vec2 pos)
@@ -145,12 +158,12 @@ public class JoystickInputDevice extends InputDevice
 	 * Gets the main texture buffer for ogl rendering
 	 * @return Main texture buffer
 	 */
-	public static FloatBuffer GetMainTextureBuffer() { return mainJoystickBuff;}
+	public FloatBuffer GetMainTextureBuffer() { return mainJoystickBuff;}
 	
 	/**
 	 * Gets the small texture buffer for ogl rendering
 	 * @return Small texture buffer
 	 */
-	public static FloatBuffer GetSmallTextureBuffer() { return smallJoystickBuff; }
+	public FloatBuffer GetSmallTextureBuffer() { return smallJoystickBuff; }
 
 }

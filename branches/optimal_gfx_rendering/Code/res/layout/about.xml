@@ -103,6 +103,15 @@
 				android:layout_marginLeft="50px"
 				>
 			</TextView>
+			<TextView
+				android:id="@+id/how_bottom_filler_text_do_not_remove"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="10px"
+				android:lines="3"
+				android:text=""
+				>
+			</TextView>
 		</LinearLayout>
 	</ScrollView>
 	<Button
