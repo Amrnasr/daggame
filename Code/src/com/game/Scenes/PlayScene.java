@@ -446,6 +446,7 @@ public class PlayScene extends Scene
 			InputDevice player1ID = null;
 			InputDevice player2ID = null;
 			
+			/* Dissabled for now
 			switch (Preferences.Get().multiControlMode) 
 			{ 
 				case 0:
@@ -464,6 +465,9 @@ public class PlayScene extends Scene
 					Log.e("PlayScene", "Input device requested for player not implemented yet!");				
 					break;
 			}
+			*/
+			player1ID = new JoystickInputDevice(this, JoystickInputDevice.LEFT);
+			player2ID = new JoystickInputDevice(this, JoystickInputDevice.RIGHT);
 			
 			player1 = new Player(0, player1ID, true, Preferences.Get().multiPlayer1Color);
 			this.players.add(player1);

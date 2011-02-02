@@ -843,7 +843,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			
 			
 			//Set the vertices
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, JoystickInputDevice.GetMainTextureBuffer());
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, js.GetMainTextureBuffer());
 			
 			//Set the texture coordinates
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureMapBuffer);
@@ -858,7 +858,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			//-------------------- Small texture
 			gl.glTranslatef(smallX, smallY, smallZ);
 			//Set the vertices
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, JoystickInputDevice.GetSmallTextureBuffer());
+			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, js.GetSmallTextureBuffer());
 			
 			// Set the texture
 			gl.glBindTexture(GL10.GL_TEXTURE_2D, joystickSmallTextureId);
