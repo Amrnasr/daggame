@@ -2,6 +2,9 @@ package com.game;
 
 import java.util.Collections;
 import java.util.Vector;
+
+import android.util.Log;
+
 import com.game.PowerUp.PowerUp;
 
 
@@ -119,6 +122,7 @@ public class Tile
 	 */
 	public static void InitIndexVector(int numberPlayers)
 	{
+		Tile.playerIndex.clear();
 		for(int i = 0; i < numberPlayers; i++)
 		{
 			Tile.playerIndex.add(i);
@@ -152,7 +156,7 @@ public class Tile
 			return;
 		}
 		densityMoved = true;
-		
+		Log.i("Tile", "Players: " + players.length + " Pref.GetNumbPlayers: " + Preferences.Get().GetNumberOfPlayers() + " Pref.singleNumOp: " + Preferences.Get().singleNumberOpponents);
 		for(int i = 0; i < players.length; i++)
 		{
 			// For each player
