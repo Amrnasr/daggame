@@ -84,6 +84,11 @@ public class DagActivity extends Activity
 	 */
 	public enum OptionsMenuID { OP_MENU_MENU, OP_MENU_HOME }
 	
+	/**
+	 * Indicates if the menu is actually open
+	 */
+	private boolean menuOpen;
+	
     /** 
      * Called when the activity is first created. 
      * Creates the initial view of the game
@@ -100,7 +105,7 @@ public class DagActivity extends Activity
         // Load stored game preferences
         LoadPreferences();
         
-        // Set initial camera params
+        // Set initial camera parameters
         InitializeCamera();
         
         // Create handler
@@ -395,6 +400,7 @@ public class DagActivity extends Activity
     {
         super.onPrepareOptionsMenu (menu);
         boolean handled = false;
+        this.menuOpen = true;
         if(nextScene == SceneType.PLAY_SCENE)
 	    {
 	        menu.clear();
@@ -416,12 +422,14 @@ public class DagActivity extends Activity
     	{
     		Log.i("Activity", "MENU MENU");
     		CreateAlert(OptionsMenuID.OP_MENU_MENU);
+    		this.menuOpen = false;
     		return true;
     	}
     	else if(item.getItemId() == OptionsMenuID.OP_MENU_HOME.ordinal()) 
     	{
     		Log.i("Activity", "MENU HOME");
     		CreateAlert(OptionsMenuID.OP_MENU_HOME);
+    		this.menuOpen = false;
     		return true;
     	}
     	else
@@ -433,7 +441,10 @@ public class DagActivity extends Activity
     @Override
     public void onOptionsMenuClosed(Menu menu)
     {
-    	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
+    	if(this.menuOpen)
+    	{
+    		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
+    	}
     }
     
     public void CreateAlert(OptionsMenuID optionsID)
