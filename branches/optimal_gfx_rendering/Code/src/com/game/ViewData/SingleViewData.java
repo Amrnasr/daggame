@@ -33,7 +33,6 @@ public class SingleViewData extends ViewData
 {
 	private View minimapCheckBoxView;
 	private View powerupsCheckBoxView;
-	private View numbOppSingl;
 
 	/**
 	 * @see ViewData createXMLView(Activity activity) 
@@ -51,8 +50,6 @@ public class SingleViewData extends ViewData
         LinearLayout centerLinerarLayout = (LinearLayout)xmlLayout.findViewById(R.id.single_layout_inner_scroll);
         this.Set80PercentWidth(activity, centerLinerarLayout);
         
-        numbOppSingl = (Spinner) xmlLayout.findViewById(R.id.op_single_spin);
-        
         // Callback for the buttons 
         Button okButton = (Button) xmlLayout.findViewById(R.id.ok_single_but);
         okButton.setOnClickListener(new OnClickListener() 
@@ -61,7 +58,6 @@ public class SingleViewData extends ViewData
           public void onClick(View v) {
             Log.i("SingleViewData", "Clicked OK button");
             MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.BUTTON_CLICK, R.id.ok_single_but);
-            //Preferences.Get().singleNumberOpponents = ((Spinner)numbOppSingl).getSelectedItemPosition();
           }
         });
         
