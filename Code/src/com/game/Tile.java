@@ -156,7 +156,6 @@ public class Tile
 			return;
 		}
 		densityMoved = true;
-		Log.i("Tile", "Players: " + players.length + " Pref.GetNumbPlayers: " + Preferences.Get().GetNumberOfPlayers() + " Pref.singleNumOp: " + Preferences.Get().singleNumberOpponents);
 		for(int i = 0; i < players.length; i++)
 		{
 			// For each player

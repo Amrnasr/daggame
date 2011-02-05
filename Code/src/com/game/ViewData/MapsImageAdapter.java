@@ -22,12 +22,32 @@ public class MapsImageAdapter extends BaseAdapter {
 	
 	private static Integer[] imageIDs = {
         R.drawable.samplemap,
-        R.drawable.map_size800_1
+        R.drawable.map_size800_1,
+        R.drawable.map1,
+        R.drawable.map2,
+        R.drawable.map3,
+        R.drawable.map4,
+        R.drawable.map5,
+        R.drawable.map6,
+        R.drawable.map7,
+        R.drawable.map8,
+        R.drawable.map9,
+        R.drawable.map10,
     };
 	
 	private static Integer[] tilemapIDs = {
         R.raw.samplemaptilemap,
-        R.raw.map_size800_1tilemap
+        R.raw.map_size800_1tilemap,
+        R.raw.map1tilemap,
+        R.raw.map2tilemap,
+        R.raw.map3tilemap,
+        R.raw.map4tilemap,
+        R.raw.map5tilemap,
+        R.raw.map6tilemap,
+        R.raw.map7tilemap,
+        R.raw.map8tilemap,
+        R.raw.map9tilemap,
+        R.raw.map10tilemap,
 	};
 
 	/**
