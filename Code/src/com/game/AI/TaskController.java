@@ -33,7 +33,7 @@ public class TaskController
 	
 	/**
 	 * Creates a new instance of the TaskController class
-	 * @param task Task to controll.
+	 * @param task Task to control.
 	 */
 	public TaskController(Task task)
 	{

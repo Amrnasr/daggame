@@ -95,6 +95,12 @@ public class Player
 	private Vector<PowerUp> powerUps;
 	
 	/**
+	 * Last time when the amount of density the player has changed.
+	 */
+	private long lastTimeDensityUpdated;
+	
+	
+	/**
 	 * Creates a new instance of the Player class.
 	 * @param playerNumber Unique player identifier. If it's not unique you'll regret it later.
 	 * @param inputDevice Input device used by this player.
@@ -129,6 +135,9 @@ public class Player
 		
 		// PowerUps
 		this.powerUps = new Vector<PowerUp>();
+		
+		// Density update
+		this.lastTimeDensityUpdated = 0;
 	}
 	
 	/**
@@ -218,6 +227,8 @@ public class Player
 	 */
 	public void Update()
 	{
+		int prevDensity = this.previousDensity;
+		
 		this.cursor.Update();
 		this.inputDevice.Update();
 		if(tileUpdateRegulator.IsReady())
@@ -226,6 +237,11 @@ public class Player
 			//Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
 		}
 		UpdatePowerUps();
+		
+		if(prevDensity != this.totalDensity)
+		{
+			this.lastTimeDensityUpdated = System.currentTimeMillis();
+		}
 	}
 	
 	/**
@@ -368,4 +384,10 @@ public class Player
 	 * @return The players InputDevice
 	 */
 	public InputDevice GetInputDevice() { return this.inputDevice; }
+
+	public long LastTimeDensityChanged() 
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
