@@ -507,7 +507,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		
 		// Draw non-textured elements
 		gl.glDisable(GL10.GL_TEXTURE_2D);
+		//DrawBackgroundRect(gl);
+		
+		//draw black rectangle that hides the part of the density map that it's to the left of the textured map
+		gl.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+		gl.glTranslatef(-Preferences.Get().mapWidth,0f,2f);
 		DrawBackgroundRect(gl);
+		gl.glTranslatef(Preferences.Get().mapWidth,0f,-2f);
 		
 		synchronized (map) 
 		{
@@ -792,7 +798,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 * @param gl Opengl context to draw in.
 	 */
 	private void DrawMap(GL10 gl)
-	{
+	{	
+		gl.glTranslatef(-2f,10f,0f);
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 		
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, map.GetVertexBuffer());
@@ -802,6 +809,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
                 GL10.GL_UNSIGNED_SHORT, map.GetIndexBuffer());
 		
 		gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+		gl.glTranslatef(2f,-10f,0f);
 	}
 	
 	private void DrawJoyStick(GL10 gl)

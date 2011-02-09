@@ -33,6 +33,7 @@ public class MapsImageAdapter extends BaseAdapter {
         R.drawable.map8,
         R.drawable.map9,
         R.drawable.map10,
+        R.drawable.map11
     };
 	
 	private static Integer[] tilemapIDs = {
@@ -48,6 +49,7 @@ public class MapsImageAdapter extends BaseAdapter {
         R.raw.map8tilemap,
         R.raw.map9tilemap,
         R.raw.map10tilemap,
+        R.raw.map11tilemap
 	};
 
 	/**
