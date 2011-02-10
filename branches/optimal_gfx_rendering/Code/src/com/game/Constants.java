@@ -32,9 +32,14 @@ public class Constants
 	public static final int MaxPlayers = 6;
 	
 	/**
-	 * Size of a map tile.
+	 * Size of a map tile for medium or high screen density.
 	 */
 	public static final int TileWidth = 16;
+	
+	/**
+	 * Size of a map tile for low screen density.
+	 */
+	public static final int TileWidthLowDpi = 8;
 	
 	/**
 	 * Probability of appearance of the combat effect

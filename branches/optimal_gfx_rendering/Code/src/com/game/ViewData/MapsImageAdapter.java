@@ -1,6 +1,8 @@
 package com.game.ViewData;
 
 import com.game.Camera;
+import com.game.Constants;
+import com.game.Preferences;
 import com.game.R;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -71,11 +73,6 @@ public class MapsImageAdapter extends BaseAdapter {
         R.raw.map8tilemaplowdpi,
         R.raw.map9tilemaplowdpi
 	};
-	
-	/**
-	 * Screen density expressed as dots-per-inch.
-	 */
-	private static int densityDpi;
 
 	/**
 	 * Initializes the adapter
@@ -93,7 +90,8 @@ public class MapsImageAdapter extends BaseAdapter {
         DisplayMetrics dMetrics = new DisplayMetrics();
         
     	display.getMetrics(dMetrics);
-    	densityDpi = dMetrics.densityDpi;
+
+    	Preferences.Get().tileWidth = (dMetrics.densityDpi == DisplayMetrics.DENSITY_LOW) ? Constants.TileWidthLowDpi : Constants.TileWidth;
 	}
 	
 	/**
@@ -135,7 +133,7 @@ public class MapsImageAdapter extends BaseAdapter {
 	}
 	
 	public static int getTilemapID(int position){
-		if (densityDpi == DisplayMetrics.DENSITY_LOW){
+		if (Preferences.Get().tileWidth == Constants.TileWidthLowDpi){
 			return tilemapIDsLowDpi[position];
 		}
 		return tilemapIDs[position];

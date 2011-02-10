@@ -75,7 +75,7 @@ public class Tile
 	/**
 	 * Maximum density any tile can have
 	 */
-	private static final int TILEMAXCAPACITY = Constants.TileWidth * Constants.TileWidth;
+	private static final int TILEMAXCAPACITY = Preferences.Get().tileWidth * Preferences.Get().tileWidth;
 	
 	/**
 	 * Value over which is ok to divide
@@ -164,8 +164,8 @@ public class Tile
 			if(curPlay != null)
 			{
 				// Find where we have to move it's density
-				int tilePosX = (int) (this.position.X()*Constants.TileWidth);
-				int tilePosY = (int) (this.position.Y()*Constants.TileWidth);
+				int tilePosX = (int) (this.position.X()*Preferences.Get().tileWidth);
+				int tilePosY = (int) (this.position.Y()*Preferences.Get().tileWidth);
 				
 				int dirX = 0;
 				if(tilePosX > curPlay.GetCursor().GetPosition().X())
@@ -527,7 +527,7 @@ public class Tile
 	 * Gets the tile position in map x/y pixels.
 	 * @return Tile position
 	 */
-	public Vec2 GetRealPos() {return new Vec2(position.X()*Constants.TileWidth, position.Y()*Constants.TileWidth); }
+	public Vec2 GetRealPos() {return new Vec2(position.X()*Preferences.Get().tileWidth, position.Y()*Preferences.Get().tileWidth); }
 	
 	/**
 	 * Returns whether the player has units in this tile or not

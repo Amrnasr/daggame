@@ -92,7 +92,7 @@ public class CalculateCirclePathTask extends LeafTask
 				(int)chosenEnemy.GetPosition().Y());
 		
 		lineToEnemy.Normalize();
-		lineToEnemy.Scale(Constants.TileWidth);
+		lineToEnemy.Scale(Preferences.Get().tileWidth);
 		
 		// If no starting tile, we're done here.
 		if(curTile == null)
@@ -120,8 +120,8 @@ public class CalculateCirclePathTask extends LeafTask
 			if(curTile == nextTile)
 			{
 				curTile = mapRef.AtWorld( 
-						(int)(curTile.GetRealPos().X()-(Math.signum(lineToEnemy.X()) * Constants.TileWidth) ) , 
-						(int)(curTile.GetRealPos().Y()-(Math.signum(lineToEnemy.Y()) * Constants.TileWidth) ));
+						(int)(curTile.GetRealPos().X()-(Math.signum(lineToEnemy.X()) * Preferences.Get().tileWidth) ) , 
+						(int)(curTile.GetRealPos().Y()-(Math.signum(lineToEnemy.Y()) * Preferences.Get().tileWidth) ));
 			}
 			else
 			{

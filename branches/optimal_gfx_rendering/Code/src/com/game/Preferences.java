@@ -241,5 +241,10 @@ public class Preferences
 	 * Player that has won this round
 	 */
 	public int winnerPlayer;
+	
+	/**
+	 * Size of a map tile
+	 */
+	public int tileWidth;
 
 }
