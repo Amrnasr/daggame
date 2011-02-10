@@ -2,7 +2,7 @@ import pygame
 import os.path
 import glob
 
-def GenerateTileMap(graphic,tileWidth,tilesPerRow,tilesPerColumn):
+def GenerateTileMap(graphic,tileWidth,tilesPerRow,tilesPerColumn,minWhitePixels):
     tileMap = {}
     for j in range (0,int(tilesPerColumn)): #comprobar que se lee y guarda en el sentido que toca
         for i in range (0,int(tilesPerRow)):
@@ -10,9 +10,9 @@ def GenerateTileMap(graphic,tileWidth,tilesPerRow,tilesPerColumn):
             for l in range (0,tileWidth):
                 for k in range (0,tileWidth):
                     pixel= graphic.get_at((i*tileWidth+k,j*tileWidth+l))
-                    if not(pixel.r == 0 and pixel.g == 0 and pixel.b == 0):
+                    if not(pixel.r == 0 and pixel.g == 0 and pixel.b == 0 and pixel.a == 255):
                         count+=1
-            if count >= (tileWidth*tileWidth*50) / 100 :           
+            if float(count) / float(tileWidth*tileWidth) * 100.0 >= float(minWhitePixels):           
                 tileMap[j*tilesPerRow+i]=count
             else:
                 tileMap[j*tilesPerRow+i]=0
@@ -23,7 +23,7 @@ def SaveTileMap(tileMap,fileName,tilesPerRow,tilesPerColumn):
 
     for j in range (0, int(tilesPerColumn)):
         for i in range (0, int(tilesPerRow)):
-            f.write(str(tileMap[j*tilesPerRow + i]))
+            f.write(str(tileMap[(tilesPerColumn-1-j)*tilesPerRow + i]))
             if i != int(tilesPerRow)-1:
                 f.write(" ")
         if j != int(tilesPerColumn)-1:
@@ -41,6 +41,8 @@ name = input("Write its name:")
 
 tileWidth = int(input("Write the tile width:"))
 
+minWhitePixels = int(input("Write the minimum percentage of white pixels (0-100):"))
+
 if (x=='i'):
     graphic = pygame.image.load(name)
 
@@ -49,7 +51,7 @@ if (x=='i'):
     tilesPerColumn = height/tileWidth
     tilesPerRow = width/tileWidth
     
-    tileMap = GenerateTileMap(graphic,tileWidth,tilesPerRow,tilesPerColumn)
+    tileMap = GenerateTileMap(graphic,tileWidth,tilesPerRow,tilesPerColumn,minWhitePixels)
     splitName = os.path.splitext(name)
     outputName=name.replace(splitName[1], "tilemap.txt")
     SaveTileMap(tileMap,outputName,tilesPerRow,tilesPerColumn)
@@ -66,7 +68,7 @@ else: #probar que vaya con carpetas
         tilesPerColumn = height/tileWidth
         tilesPerRow = width/tileWidth
         
-        tileMap = GenerateTileMap(graphic,tileWidth,tilesPerRow,tilesPerColumn)
+        tileMap = GenerateTileMap(graphic,tileWidth,tilesPerRow,tilesPerColumn,minWhitePixels)
         
         index=filePath.rfind("\\")
         fileName=filePath[index+1:len(filePath)]

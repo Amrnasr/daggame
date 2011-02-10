@@ -1,10 +1,14 @@
 package com.game.ViewData;
 
+import com.game.Camera;
 import com.game.R;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
@@ -20,9 +24,19 @@ public class MapsImageAdapter extends BaseAdapter {
 	int galleryItemBackground;
 	private Context context;
 	
+	private static Integer[] galleryIDs = {
+        R.drawable.map1gallery,
+        R.drawable.map2gallery,
+        R.drawable.map3gallery,
+        R.drawable.map4gallery,
+        R.drawable.map5gallery,
+        R.drawable.map6gallery,
+        R.drawable.map7gallery,
+        R.drawable.map8gallery,
+        R.drawable.map9gallery
+    };
+	
 	private static Integer[] imageIDs = {
-        R.drawable.samplemap,
-        R.drawable.map_size800_1,
         R.drawable.map1,
         R.drawable.map2,
         R.drawable.map3,
@@ -31,14 +45,10 @@ public class MapsImageAdapter extends BaseAdapter {
         R.drawable.map6,
         R.drawable.map7,
         R.drawable.map8,
-        R.drawable.map9,
-        R.drawable.map10,
-        R.drawable.map11
+        R.drawable.map9
     };
 	
 	private static Integer[] tilemapIDs = {
-        R.raw.samplemaptilemap,
-        R.raw.map_size800_1tilemap,
         R.raw.map1tilemap,
         R.raw.map2tilemap,
         R.raw.map3tilemap,
@@ -47,10 +57,25 @@ public class MapsImageAdapter extends BaseAdapter {
         R.raw.map6tilemap,
         R.raw.map7tilemap,
         R.raw.map8tilemap,
-        R.raw.map9tilemap,
-        R.raw.map10tilemap,
-        R.raw.map11tilemap
+        R.raw.map9tilemap
 	};
+	
+	private static Integer[] tilemapIDsLowDpi = {
+        R.raw.map1tilemaplowdpi,
+        R.raw.map2tilemaplowdpi,
+        R.raw.map3tilemaplowdpi,
+        R.raw.map4tilemaplowdpi,
+        R.raw.map5tilemaplowdpi,
+        R.raw.map6tilemaplowdpi,
+        R.raw.map7tilemaplowdpi,
+        R.raw.map8tilemaplowdpi,
+        R.raw.map9tilemaplowdpi
+	};
+	
+	/**
+	 * Screen density expressed as dots-per-inch.
+	 */
+	private static int densityDpi;
 
 	/**
 	 * Initializes the adapter
@@ -62,6 +87,13 @@ public class MapsImageAdapter extends BaseAdapter {
         galleryItemBackground = a.getResourceId(
                 R.styleable.mapsGallery_android_galleryItemBackground, 0);
         a.recycle();
+        
+        //Get screen density 
+        Display display = ((WindowManager) c.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();  
+        DisplayMetrics dMetrics = new DisplayMetrics();
+        
+    	display.getMetrics(dMetrics);
+    	densityDpi = dMetrics.densityDpi;
 	}
 	
 	/**
@@ -89,7 +121,7 @@ public class MapsImageAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ImageView i = new ImageView(context);
 		
-		i.setImageResource(imageIDs[position]);
+		i.setImageResource(galleryIDs[position]);
         i.setLayoutParams(new Gallery.LayoutParams(150, 100));
         i.setScaleType(ImageView.ScaleType.FIT_XY);
         i.setBackgroundResource(galleryItemBackground);
@@ -103,6 +135,9 @@ public class MapsImageAdapter extends BaseAdapter {
 	}
 	
 	public static int getTilemapID(int position){
+		if (densityDpi == DisplayMetrics.DENSITY_LOW){
+			return tilemapIDsLowDpi[position];
+		}
 		return tilemapIDs[position];
 	}
 
