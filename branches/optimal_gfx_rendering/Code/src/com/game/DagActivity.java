@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -391,7 +392,7 @@ public class DagActivity extends Activity
      */
     private void InitializeCamera()
     {
-    	Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();         
+    	Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();  
         Camera.Get().SetScreenSize(display.getWidth(), display.getHeight());
     }
     
