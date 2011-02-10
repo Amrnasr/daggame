@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 /**
@@ -94,8 +95,8 @@ public class Map {
 		Log.i("Map", "Started constructor");
 		bitmap=BitmapFactory.decodeResource(activity.getResources(), bitmapID);
 
-		tilesPerRow = bitmap.getWidth() / Constants.TileWidth;
-		tilesPerColumn = bitmap.getHeight() / Constants.TileWidth;		
+		tilesPerRow = bitmap.getWidth() / Preferences.Get().tileWidth;
+		tilesPerColumn = bitmap.getHeight() / Preferences.Get().tileWidth;		
 		
 		Log.i("Map", "Tiles: " + tilesPerRow + ", " + tilesPerColumn);
 		
@@ -340,7 +341,7 @@ public class Map {
 	 */
 	public Tile AtWorld(int x, int y)
 	{
-		return AtTile(x/Constants.TileWidth, y/Constants.TileWidth);
+		return AtTile(x/Preferences.Get().tileWidth, y/Preferences.Get().tileWidth);
 	}
 	
 	/**
@@ -524,8 +525,8 @@ public class Map {
             {
             	for(int x = 0; x < tilesPerRow; x++)
             	{
-            		vertexBuffer.put(i++, x*Constants.TileWidth);
-            		vertexBuffer.put(i++, y*Constants.TileWidth);
+            		vertexBuffer.put(i++, x*Preferences.Get().tileWidth);
+            		vertexBuffer.put(i++, y*Preferences.Get().tileWidth);
             		vertexBuffer.put(i++, 0);
             	}
             }
@@ -560,7 +561,7 @@ public class Map {
 	public synchronized void SetColor(Vec2 realPos, float r, float g, float b, float a)
 	{
 		// Get index
-		final int index = (int) ((realPos.Y()/Constants.TileWidth)*this.tilesPerRow + realPos.X()/Constants.TileWidth);
+		final int index = (int) ((realPos.Y()/Preferences.Get().tileWidth)*this.tilesPerRow + realPos.X()/Preferences.Get().tileWidth);
 		final int colorIndex = index * 4;
 		
 		this.colorBuffer.put(colorIndex, r);

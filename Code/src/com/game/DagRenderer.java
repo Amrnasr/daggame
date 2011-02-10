@@ -16,6 +16,7 @@ import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.game.InputDevice.JoystickInputDevice;
@@ -577,13 +578,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		Vector<Vec3> combatPosVector = map.getCombatPosVector();
 		
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, this.combatTextureId);
-		
+				
 		for(int i = 0; i < combatPosVector.size(); i++)
 		{
 			Vec3 curCombatPos = combatPosVector.elementAt(i);
 			if(curCombatPos.Z() >= Constants.CombatEffectImgNum) continue;
 				
-			gl.glTranslatef((float) curCombatPos.X(), (float) curCombatPos.Y() - Constants.TileWidth, 0.3f);
+			gl.glTranslatef((float) curCombatPos.X(), (float) curCombatPos.Y() - Preferences.Get().tileWidth, 0.3f);
 			
 			//Set the vertices
 			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.vertexCombatBuffer);
@@ -594,7 +595,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			//Draw the bitmap
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, 4);
 			
-			gl.glTranslatef((float) -curCombatPos.X(), (float) -curCombatPos.Y() + Constants.TileWidth, -0.3f);
+			gl.glTranslatef((float) -curCombatPos.X(), (float) -curCombatPos.Y() + Preferences.Get().tileWidth, -0.3f);
 			curCombatPos.SetZ(curCombatPos.Z()+1);
 		}
 		
@@ -1045,9 +1046,9 @@ public class DagRenderer implements GLSurfaceView.Renderer
 				0f,0f,1.0f};
 		Log.i("DagRenderer","Map width: " + Preferences.Get().mapWidth + " height: " + Preferences.Get().mapHeight);
 		float textureArray[] = {1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
-		float VertexCombatArray[] = {Constants.TileWidth,Constants.TileWidth,1.0f,
-				0f,Constants.TileWidth,1.0f,
-				Constants.TileWidth,0f,1.0f,
+		float VertexCombatArray[] = {Preferences.Get().tileWidth,Preferences.Get().tileWidth,1.0f,
+				0f,Preferences.Get().tileWidth,1.0f,
+				Preferences.Get().tileWidth,0f,1.0f,
 				0f,0f,1.0f};
 		
 		//TODO: make this work for any number of images
@@ -1074,8 +1075,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	private void LoadTileMap(Vector<Tile> tilemap)
 	{
 		//Store the tile map and its dimensions in pixels
-		int rowTiles = Preferences.Get().mapWidth/Constants.TileWidth;
-		int columnTiles = Preferences.Get().mapHeight/Constants.TileWidth;
+		int rowTiles = Preferences.Get().mapWidth/Preferences.Get().tileWidth;
+		int columnTiles = Preferences.Get().mapHeight/Preferences.Get().tileWidth;
 		
 		//Initialize the vertex array and other auxiliary variables
 		float[] floatArray= new float[rowTiles*columnTiles*6*3];        		
@@ -1088,28 +1089,28 @@ public class DagRenderer implements GLSurfaceView.Renderer
 			for(int i = 0; i < rowTiles; i++){			
 				tile = it.next();
 				if(tile.GetMaxCapacity() > 0){
-					floatArray[this.tileMapBufferLength] = i*Constants.TileWidth; 
-					floatArray[this.tileMapBufferLength+1] = j*Constants.TileWidth;
+					floatArray[this.tileMapBufferLength] = i*Preferences.Get().tileWidth; 
+					floatArray[this.tileMapBufferLength+1] = j*Preferences.Get().tileWidth;
 					floatArray[this.tileMapBufferLength+2] = 0.0f; 
 					
-					floatArray[this.tileMapBufferLength+3] = i*Constants.TileWidth+Constants.TileWidth; 
-					floatArray[this.tileMapBufferLength+4] = j*Constants.TileWidth;
+					floatArray[this.tileMapBufferLength+3] = i*Preferences.Get().tileWidth+Preferences.Get().tileWidth; 
+					floatArray[this.tileMapBufferLength+4] = j*Preferences.Get().tileWidth;
 					floatArray[this.tileMapBufferLength+5] = 0.0f; 
 					
-					floatArray[this.tileMapBufferLength+6] = i*Constants.TileWidth; 
-					floatArray[this.tileMapBufferLength+7] = j*Constants.TileWidth+Constants.TileWidth;
+					floatArray[this.tileMapBufferLength+6] = i*Preferences.Get().tileWidth; 
+					floatArray[this.tileMapBufferLength+7] = j*Preferences.Get().tileWidth+Preferences.Get().tileWidth;
 					floatArray[this.tileMapBufferLength+8] = 0.0f; 
 					
-					floatArray[this.tileMapBufferLength+9] = i*Constants.TileWidth+Constants.TileWidth; 
-					floatArray[this.tileMapBufferLength+10] = j*Constants.TileWidth;
+					floatArray[this.tileMapBufferLength+9] = i*Preferences.Get().tileWidth+Preferences.Get().tileWidth; 
+					floatArray[this.tileMapBufferLength+10] = j*Preferences.Get().tileWidth;
 					floatArray[this.tileMapBufferLength+11] = 0.0f; 
 					
-					floatArray[this.tileMapBufferLength+12] = i*Constants.TileWidth+Constants.TileWidth; 
-					floatArray[this.tileMapBufferLength+13] = j*Constants.TileWidth+Constants.TileWidth;
+					floatArray[this.tileMapBufferLength+12] = i*Preferences.Get().tileWidth+Preferences.Get().tileWidth; 
+					floatArray[this.tileMapBufferLength+13] = j*Preferences.Get().tileWidth+Preferences.Get().tileWidth;
 					floatArray[this.tileMapBufferLength+14] = 0.0f; 
 					
-					floatArray[this.tileMapBufferLength+15] = i*Constants.TileWidth; 
-					floatArray[this.tileMapBufferLength+16] = j*Constants.TileWidth+Constants.TileWidth;
+					floatArray[this.tileMapBufferLength+15] = i*Preferences.Get().tileWidth; 
+					floatArray[this.tileMapBufferLength+16] = j*Preferences.Get().tileWidth+Preferences.Get().tileWidth;
 					floatArray[this.tileMapBufferLength+17] = 0.0f; 
 					
 					this.tileMapBufferLength += 18;
