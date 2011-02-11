@@ -2,6 +2,7 @@ package com.game.AI;
 
 
 import android.graphics.Rect;
+import android.util.Log;
 
 /**
  * This task waits until the Cursor is near the destination.
@@ -23,7 +24,7 @@ public class WaitTillNearDestinationTask extends LeafTask
 	 */
 	private static final float TIMEOUT = 4000;
 	
-	private float initialTime;
+	private long initialTime;
 	
 	/**
 	 * Rectangle defining the end area
@@ -55,7 +56,7 @@ public class WaitTillNearDestinationTask extends LeafTask
 	@Override
 	public boolean CheckConditions() 
 	{
-		LogTask("Checking conditions");
+		LogTask("Checking conditions " + (bb.moveDirection != null));
 		return bb.moveDirection != null;
 	}
 
@@ -75,6 +76,7 @@ public class WaitTillNearDestinationTask extends LeafTask
 		}
 		
 		// Check for a timeout of the wait
+		Log.i("WaitTillNearDestination", "" + System.currentTimeMillis() + " - " + this.initialTime + " ( " + (System.currentTimeMillis() - this.initialTime) + " ) "+" >? " + TIMEOUT + " = " + (System.currentTimeMillis() - this.initialTime > TIMEOUT));
 		if(System.currentTimeMillis() - this.initialTime > TIMEOUT)
 		{
 			control.FinishWithFailure();

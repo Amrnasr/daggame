@@ -60,6 +60,11 @@ public class Blackboard
 	public Player player;
 	
 	/**
+	 * Data for the AStar search.
+	 */
+	public AStarData aStarData;
+	
+	/**
 	 * Creates a new instance of the Blackboard class
 	 */
 	public Blackboard()

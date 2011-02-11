@@ -27,32 +27,6 @@ import android.util.Log;
 * Class that represents maps in the game. Maps are owned and controlled by the 
 * map manager.
 * 
-* Safe-sync method:
-* 
-* class World {
-  private ArrayList<Entity> entityList;
-
-  /** This method is called by Update thread. 
-  public void update(int timeMs) {
-     for( Entity e : entityList ) {
-        synchronize(e) {
-           e.update(timeMs);
-           e.notifyAll();
-        }
-     }
-  }
-
-  /** This method is called by render thread 
-  public void render(GL10 gl, int timeMs) {
-     for( Entity e : entityList ) {
-        synchronize(e) {
-           e.render(gl, timeMs);
-           e.notifyAll();
-        }
-     }
-  }
-}
-* 
 * @author NeoM
 *
 */
