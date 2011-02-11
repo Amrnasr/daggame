@@ -2,13 +2,18 @@ package com.game.InputDevice;
 
 import com.game.Player;
 
+import com.game.AI.AStarSearchTask;
+import com.game.AI.AStarSplitDecorator;
 import com.game.AI.Blackboard;
 import com.game.AI.CalculateCirclePathTask;
 import com.game.AI.CalculateFleeDestinationTask;
 import com.game.AI.CalculateFleePathTask;
 import com.game.AI.ChanceDecorator;
+import com.game.AI.CheckIfNeedToHuntTask;
 import com.game.AI.DefendDecorator;
+import com.game.AI.FindEnemyDensityTask;
 import com.game.AI.GetClosestEnemyCursorTask;
+import com.game.AI.GetClosestOwnedTileTask;
 import com.game.AI.IteratePathDecorator;
 import com.game.AI.ParentTaskController;
 import com.game.AI.MoveToDestinationTask;
@@ -75,6 +80,24 @@ public class AIInputDevice extends InputDevice
 		// Attack
 		Task attack = new Selector(blackboard, "Attack");
 		
+		/// Hunt Attack
+		Task hunt = new Sequence(blackboard, "Hunt sequence");
+		hunt = new ChanceDecorator(blackboard, hunt, "Hunt sequence", 40);
+		((ParentTaskController)hunt.GetControl()).Add(new CheckIfNeedToHuntTask(blackboard, "CheckIfNeedToHunt"));
+		((ParentTaskController)hunt.GetControl()).Add(new GetClosestOwnedTileTask(blackboard, "GetClosestOwnedTile"));
+		((ParentTaskController)hunt.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
+		((ParentTaskController)hunt.GetControl()).Add(new FindEnemyDensityTask(blackboard, "FindEnemyDensity"));
+		Task aStarSearch = new AStarSearchTask(blackboard, "AStarSearch", 500);
+		aStarSearch = new AStarSplitDecorator(blackboard, aStarSearch, "AStarSearch");
+		((ParentTaskController)hunt.GetControl()).Add( aStarSearch );
+		Task huntPathSequence = new Sequence(blackboard, "Follow next tile sequence");
+		huntPathSequence = new IteratePathDecorator(blackboard, huntPathSequence, "Follow next tile sequence");
+		((ParentTaskController)huntPathSequence.GetControl()).Add(new SetPathTileAsDestination(blackboard, "SetPathTileAsDestination"));
+		((ParentTaskController)huntPathSequence.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
+		((ParentTaskController)huntPathSequence.GetControl()).Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestination"));
+		((ParentTaskController)hunt.GetControl()).Add(huntPathSequence);
+		
+		
 		/// Circle Chase Attack
 		Task circleChase = new Sequence(blackboard, "Circle chase sequence");
 		circleChase = new ChanceDecorator(blackboard, circleChase, "Circle chase sequence", 60);
@@ -95,7 +118,8 @@ public class AIInputDevice extends InputDevice
 		((ParentTaskController)straightChase.GetControl()).Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestination"));
 		
 		// Add to attack
-		((ParentTaskController)attack.GetControl()).Add(circleChase);
+		((ParentTaskController)attack.GetControl()).Add(hunt);
+		//((ParentTaskController)attack.GetControl()).Add(circleChase);
 		((ParentTaskController)attack.GetControl()).Add(straightChase);
 		
 		// Defend

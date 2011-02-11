@@ -54,6 +54,6 @@ public class Constants
 	/**
 	 * To show the profiler onscreen
 	 */
-	public static final boolean OnScreenProfiler = false;
+	public static final boolean OnScreenProfiler = true;
 
 }
