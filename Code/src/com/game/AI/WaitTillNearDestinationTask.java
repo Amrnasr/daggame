@@ -22,7 +22,7 @@ public class WaitTillNearDestinationTask extends LeafTask
 	/**
 	 * Time to wait till evaluating again
 	 */
-	private static final float TIMEOUT = 4000;
+	private static final float TIMEOUT = 3000;
 	
 	private long initialTime;
 	
@@ -66,7 +66,7 @@ public class WaitTillNearDestinationTask extends LeafTask
 	@Override
 	public void DoAction() 
 	{
-		LogTask("Doing action");
+		LogTask("Doing action : " + bb.path.size());
 		
 		if( rect.contains(
 				(int)(bb.player.GetCursor().GetPosition().X()),
@@ -76,9 +76,9 @@ public class WaitTillNearDestinationTask extends LeafTask
 		}
 		
 		// Check for a timeout of the wait
-		Log.i("WaitTillNearDestination", "" + System.currentTimeMillis() + " - " + this.initialTime + " ( " + (System.currentTimeMillis() - this.initialTime) + " ) "+" >? " + TIMEOUT + " = " + (System.currentTimeMillis() - this.initialTime > TIMEOUT));
-		if(System.currentTimeMillis() - this.initialTime > TIMEOUT)
+		else if(System.currentTimeMillis() - this.initialTime > TIMEOUT)
 		{
+			Log.i("WaitTillNearDestination", "" + System.currentTimeMillis() + " - " + this.initialTime + " ( " + (System.currentTimeMillis() - this.initialTime) + " ) "+" >? " + TIMEOUT + " = " + (System.currentTimeMillis() - this.initialTime > TIMEOUT));
 			control.FinishWithFailure();
 		}
 	}

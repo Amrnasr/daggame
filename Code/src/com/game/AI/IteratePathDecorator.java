@@ -37,7 +37,7 @@ public class IteratePathDecorator extends TaskDecorator
 	public void DoAction() 
 	{
 		this.task.DoAction();
-		if(this.task.GetControl().Finished() && !bb.path.isEmpty())
+		if(this.task.GetControl().Finished() && this.task.GetControl().Succeeded() && !bb.path.isEmpty())
 		{
 			this.task.GetControl().Reset();
 		}

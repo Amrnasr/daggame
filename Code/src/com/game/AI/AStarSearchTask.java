@@ -48,6 +48,7 @@ public class AStarSearchTask extends LeafTask
 			{
 				PopulatePath();
 				bb.aStarData.done = true;
+				LogTask("Created path of " + bb.path.size() + " steps");
 				control.FinishWithSuccess();
 				return;
 			}
@@ -117,6 +118,8 @@ public class AStarSearchTask extends LeafTask
 		bb.aStarData.gCosts[index] = 0;
 		bb.aStarData.hCosts[index] = ManhatanDistance(index);
 		bb.aStarData.fCosts[index] = bb.aStarData.gCosts[index] + bb.aStarData.hCosts[index];
+		
+		bb.path.clear();
 	}
 	
 	/**
@@ -187,7 +190,7 @@ public class AStarSearchTask extends LeafTask
 		}
 		
 		// Flip it into bb.path
-		bb.path.clear();
+		
 		for(int i = indexes.size()-1; i >= 0; i--)
 		{
 			bb.path.add(Blackboard.map.getTileMap().elementAt(indexes.elementAt(i)));

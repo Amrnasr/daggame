@@ -47,7 +47,7 @@ public class SetPathTileAsDestination extends LeafTask
 	@Override
 	public void DoAction() 
 	{
-		LogTask("Doing action");
+		LogTask("Doing action: Tiles in path: " + bb.path.size());
 		Tile objective = bb.path.firstElement();
 		bb.destination = objective.GetRealPos().GetIntValue();
 		bb.moveDirection = bb.player.GetCursor().GetPosition().GetVectorTo(objective.GetRealPos().GetIntValue());

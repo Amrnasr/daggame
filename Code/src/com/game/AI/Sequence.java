@@ -52,6 +52,7 @@ public class Sequence extends ParentTask
 		int curPos = control.subtasks.indexOf(control.curTask);
 		if( curPos == (control.subtasks.size() - 1))
 		{
+			LogTask("Sequence out of tasks!");
 			control.FinishWithSuccess();
 		}
 		else
@@ -59,6 +60,7 @@ public class Sequence extends ParentTask
 			control.curTask = control.subtasks.elementAt(curPos + 1);
 			if(!control.curTask.CheckConditions())
 			{
+				LogTask("Next subtask didnt pass the conditions check!");
 				control.FinishWithFailure();
 			}
 		}
