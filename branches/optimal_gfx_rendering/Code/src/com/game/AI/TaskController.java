@@ -29,7 +29,7 @@ public class TaskController
 	/**
 	 * Reference to the task we monitor
 	 */
-	private Task task;
+	protected Task task;
 	
 	/**
 	 * Creates a new instance of the TaskController class

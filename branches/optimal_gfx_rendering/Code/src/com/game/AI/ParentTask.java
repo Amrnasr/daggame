@@ -58,7 +58,7 @@ public abstract class ParentTask extends Task
 	@Override
 	public boolean CheckConditions() 
 	{
-		LogTask("Checking conditions");
+		LogTask("Checking conditions: " + (control.subtasks.size() > 0));
 		return control.subtasks.size() > 0;
 	}
 	
@@ -95,25 +95,30 @@ public abstract class ParentTask extends Task
 		if( !control.curTask.GetControl().Started())
 		{
 			// ... and it's not started yet, start it.
+			LogTask("Subtask (" + control.curTask.name + ") start! ");
 			control.curTask.GetControl().SafeStart();
 		}		
 		else if(control.curTask.GetControl().Finished())
 		{
 			// ... and it's finished, end it properly.
+			LogTask("Subtask (" + control.curTask.name + ") finished! ");
 			control.curTask.GetControl().SafeEnd();
 			
 			if(control.curTask.GetControl().Succeeded())
 			{
+				LogTask("Subtask (" + control.curTask.name + ") suceeded! ");
 				this.ChildSucceeded();
 			}
-			if(control.curTask.GetControl().Failed())
+			else if(control.curTask.GetControl().Failed())
 			{
+				LogTask("Subtask (" + control.curTask.name + ") failed! ");
 				this.ChildFailed();
 			}
 		}
 		else
 		{		
 			// ... and it's ready, update it.		
+			LogTask("Subtask (" + control.curTask.name + ") update! ");
 			control.curTask.DoAction();
 		}	
 	}

@@ -183,7 +183,7 @@ public class Cursor
 		StartRotating();
 		this.distance = direction.Length();
 		
-		this.direction  = direction;
+		this.direction  = direction.GetCopy();
 		this.direction.Normalize();		
 	}
 	

@@ -56,8 +56,8 @@ public class GetClosestOwnedTileTask extends LeafTask {
 		else
 		{
 			bb.aStarData.initialTile = closestTile;
-			bb.destination = closestTile.GetRealPos();
-			bb.moveDirection = new Vec2(vecToClosestTile.X() + cursorPos.X(),vecToClosestTile.Y() + cursorPos.Y());
+			bb.destination = closestTile.GetRealPos().GetCopy();
+			bb.moveDirection = new Vec2(bb.destination.X() - cursorPos.X(),bb.destination.Y() - cursorPos.Y());
 			control.FinishWithSuccess();
 		}
 	}

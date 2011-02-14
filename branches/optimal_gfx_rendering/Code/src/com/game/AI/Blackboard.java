@@ -73,4 +73,75 @@ public class Blackboard
 		this.destination = new Vec2();
 		this.path = new Vector<Tile>();
 	}
+	
+	public void Log()
+	{
+		android.util.Log.i("Blackboard", "+-+-+-+-+-+-+-+-+-+-+");
+		
+		if(path != null)
+		{
+			String tileString = "";
+			for(int i  = 0; (i < 4) && (i < path.size()); i++ )
+			{
+				tileString += (" (" + path.elementAt(i).GetRealPos().X() + ", " + path.elementAt(i).GetRealPos().Y() + ") ");
+			}
+			android.util.Log.i("Blackboard", "Path {tiles: " + path.size() + "} :: {" + tileString + "}");
+		}
+		else
+		{
+			android.util.Log.i("Blackboard", "Path: NULL");
+		}
+		
+		if(player != null)
+		{
+			String playerString = "Player: {ID: " + player.GetID() + "} :: {Cursor: ";
+			if(player.GetCursor() != null)
+			{
+				playerString += ("" + player.GetCursor().GetPosition().X() + ", " + player.GetCursor().GetPosition().Y() + "}");
+			}
+			else
+			{
+				playerString += "NULL }";
+			}
+			android.util.Log.i("Blackboard", playerString);
+		}
+		
+		if(destination != null)
+		{
+			destination.Print("Blackboard", "Destination Vec2");
+		}
+		else
+		{
+			android.util.Log.i("Blackboard", "Destination Vec2: NULL");
+		}
+		
+		if(moveDirection != null)
+		{
+			moveDirection.Print("Blackboard", "MoveDirecti Vec2");
+		}
+		else
+		{
+			android.util.Log.i("Blackboard", "MoveDirecti Vec2: NULL");
+		}
+		
+		if(aStarData != null)
+		{
+			String aStarString = "A*: ";
+			Tile tile = aStarData.initialTile;
+			if(tile != null)
+			{
+				aStarString += ("{Start: " + tile.GetRealPos().X() + ", " + tile.GetRealPos().Y() + " } :: ");
+			}
+			tile = aStarData.destinationTile;
+			if(tile != null)
+			{
+				aStarString += ("{End: " + tile.GetRealPos().X() + ", " + tile.GetRealPos().Y() + " } ");
+			}
+			android.util.Log.i("Blackboard", aStarString);
+		}
+		
+		android.util.Log.i("Blackboard", "");
+		android.util.Log.i("Blackboard", "+-+-+-+-+-+-+-+-+-+-+");
+	}
+	
 }

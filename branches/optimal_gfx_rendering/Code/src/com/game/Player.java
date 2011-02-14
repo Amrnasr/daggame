@@ -385,9 +385,12 @@ public class Player
 	 */
 	public InputDevice GetInputDevice() { return this.inputDevice; }
 
+	/**
+	 * Gets the last time the amount of density had any changes
+	 * @return The last time the ammount of density had any changes.
+	 */
 	public long LastTimeDensityChanged() 
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return this.lastTimeDensityUpdated;
 	}
 }

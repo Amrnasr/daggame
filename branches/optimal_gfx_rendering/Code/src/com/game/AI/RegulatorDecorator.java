@@ -1,5 +1,7 @@
 package com.game.AI;
 
+import android.util.Log;
+
 import com.game.Regulator;
 
 /**
@@ -63,6 +65,9 @@ public class RegulatorDecorator extends TaskDecorator
 	{
 		if(this.regulator.IsReady())
 		{
+			Log.i("____________", "__________________________________________________");
+			Log.i("DDDDDDDDDDDD", "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDd");
+			bb.Log();
 			task.DoAction();
 		}
 	}

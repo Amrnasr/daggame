@@ -23,7 +23,7 @@ public abstract class Task
 	/**
 	 * Specific subclass name, for debugging
 	 */
-	protected String name;
+	public String name;
 	
 	/**
 	 * Creates a new instance of the Task class

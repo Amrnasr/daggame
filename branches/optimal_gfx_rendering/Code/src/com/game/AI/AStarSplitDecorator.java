@@ -21,7 +21,7 @@ public class AStarSplitDecorator extends TaskDecorator
 	public void DoAction() 
 	{
 		this.task.DoAction();
-		if(this.task.GetControl().Finished() && !bb.aStarData.done)
+		if(this.task.GetControl().Finished() && this.task.GetControl().Succeeded() && !bb.aStarData.done)
 		{
 			this.task.GetControl().Reset();
 		}

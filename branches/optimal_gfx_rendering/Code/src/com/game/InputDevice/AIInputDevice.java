@@ -1,5 +1,7 @@
 package com.game.InputDevice;
 
+import android.util.Log;
+
 import com.game.Player;
 
 import com.game.AI.AStarSearchTask;
@@ -24,6 +26,7 @@ import com.game.AI.Selector;
 import com.game.AI.Sequence;
 import com.game.AI.SetEnemyCursorAsDestinationTask;
 import com.game.AI.SetPathTileAsDestination;
+import com.game.AI.StopIfAttackedDecorator;
 import com.game.AI.Task;
 import com.game.AI.WaitTillNearDestinationTask;
 import com.game.Scenes.PlayScene;
@@ -87,12 +90,15 @@ public class AIInputDevice extends InputDevice
 		((ParentTaskController)hunt.GetControl()).Add(new GetClosestOwnedTileTask(blackboard, "GetClosestOwnedTile"));
 		((ParentTaskController)hunt.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
 		((ParentTaskController)hunt.GetControl()).Add(new FindEnemyDensityTask(blackboard, "FindEnemyDensity"));
-		Task aStarSearch = new AStarSearchTask(blackboard, "AStarSearch", 500);
-		aStarSearch = new AStarSplitDecorator(blackboard, aStarSearch, "AStarSearch");
+		Task aStarSearch = new AStarSearchTask(blackboard, "AStarSearch", 100);
+		aStarSearch = new AStarSplitDecorator(blackboard, aStarSearch, "AStarSearch {SplitDec}");
+		aStarSearch = new StopIfAttackedDecorator(blackboard, aStarSearch, "AStarSearch {StopIfAttack}");
 		((ParentTaskController)hunt.GetControl()).Add( aStarSearch );
 		Task huntPathSequence = new Sequence(blackboard, "Follow next tile sequence");
 		huntPathSequence = new IteratePathDecorator(blackboard, huntPathSequence, "Follow next tile sequence");
-		((ParentTaskController)huntPathSequence.GetControl()).Add(new SetPathTileAsDestination(blackboard, "SetPathTileAsDestination"));
+		Task huntSetPathTileAsDestination = new SetPathTileAsDestination(blackboard, "SetPathTileAsDestination");
+		huntSetPathTileAsDestination = new StopIfAttackedDecorator(blackboard, huntSetPathTileAsDestination, "SetPathTileAsDestination {StopIfAttack}" );
+		((ParentTaskController)huntPathSequence.GetControl()).Add(huntSetPathTileAsDestination);
 		((ParentTaskController)huntPathSequence.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
 		((ParentTaskController)huntPathSequence.GetControl()).Add(new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestination"));
 		((ParentTaskController)hunt.GetControl()).Add(huntPathSequence);
@@ -147,7 +153,7 @@ public class AIInputDevice extends InputDevice
 		((ParentTaskController)defend.GetControl()).Add(straightFlee);
 		
 		// Add to planner
-		((ParentTaskController)this.planner.GetControl()).Add(powerUpSearch);
+		//((ParentTaskController)this.planner.GetControl()).Add(powerUpSearch);
 		((ParentTaskController)this.planner.GetControl()).Add(defend);
 		((ParentTaskController)this.planner.GetControl()).Add(attack);
 		
@@ -182,6 +188,7 @@ public class AIInputDevice extends InputDevice
 			// This AI has lost, nothing else to do here.
 			return;
 		}
+		
 		
 		this.planner.DoAction();
 	}
