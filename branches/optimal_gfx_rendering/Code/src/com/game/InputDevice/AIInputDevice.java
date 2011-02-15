@@ -26,6 +26,7 @@ import com.game.AI.Selector;
 import com.game.AI.Sequence;
 import com.game.AI.SetEnemyCursorAsDestinationTask;
 import com.game.AI.SetPathTileAsDestination;
+import com.game.AI.SimplifyPathTask;
 import com.game.AI.StopIfAttackedDecorator;
 import com.game.AI.Task;
 import com.game.AI.WaitTillNearDestinationTask;
@@ -71,7 +72,7 @@ public class AIInputDevice extends InputDevice
 		// Planner
 		this.planner = new Selector(blackboard, "Planner");
 		this.planner = new ResetDecorator(blackboard, this.planner, "Planner");
-		this.planner = new RegulatorDecorator(blackboard, this.planner, "Planner", 0.1f);
+		this.planner = new RegulatorDecorator(blackboard, this.planner, "Planner", 1f);
 		
 		// PowerUp search
 		Task powerUpSearch = new Sequence(blackboard, "Get PowerUp sequence");
@@ -94,6 +95,7 @@ public class AIInputDevice extends InputDevice
 		aStarSearch = new AStarSplitDecorator(blackboard, aStarSearch, "AStarSearch {SplitDec}");
 		aStarSearch = new StopIfAttackedDecorator(blackboard, aStarSearch, "AStarSearch {StopIfAttack}");
 		((ParentTaskController)hunt.GetControl()).Add( aStarSearch );
+		((ParentTaskController)hunt.GetControl()).Add(new SimplifyPathTask(blackboard, "SimplifyPathTask"));
 		Task huntPathSequence = new Sequence(blackboard, "Follow next tile sequence");
 		huntPathSequence = new IteratePathDecorator(blackboard, huntPathSequence, "Follow next tile sequence");
 		Task huntSetPathTileAsDestination = new SetPathTileAsDestination(blackboard, "SetPathTileAsDestination");

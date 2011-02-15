@@ -81,9 +81,9 @@ public class Blackboard
 		if(path != null)
 		{
 			String tileString = "";
-			for(int i  = 0; (i < 4) && (i < path.size()); i++ )
+			for(int i  = 0;  (i < path.size()); i++ )
 			{
-				tileString += (" (" + path.elementAt(i).GetRealPos().X() + ", " + path.elementAt(i).GetRealPos().Y() + ") ");
+				tileString += (" (" + path.elementAt(i).GetPos().X() + ", " + path.elementAt(i).GetPos().Y() + ") ->");
 			}
 			android.util.Log.i("Blackboard", "Path {tiles: " + path.size() + "} :: {" + tileString + "}");
 		}
