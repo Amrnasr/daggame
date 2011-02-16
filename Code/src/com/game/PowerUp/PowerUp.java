@@ -127,6 +127,7 @@ public  abstract class PowerUp
 		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.STOP_DISPLAYING_POWERUP, this);
 		
 		ApplyEffect();
+		
 	}
 	
 	/**
@@ -230,4 +231,5 @@ public  abstract class PowerUp
 	 * @return the duration
 	 */
 	public float GetDuration() { return this.duration; }
+	
 }

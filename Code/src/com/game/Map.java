@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -49,6 +50,11 @@ public class Map {
 	 * How many tiles in a vertical line
 	 */
 	private int tilesPerColumn;
+	
+	/**
+	 * PowerUp rendering time constant
+	 */
+	private final static long powerUpRenderingTime = 2000;
 	
 	/// Drawing data
 	private CharBuffer indexBuffer;
@@ -218,7 +224,7 @@ public class Map {
 				{
 					int colorIndex = player.GetColorIndex();
 					float density = (tile.GetDensityFrom(player.GetID()) * 0.25f / tile.GetMaxCapacity());
-					this.UpdateTileToColor(colorIndex, density, tile.GetRealPos());
+					this.UpdateTileToColor(colorIndex, density, tile.GetRealPos(),player);
 				}
 				
 				tile.FlagAsColorUpdated();
@@ -226,11 +232,20 @@ public class Map {
 		}
 	}
 	
-	private void UpdateTileToColor(int colorIndex, float density, Vec2 realPos)
+	/**
+	 * Updates the color of a particular tile to the new color
+	 * 
+	 * @param colorIndex Index of the new color
+	 * @param density Player's density in that tile
+	 * @param realPos Coordinates of the tile
+	 * @param player Player owner of the density represented by the color
+	 */
+	private void UpdateTileToColor(int colorIndex, float density, Vec2 realPos, Player player)
 	{
 		float r = 0, g = 0, b = 0, a = 0;
 		if(density > 0f)
 		{
+			//set the base color of the density
 			switch(colorIndex)
 			{
 				case 0: //Brown
@@ -276,7 +291,63 @@ public class Map {
 			b = (b > 0f) ? (0.75f - b) : 0f;
 			a = (r+g+b > 0f) ? 0.75f + a : 0f;
 			
-			//Log.i("Map", "r: " + r + " g: " + g + " b: " + b + " a: " + a );
+			
+			float powerUpR = 0, powerUpG = 0, powerUpB = 0, powerUpA = 0;
+			boolean renderSlowPowerUp = false; // whether the slow PowerUp is being rendered or not
+			long powerUpRenderingStartTimeMillis = player.GetPowerUpRenderingStartTimeMillis();
+			
+			//if the player has any PowerUps applied
+			if(powerUpRenderingStartTimeMillis > 0){	
+				//if the time for rendering that PowerUp has passed
+				if(SystemClock.elapsedRealtime() - powerUpRenderingStartTimeMillis >= powerUpRenderingTime){
+					//if that was the last PowerUp
+					if(player.GetPowerUps().size() <= player.GetPowerUpBeingRenderedIndex()+1){
+						renderSlowPowerUp = player.IsSlowed();
+
+						player.SetPowerUpBeingRenderedIndex(0);
+					}
+					else{
+						player.SetPowerUpBeingRenderedIndex(player.GetPowerUpBeingRenderedIndex()+1);
+						
+						renderSlowPowerUp = false;
+					}
+				}
+				
+				powerUpRenderingStartTimeMillis = player.GetPowerUpRenderingStartTimeMillis();
+				
+				//calculate the color of PowerUp
+				//if the slow PowerUp is being rendered
+				if(renderSlowPowerUp){
+					powerUpR = 0.99f; 
+					powerUpG = 0.99f; 
+					powerUpB = 0.99f;
+				}
+				else if(player.GetPowerUps().size() > player.GetPowerUpBeingRenderedIndex()){
+					PowerUp curPowerUp = player.GetPowerUps().elementAt(player.GetPowerUpBeingRenderedIndex());
+
+					switch(curPowerUp.GetType())
+					{
+						case 0: // SpeedPowerUp
+							powerUpR = 0.1f; 
+							powerUpG = 0.1f; 
+							powerUpB = 0.1f;
+							break;
+						case 1: //ExtraDensityPowerUp
+							r = 1f; 
+							g = 1f; 
+							b = 0f;
+							a = 1f;
+							break;
+					}	
+				}
+				//calculate the alpha of the PowerUp
+				powerUpA = Math.abs(SystemClock.elapsedRealtime() - (powerUpRenderingStartTimeMillis + powerUpRenderingTime/2))  / (float) (powerUpRenderingTime/2);
+			}
+			//blend the color of the PowerUp with the color of the player
+			r = powerUpA * powerUpR + (1 - powerUpA) * r;
+			g = powerUpA * powerUpG + (1 - powerUpA) * g;
+			b = powerUpA * powerUpB + (1 - powerUpA) * b;
+			
 			SetColor(realPos, r, g, b, a);
 		}
 	}
