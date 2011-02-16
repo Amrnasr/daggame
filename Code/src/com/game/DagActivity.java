@@ -100,7 +100,23 @@ public class DagActivity extends Activity
         super.onCreate(savedInstanceState);
         Log.i("DagActivity", "======== onCreate");
 
-        // I don't like it, but ORDER IS IMPORTANT! So don't change the order.
+        
+    }
+    
+    /**
+     * Called when the activity starts.
+     * Should have all we put onCreate, but
+     * @see onStop hackhack
+     */
+    @Override protected void onStart()
+    {
+    	super.onStart();
+    	
+    	
+    	
+    	Log.i("DagActivity", "======== onStart");
+    	
+    	// I don't like it, but ORDER IS IMPORTANT! So don't change the order.
         // (Because the view uses the logic handler objects.)
         
         // Load stored game preferences
@@ -120,18 +136,6 @@ public class DagActivity extends Activity
         // Start logic and set view
         gameLogic.start();
     	setContentView(gameView);
-    }
-    
-    /**
-     * Called when the activity starts.
-     * Should have all we put onCreate, but
-     * @see onStop hackhack
-     */
-    @Override protected void onStart()
-    {
-    	super.onStart();
-    	
-    	Log.i("DagActivity", "======== onStart");
     }
     
     /**

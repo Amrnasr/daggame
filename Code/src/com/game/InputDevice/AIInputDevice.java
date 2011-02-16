@@ -75,6 +75,14 @@ public class AIInputDevice extends InputDevice
 		this.planner = new ResetDecorator(blackboard, this.planner, "Planner");
 		this.planner = new RegulatorDecorator(blackboard, this.planner, "Planner", 0.1f);
 		
+		// Random move
+		Task randomMove = new Sequence(blackboard, "Random move");
+		randomMove = new ChanceDecorator(blackboard, randomMove, "Random move", 30);
+		((ParentTaskController)randomMove.GetControl()).Add( new SelectRandomMovePos(blackboard, "SelectRandomMovePos") );
+		((ParentTaskController)randomMove.GetControl()).Add( new MoveToDestinationTask(blackboard, "MoveToDestinationTask") );
+		((ParentTaskController)randomMove.GetControl()).Add( new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestinationTask"));
+
+		
 		// PowerUp search
 		Task powerUpSearch = new Sequence(blackboard, "Get PowerUp sequence");
 		powerUpSearch = new ChanceDecorator(blackboard, powerUpSearch, "Get PowerUp sequence", 20);
@@ -82,13 +90,7 @@ public class AIInputDevice extends InputDevice
 		((ParentTaskController)powerUpSearch.GetControl()).Add( new MoveToDestinationTask(blackboard, "MoveToDestinationTask") );
 		((ParentTaskController)powerUpSearch.GetControl()).Add( new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestinationTask"));
 		
-		// Random move
-		Task randomMove = new Sequence(blackboard, "Random move");
-		randomMove = new ChanceDecorator(blackboard, randomMove, "Random move", 30);
-		((ParentTaskController)randomMove.GetControl()).Add( new SelectRandomMovePos(blackboard, "SelectRandomMovePos") );
-		((ParentTaskController)randomMove.GetControl()).Add( new MoveToDestinationTask(blackboard, "MoveToDestinationTask") );
-		((ParentTaskController)randomMove.GetControl()).Add( new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestinationTask"));
-		
+				
 		// Attack
 		Task attack = new Selector(blackboard, "Attack");
 		
