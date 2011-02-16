@@ -5,6 +5,7 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Vector;
 
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.game.InputDevice.InputDevice;
@@ -90,6 +91,12 @@ public class Player
 	private float densitySpeed;
 	
 	/**
+	 * The starting speed of the density movement of this player.
+	 * From 0 to 1.
+	 */
+	private float startingDensitySpeed;
+	
+	/**
 	 * List of PowerUps the player has
 	 */
 	private Vector<PowerUp> powerUps;
@@ -99,6 +106,20 @@ public class Player
 	 */
 	private long lastTimeDensityUpdated;
 	
+	/**
+	 * Whether the player is slowed or not
+	 */
+	private boolean isSlowed;
+	
+	/**
+	 * Time when the PowerUp started being rendered
+	 */
+	private long powerUpRenderingStartTimeMillis;
+	
+	/**
+	 * position in the vector of the PowerUp being rendered.
+	 */
+	private int powerUpBeingRenderedIndex;
 	
 	/**
 	 * Creates a new instance of the Player class.
@@ -124,7 +145,7 @@ public class Player
 		tileUpdateRegulator = new Regulator(10);
 		
 		this.initialDensity = 2000 + 200*Preferences.Get().optionsUnitCuantity; 
-		this.densitySpeed = (float) (0.2f + 0.1*Preferences.Get().optionsUnitEatSpeed);
+		this.startingDensitySpeed = this.densitySpeed = (float) (0.2f + 0.1*Preferences.Get().optionsUnitEatSpeed);
 		
 		this.totalDensity = 0;
 		this.previousDensity = initialDensity;
@@ -132,12 +153,16 @@ public class Player
 		
 		// Color
 		this.colorIndex = colorIndex;
+		this.powerUpBeingRenderedIndex = 0;
+		this.powerUpRenderingStartTimeMillis = 0;
 		
 		// PowerUps
 		this.powerUps = new Vector<PowerUp>();
+		this.isSlowed = false;
 		
 		// Density update
 		this.lastTimeDensityUpdated = 0;
+		
 	}
 	
 	/**
@@ -202,6 +227,11 @@ public class Player
 	 */
 	public void LinkPowerUp(PowerUp powerUp)
 	{
+		//if it's the only PowerUp applied set the rendering start time
+		if(this.powerUps.isEmpty() && !IsSlowed()){
+			this.powerUpRenderingStartTimeMillis = SystemClock.elapsedRealtime();
+		}
+		
 		this.powerUps.add(powerUp);
 	}
 	
@@ -212,6 +242,11 @@ public class Player
 	public void UnlinkPowerUp(PowerUp powerUp)
 	{
 		this.powerUps.remove(powerUp);
+		
+		//if there are no PowerUps applied reset the rendering start time
+		if(powerUps.isEmpty() && !IsSlowed()){
+			this.powerUpRenderingStartTimeMillis = 0;
+		}
 	}
 	
 	/**
@@ -340,6 +375,12 @@ public class Player
 	 * @return the color index
 	 */
 	public int GetColorIndex() { return this.colorIndex; }
+	
+	/**
+	 * Gets powerUps of the player.
+	 * @return the powerUps
+	 */
+	public Vector<PowerUp> GetPowerUps() { return powerUps; }
 
 	/**
 	 * Gets a value indicating whether the player is human.
@@ -360,6 +401,34 @@ public class Player
 	public float GetAverageFightRecord() {return this.fightRecord.GetAverage(); }
 	
 	/**
+	 * Gets a value indicating whether the player is slowed.
+	 * @return if is slowed.
+	 */
+	public boolean IsSlowed() { return this.isSlowed; }
+	
+	/**
+	 * Gets the time when the PowerUp started being rendered
+	 * @return time when the PowerUp started being rendered
+	 */
+	public long GetPowerUpRenderingStartTimeMillis() { return this.powerUpRenderingStartTimeMillis; }
+	
+	/**
+	 * Gets the index of the PowerUp being rendered
+	 * @return index of the PowerUp being rendered
+	 */
+	public int GetPowerUpBeingRenderedIndex() { return this.powerUpBeingRenderedIndex; }
+	
+	/**
+	 * Sets the index of the PowerUp being rendered
+	 * @param powerUpBeingRenderedIndex index of the PowerUp being rendered
+	 */
+	public void SetPowerUpBeingRenderedIndex(int powerUpBeingRenderedIndex) 
+	{ 
+		this.powerUpBeingRenderedIndex = powerUpBeingRenderedIndex; 
+		this.powerUpRenderingStartTimeMillis = SystemClock.elapsedRealtime();
+	}
+	
+	/**
 	 * Gets the density speed of the player, clamped between 1.0 and 0.0
 	 * @return The clamped density speed of the player
 	 */
@@ -371,12 +440,30 @@ public class Player
 	}
 	
 	/**
-	 * Adds a quantity to the current density speed.
+	 * Adds a quantity to the current density speed and checks if the player as been slowed.
 	 * @param quantity
 	 */
 	public void EditDensitySpeed(float quantity)
 	{
 		this.densitySpeed += quantity;
+		
+		//keep record of whether the player has been slowed or not
+		if (this.densitySpeed < this.startingDensitySpeed){
+			this.isSlowed = true;
+			
+			//if it's the only PowerUp applied set the rendering start time
+			if(this.powerUps.isEmpty()){
+				this.powerUpRenderingStartTimeMillis = SystemClock.elapsedRealtime();
+			}
+		}
+		else{
+			this.isSlowed = false;
+			
+			//if there are no PowerUps applied reset the rendering start time
+			if (this.powerUps.isEmpty()){
+				this.powerUpRenderingStartTimeMillis = 0;
+			}
+		}
 	}
 	
 	/**
