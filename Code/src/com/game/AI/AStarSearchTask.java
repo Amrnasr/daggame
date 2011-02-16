@@ -176,6 +176,7 @@ public class AStarSearchTask extends LeafTask
 		{
 			indexes.add(cur);
 			
+			assert (cur > 0 && cur < bb.aStarData.cameFrom.length) : "Cur == " + cur + " Index out of bounds!"; 
 			cur = bb.aStarData.cameFrom[cur];
 			
 			if(cur == bb.aStarData.initialTile.Index())
