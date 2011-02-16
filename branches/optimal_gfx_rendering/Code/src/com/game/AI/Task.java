@@ -51,7 +51,7 @@ public abstract class Task
 	 */
 	public void LogTask(String text)
 	{
-		Log.i("Task", "Player: " + bb.player.GetID() + "; " + name  + ": " + text);
+		//Log.i("Task", "Player: " + bb.player.GetID() + "; " + name  + ": " + text);
 	}
 	
 	/**

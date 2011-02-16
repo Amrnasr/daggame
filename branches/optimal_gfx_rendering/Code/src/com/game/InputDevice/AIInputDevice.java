@@ -17,6 +17,7 @@ import com.game.AI.FindEnemyDensityTask;
 import com.game.AI.GetClosestEnemyCursorTask;
 import com.game.AI.GetClosestOwnedTileTask;
 import com.game.AI.IteratePathDecorator;
+import com.game.AI.SelectRandomMovePos;
 import com.game.AI.ParentTaskController;
 import com.game.AI.MoveToDestinationTask;
 import com.game.AI.RegulatorDecorator;
@@ -72,7 +73,7 @@ public class AIInputDevice extends InputDevice
 		// Planner
 		this.planner = new Selector(blackboard, "Planner");
 		this.planner = new ResetDecorator(blackboard, this.planner, "Planner");
-		this.planner = new RegulatorDecorator(blackboard, this.planner, "Planner", 1f);
+		this.planner = new RegulatorDecorator(blackboard, this.planner, "Planner", 0.1f);
 		
 		// PowerUp search
 		Task powerUpSearch = new Sequence(blackboard, "Get PowerUp sequence");
@@ -80,6 +81,13 @@ public class AIInputDevice extends InputDevice
 		((ParentTaskController)powerUpSearch.GetControl()).Add( new SearchForPowerUpTask(blackboard, "SearchForPowerUpTask") );
 		((ParentTaskController)powerUpSearch.GetControl()).Add( new MoveToDestinationTask(blackboard, "MoveToDestinationTask") );
 		((ParentTaskController)powerUpSearch.GetControl()).Add( new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestinationTask"));
+		
+		// Random move
+		Task randomMove = new Sequence(blackboard, "Random move");
+		randomMove = new ChanceDecorator(blackboard, randomMove, "Random move", 30);
+		((ParentTaskController)randomMove.GetControl()).Add( new SelectRandomMovePos(blackboard, "SelectRandomMovePos") );
+		((ParentTaskController)randomMove.GetControl()).Add( new MoveToDestinationTask(blackboard, "MoveToDestinationTask") );
+		((ParentTaskController)randomMove.GetControl()).Add( new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestinationTask"));
 		
 		// Attack
 		Task attack = new Selector(blackboard, "Attack");
@@ -91,7 +99,7 @@ public class AIInputDevice extends InputDevice
 		((ParentTaskController)hunt.GetControl()).Add(new GetClosestOwnedTileTask(blackboard, "GetClosestOwnedTile"));
 		((ParentTaskController)hunt.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
 		((ParentTaskController)hunt.GetControl()).Add(new FindEnemyDensityTask(blackboard, "FindEnemyDensity"));
-		Task aStarSearch = new AStarSearchTask(blackboard, "AStarSearch", 100);
+		Task aStarSearch = new AStarSearchTask(blackboard, "AStarSearch", 60);
 		aStarSearch = new AStarSplitDecorator(blackboard, aStarSearch, "AStarSearch {SplitDec}");
 		aStarSearch = new StopIfAttackedDecorator(blackboard, aStarSearch, "AStarSearch {StopIfAttack}");
 		((ParentTaskController)hunt.GetControl()).Add( aStarSearch );
@@ -127,7 +135,7 @@ public class AIInputDevice extends InputDevice
 		
 		// Add to attack
 		((ParentTaskController)attack.GetControl()).Add(hunt);
-		//((ParentTaskController)attack.GetControl()).Add(circleChase);
+		((ParentTaskController)attack.GetControl()).Add(circleChase);
 		((ParentTaskController)attack.GetControl()).Add(straightChase);
 		
 		// Defend
@@ -155,7 +163,8 @@ public class AIInputDevice extends InputDevice
 		((ParentTaskController)defend.GetControl()).Add(straightFlee);
 		
 		// Add to planner
-		//((ParentTaskController)this.planner.GetControl()).Add(powerUpSearch);
+		((ParentTaskController)this.planner.GetControl()).Add(randomMove);
+		((ParentTaskController)this.planner.GetControl()).Add(powerUpSearch);
 		((ParentTaskController)this.planner.GetControl()).Add(defend);
 		((ParentTaskController)this.planner.GetControl()).Add(attack);
 		
