@@ -59,8 +59,10 @@ public class CalculateFleePathTask extends LeafTask
 		LogTask("Doing Action");
 		Map map = Blackboard.map;
 		int curSteps = 0;
-		Vector<Tile> path = new Vector<Tile>();
+		//Vector<Tile> path = new Vector<Tile>();
+		bb.path.clear();
 		
+		// Find the initial tile
 		Tile curTile = map.AtWorld( 
 				(int)bb.player.GetCursor().GetPosition().X(), 
 				(int)bb.player.GetCursor().GetPosition().Y());
@@ -72,6 +74,7 @@ public class CalculateFleePathTask extends LeafTask
 			return;
 		}
 		
+		// For "steps" number of steps, calculate the next one
 		for(curSteps = 0; curSteps > this.steps; curSteps++)
 		{
 			int maxCapacity = 0;
@@ -82,8 +85,7 @@ public class CalculateFleePathTask extends LeafTask
 				if(neighbor != null)
 				{
 					int neighborCapacity = neighbor.GetCurrentCapacity();
-					//int neighborCapacity = neighbor.GetCurrentCapacity() + neighbor.GetDensityFrom(bb.player.GetID());
-					if( neighborCapacity > maxCapacity && NotInPath(neighbor, path))
+					if( neighborCapacity > maxCapacity && NotInPath(neighbor, bb.path))
 					{
 						// Select the tile as best escape
 						bestNeighbor = dir;
@@ -101,18 +103,18 @@ public class CalculateFleePathTask extends LeafTask
 			else
 			{
 				curTile = map.GetNeighbour(curTile, bestNeighbor);
-				path.add(curTile);
+				bb.path.add(curTile);
 			}
 		}
 		
 		// If we don't get at least a third of the path
-		if(path.size() < this.steps /3)
+		if(bb.path.size() < this.steps /3)
 		{
+			bb.path.clear();
 			this.control.FinishWithFailure();
 		}
 		else
 		{
-			bb.path = path;
 			this.control.FinishWithSuccess();
 		}
 	}
@@ -143,15 +145,14 @@ public class CalculateFleePathTask extends LeafTask
 	private boolean NotInPath(Tile tile, Vector<Tile> path)
 	{
 		boolean found = false;
-		for (Iterator<Tile> iterator = path.iterator(); iterator.hasNext();) 
+		for(int i = 0; i < path.size(); i++)
 		{
-			if(tile == (Tile) iterator.next())
+			if(tile == path.elementAt(i))
 			{
 				found = true;
 				break;
-			}			
+			}
 		}
-		
 		return !found;
 	}
 }

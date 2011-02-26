@@ -78,7 +78,7 @@ public class WaitTillNearDestinationTask extends LeafTask
 		// Check for a timeout of the wait
 		else if(System.currentTimeMillis() - this.initialTime > TIMEOUT)
 		{
-			Log.i("WaitTillNearDestination", "" + System.currentTimeMillis() + " - " + this.initialTime + " ( " + (System.currentTimeMillis() - this.initialTime) + " ) "+" >? " + TIMEOUT + " = " + (System.currentTimeMillis() - this.initialTime > TIMEOUT));
+			//Log.i("WaitTillNearDestination", "" + System.currentTimeMillis() + " - " + this.initialTime + " ( " + (System.currentTimeMillis() - this.initialTime) + " ) "+" >? " + TIMEOUT + " = " + (System.currentTimeMillis() - this.initialTime > TIMEOUT));
 			control.FinishWithFailure();
 		}
 	}

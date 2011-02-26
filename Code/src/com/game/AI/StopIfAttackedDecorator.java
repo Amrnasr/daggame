@@ -31,11 +31,6 @@ public class StopIfAttackedDecorator extends TaskDecorator
 		if( timeElapsedSinceDensityUpdate < minTimeToHunt)
 		{
 			this.task.GetControl().FinishWithFailure();
-			Log.i("------------------------------------", "!!!!!!!!!!!!!!!111111");
-			Log.i("------------------------------------", "!!!!!!!!!!!!!!!111111");
-			Log.i("------------------------------------", "!!!!!!!!!!!!!!!111111");
-			Log.i("------------------------------------", "!!!!!!!!!!!!!!!111111");
-			
 		}
 		else
 		{

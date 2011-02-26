@@ -54,6 +54,17 @@ public class Constants
 	/**
 	 * To show the profiler onscreen
 	 */
-	public static final boolean OnScreenProfiler = true;
+	public static final boolean OnScreenProfiler = false;
+	
+	/**
+	 * Create a tracert trace of the game
+	 */
+	public static final boolean TracertProfiler = false;
+	
+	/**
+	 * If set to true, pressing the menu key in the Android phone generates a 
+	 * memory dump.
+	 */
+	public static final boolean MenuGenerateMemoryDump = false;
 
 }
