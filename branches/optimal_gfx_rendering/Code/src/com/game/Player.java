@@ -191,11 +191,15 @@ public class Player
 	{
 		this.mapRef = mapRef;
 		
-		Tile initialTile = this.mapRef.GetClosestEmptyTile((int)this.cursor.GetPosition().X(), (int)this.cursor.GetPosition().Y());
-		
-		if(initialTile == null)
+		Tile initialTile = null;
+		while(initialTile == null)
 		{
-			Log.e("Player " + GetID(), "NOT FOUND INITIAL TILE!");
+			initialTile = this.mapRef.GetClosestEmptyTile((int)this.cursor.GetPosition().X(), (int)this.cursor.GetPosition().Y(),10);
+			if(initialTile == null)
+			{
+				// We give it a new random start position and try again
+				SetCursorInitialPos();
+			}
 		}
 		
 		initialTile.AddDensity(this, initialDensity);	
@@ -474,7 +478,7 @@ public class Player
 
 	/**
 	 * Gets the last time the amount of density had any changes
-	 * @return The last time the ammount of density had any changes.
+	 * @return The last time the amount of density had any changes.
 	 */
 	public long LastTimeDensityChanged() 
 	{

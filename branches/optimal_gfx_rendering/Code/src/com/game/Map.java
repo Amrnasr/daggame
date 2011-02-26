@@ -394,17 +394,21 @@ public class Map {
 	 * Does a BFS, so use sparingly. 
 	 * @param initialX The x position from where we start searching
 	 * @param initialY The y position from where we start searching
-	 * @return The closest empty tile.
+	 * @param maxIter The maximum number of iterations for the search algorithm.
+	 * 				  if it doesn't find the solution before then, it returns null
+	 * @return The closest empty tile, or null if we run out of iterations
 	 */
-	public Tile GetClosestEmptyTile(int initialX, int initialY)
+	public Tile GetClosestEmptyTile(int initialX, int initialY, int maxIter)
 	{
 		Queue<Tile> toSearch = new LinkedList<Tile>();
 		toSearch.add(this.AtWorld(initialX,initialY));
 		
 		Tile objectiveTile = null;
+		int curIter = 0;
 		
-		while(!toSearch.isEmpty())
+		while(!toSearch.isEmpty() && curIter < maxIter)
 		{
+			curIter ++;
 			Tile aux = toSearch.remove();
 			
 			if(aux == null)
@@ -443,6 +447,7 @@ public class Map {
 			}
 		}
 		
+		/*
 		if(objectiveTile == null)
 		{
 			Log.e("Map", "NOT FOUND EMPTY TILE!");
@@ -451,7 +456,8 @@ public class Map {
 			objectiveTile = AtTile(0, 0);
 			Log.e("Map", "Using dummy start position!");
 		}
-				
+		*/
+		
 		return objectiveTile;
 	}
 	

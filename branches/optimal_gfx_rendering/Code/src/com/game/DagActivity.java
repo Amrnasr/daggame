@@ -1,6 +1,8 @@
 package com.game;
 
 
+import java.io.IOException;
+
 import com.game.MessageHandler.MsgReceiver;
 import com.game.ViewData.*;
 
@@ -179,7 +181,11 @@ public class DagActivity extends Activity
     @Override protected void onStop()
     {
     	super.onStop();
-    	//Debug.stopMethodTracing();
+    	
+    	if(Constants.TracertProfiler)
+    	{
+    		Debug.stopMethodTracing();
+    	}
     	
     	Log.i("DagActivity", "======== onStop");
     	
@@ -187,7 +193,11 @@ public class DagActivity extends Activity
     	{
     		gameLogic.stopGame();
     	}
+    	
+    	// Make sure it destroys everything
+    	
     	finish();
+    	android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     /**
@@ -197,6 +207,8 @@ public class DagActivity extends Activity
     {
     	super.onDestroy();
     	Log.i("DagActivity", "======== onDestroy");
+    	
+    	
     }
     
     @Override protected Dialog onCreateDialog(int id)
@@ -380,8 +392,6 @@ public class DagActivity extends Activity
     	if(nextScene == SceneType.PLAY_SCENE)
     	{
     		this.showDialog(LOAD_DIALOG);
-    		//dialog.show();   
-    				
     	}
     	
     	// Do not change the order!!
@@ -415,6 +425,26 @@ public class DagActivity extends Activity
 	        
 	        MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.PAUSE_GAME);
     	}
+
+        if(Constants.MenuGenerateMemoryDump)
+        {
+        	// Dump generation!
+	        try 
+	    	{
+	        	 // * To dump:
+	        	 // * Press "menu" key (this calls Debug.dumpHprofData)
+	        	 // * adb pull /sdcard/lena.hprof C:/Temp
+	        	 // * hprof-conv lena.hprof lena2.hprof
+	        	 // * copy lena2.hprof to All/Projects/Dag/Dump
+	        	 // * double click
+	        	
+				Debug.dumpHprofData("/sdcard/lena.hprof");
+			} 
+	    	catch (IOException e) 
+	    	{
+				e.printStackTrace();
+			}
+        }
 
         return handled;
     }

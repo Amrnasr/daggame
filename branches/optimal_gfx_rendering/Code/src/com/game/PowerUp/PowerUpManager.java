@@ -88,21 +88,28 @@ public class PowerUpManager
 		// Select random PowerUp
 		PowerUp newPowerUp = ChooseRandomPowerUp();
 
-		// Add to list
-		this.powerUps.add(newPowerUp);
-		
-		// Set references
-		newPowerUp.SetPlaySceneRef(playRef);
-		
-		// Adds to the nearest tile and updates the PowerUp position to match the tile.
+		// Finds the nearest tile
 		Tile objectiveTile = this.playRef.GetMap().GetClosestEmptyTile(
 				(int)newPowerUp.Pos().X(), 
-				(int)newPowerUp.Pos().Y());
-		newPowerUp.SetPos(objectiveTile.GetRealPos());
-		objectiveTile.AddPowerUp(newPowerUp);
+				(int)newPowerUp.Pos().Y(),
+				10);
 		
-		// Send message to renderer
-		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.DISPLAY_NEW_POWERUP, newPowerUp);
+		// If our search for the start position failed, we just skip on doing this PowerUp
+		if(objectiveTile != null)
+		{
+			// Add to list
+			this.powerUps.add(newPowerUp);
+			
+			// Set references
+			newPowerUp.SetPlaySceneRef(playRef);
+			
+			// Updates the PowerUp position to match the tile.
+			newPowerUp.SetPos(objectiveTile.GetRealPos());
+			objectiveTile.AddPowerUp(newPowerUp);
+			
+			// Send message to renderer
+			MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.DISPLAY_NEW_POWERUP, newPowerUp);
+		}
 	}
 	
 	/**

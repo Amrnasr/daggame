@@ -213,7 +213,13 @@ public class PlayScene extends Scene
 	        		if(gameState == LogicState.UNINITIALIZED)
 	        		{
 	        			Camera.Get().SetCameraZLimits();
-	        			//Debug.startMethodTracing("lena2");
+	        			
+	        			// If a traceview trace is required, start tracing
+	        			if(Constants.TracertProfiler)
+	        			{
+	        				Debug.startMethodTracing("trace");
+	        			}
+	        			
 	        			gameState = LogicState.PLAYING;
 	        		}
 	        	}
@@ -262,7 +268,7 @@ public class PlayScene extends Scene
 		final RenderInitData renderInitData = new RenderInitData();
 		
 		// A thread for background loading of the map
-		Thread t = new Thread() 
+		Thread mapLoadThread = new Thread() 
 		{
             public void run() 
             {
@@ -311,7 +317,7 @@ public class PlayScene extends Scene
         		Log.i("PlayScene", "Start function finished");
             }
         };
-        t.start();		
+        mapLoadThread.start();		
 	}
 	
 	private Bitmap CreateBitmap(int resource)
@@ -356,7 +362,7 @@ public class PlayScene extends Scene
 		
 		// Logic only to run in playing (un-paused) mode
 		if(SceneReady())
-		{			
+		{		
 			Gameplay();
 		}
 		

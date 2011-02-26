@@ -1,8 +1,12 @@
 package com.game.InputDevice;
 
+import java.util.Random;
+
 import android.util.Log;
 
 import com.game.Player;
+import com.game.Preferences;
+import com.game.Regulator;
 
 import com.game.AI.AStarSearchTask;
 import com.game.AI.AStarSplitDecorator;
@@ -13,6 +17,7 @@ import com.game.AI.CalculateFleePathTask;
 import com.game.AI.ChanceDecorator;
 import com.game.AI.CheckIfNeedToHuntTask;
 import com.game.AI.DefendDecorator;
+import com.game.AI.DummyTeleportTask;
 import com.game.AI.FindEnemyDensityTask;
 import com.game.AI.GetClosestEnemyCursorTask;
 import com.game.AI.GetClosestOwnedTileTask;
@@ -165,11 +170,15 @@ public class AIInputDevice extends InputDevice
 		((ParentTaskController)defend.GetControl()).Add(straightFlee);
 		
 		// Add to planner
+		
 		((ParentTaskController)this.planner.GetControl()).Add(randomMove);
 		((ParentTaskController)this.planner.GetControl()).Add(powerUpSearch);
 		((ParentTaskController)this.planner.GetControl()).Add(defend);
 		((ParentTaskController)this.planner.GetControl()).Add(attack);
 		
+		
+		//DEBUG
+		//((ParentTaskController)this.planner.GetControl()).Add(new DummyTeleportTask(blackboard, "DummyTeleport"));
 	}
 	
 	/**
@@ -187,10 +196,12 @@ public class AIInputDevice extends InputDevice
 	@Override
 	public void Start() 
 	{
-		//currentStrategy = new ChaseClosestCursorStrategy(sceneRef, parent);
 		this.planner.GetControl().SafeStart();
 	}
 
+	//Regulator debugReg = new Regulator(0.2f);
+	//Random debugRand = new Random();
+	
 	/**
 	 * Update the AIInputDevice
 	 */
@@ -201,8 +212,14 @@ public class AIInputDevice extends InputDevice
 			// This AI has lost, nothing else to do here.
 			return;
 		}
-		
-		
+		/*
+		if(debugReg.IsReady())
+		{
+			int x = debugRand.nextInt(Preferences.Get().mapWidth);
+			int y = debugRand.nextInt(Preferences.Get().mapHeight);
+			parent.GetCursor().SetPosition(x, y);
+		}
+		*/
 		this.planner.DoAction();
 	}
 }
