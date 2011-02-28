@@ -112,6 +112,16 @@ public class Player
 	private boolean isSlowed;
 	
 	/**
+	 * Whether the player is faster or not
+	 */
+	private boolean isFaster;
+	
+	/**
+	 * Whether a slow PowerUp is applied or not
+	 */
+	private boolean isSlowPowerUpApplied;
+	
+	/**
 	 * Time when the PowerUp started being rendered
 	 */
 	private long powerUpRenderingStartTimeMillis;
@@ -154,11 +164,13 @@ public class Player
 		// Color
 		this.colorIndex = colorIndex;
 		this.powerUpBeingRenderedIndex = 0;
-		this.powerUpRenderingStartTimeMillis = 0;
+		this.powerUpRenderingStartTimeMillis = SystemClock.elapsedRealtime();
 		
 		// PowerUps
 		this.powerUps = new Vector<PowerUp>();
 		this.isSlowed = false;
+		this.isFaster = false;
+		this.isSlowPowerUpApplied = false;
 		
 		// Density update
 		this.lastTimeDensityUpdated = 0;
@@ -232,10 +244,16 @@ public class Player
 	public void LinkPowerUp(PowerUp powerUp)
 	{
 		//if it's the only PowerUp applied set the rendering start time
-		if(this.powerUps.isEmpty() && !IsSlowed()){
+		/*if(this.powerUps.isEmpty() && !IsSlowed()){
 			this.powerUpRenderingStartTimeMillis = SystemClock.elapsedRealtime();
+		}*/
+		if(powerUp.GetType() == 0) //if it's a speed powerup
+		{
+			this.isFaster = true;
 		}
-		
+		else if(powerUp.GetType() == 2){
+			this.isSlowPowerUpApplied = true;
+		}
 		this.powerUps.add(powerUp);
 	}
 	
@@ -247,10 +265,21 @@ public class Player
 	{
 		this.powerUps.remove(powerUp);
 		
-		//if there are no PowerUps applied reset the rendering start time
-		if(powerUps.isEmpty() && !IsSlowed()){
-			this.powerUpRenderingStartTimeMillis = 0;
+		this.isFaster = false;
+		this.isSlowPowerUpApplied = false;
+		for(int i=0; i < this.powerUps.size(); i++){
+			if(this.powerUps.elementAt(i).GetType() == 0){
+				this.isFaster = true;
+			}
+			else if(this.powerUps.elementAt(i).GetType() == 2){
+				this.isSlowPowerUpApplied = true;
+			}
 		}
+		
+		//if there are no PowerUps applied reset the rendering start time
+		/*if(powerUps.isEmpty() && !IsSlowed()){
+			this.powerUpRenderingStartTimeMillis = 0;
+		}*/
 	}
 	
 	/**
@@ -423,6 +452,12 @@ public class Player
 	public int GetPowerUpBeingRenderedIndex() { return this.powerUpBeingRenderedIndex; }
 	
 	/**
+	 * Gets a value indicating whether a slow PowerUp is applied.
+	 * @return if a slow PowerUp is applied.
+	 */
+	public boolean IsSlowPowerUpApplied() { return this.isSlowPowerUpApplied; }
+	
+	/**
 	 * Sets the index of the PowerUp being rendered
 	 * @param powerUpBeingRenderedIndex index of the PowerUp being rendered
 	 */
@@ -452,22 +487,23 @@ public class Player
 		this.densitySpeed += quantity;
 		
 		//keep record of whether the player has been slowed or not
-		if (this.densitySpeed < this.startingDensitySpeed){
+		if (this.densitySpeed < this.startingDensitySpeed || (this.densitySpeed == this.startingDensitySpeed && this.isFaster)){
 			this.isSlowed = true;
 			
 			//if it's the only PowerUp applied set the rendering start time
-			if(this.powerUps.isEmpty()){
+			/*if(this.powerUps.isEmpty()){
 				this.powerUpRenderingStartTimeMillis = SystemClock.elapsedRealtime();
-			}
+			}*/
 		}
 		else{
 			this.isSlowed = false;
 			
 			//if there are no PowerUps applied reset the rendering start time
-			if (this.powerUps.isEmpty()){
+			/*if (this.powerUps.isEmpty()){
 				this.powerUpRenderingStartTimeMillis = 0;
-			}
+			}*/
 		}
+		Log.i("Player","slowed: " + this.isSlowed + ", Faster: " + this.isFaster);
 	}
 	
 	/**
