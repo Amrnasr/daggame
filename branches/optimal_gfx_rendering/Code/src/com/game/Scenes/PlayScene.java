@@ -135,6 +135,11 @@ public class PlayScene extends Scene
 	private PowerUpManager powerUpManager;
 	
 	/**
+	 * Used for keeping track of how much each update cycle takes
+	 */
+	private long startTime = 0;
+	
+	/**
 	 * Initializes and sets the handler callback.
 	 */
 	public PlayScene()
@@ -347,7 +352,10 @@ public class PlayScene extends Scene
 	@Override
 	public void Update() 
 	{
-		//long startTime = System.currentTimeMillis();
+		if(Constants.RenderTakeExtraLogicCycles)
+		{
+			startTime = System.currentTimeMillis();
+		}
 		// Logic not dependent on game state
 		if(Constants.OnScreenProfiler)
 		{
@@ -366,19 +374,25 @@ public class PlayScene extends Scene
 			Gameplay();
 		}
 		
-		//long totalTime = System.currentTimeMillis() - startTime;
-		//Log.i("A", ""+ totalTime);
-		
-		/*if( totalTime < 16)
+		if(Constants.RenderTakeExtraLogicCycles)
 		{
-			try {
-	             Thread.sleep(16 - totalTime);
-	         } 
-			catch (InterruptedException e) 
-	         {
-	             // Interruptions here are no big deal.
-	         }
-		}*/
+			// Takes the time left to complete a cycle at approximately
+			// 70 fps, and sets the thread to sleep that time, so we don't 
+			// over-tax the system
+			long totalTime = System.currentTimeMillis() - startTime;
+			//Log.i("A", ""+ totalTime);
+			
+			if( totalTime < 14)
+			{
+				try {
+		             Thread.sleep(14 - totalTime);
+		         } 
+				catch (InterruptedException e) 
+		         {
+		             // Interruptions here are no big deal.
+		         }
+			}
+		}
 	}
 	
 	/**
