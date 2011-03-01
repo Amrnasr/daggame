@@ -52,9 +52,9 @@ public class Constants
 	public static final int CombatEffectImgNum = 4;
 	
 	/**
-	 * To show the profiler onscreen
+	 * To show the profiler on screen
 	 */
-	public static final boolean OnScreenProfiler = false;
+	public static final boolean OnScreenProfiler = true;
 	
 	/**
 	 * Create a tracert trace of the game
@@ -66,5 +66,15 @@ public class Constants
 	 * memory dump.
 	 */
 	public static final boolean MenuGenerateMemoryDump = false;
+
+	/**
+	 * When this flag is set to true the renderer takes all the extra cycles from the logic
+	 */
+	public static final boolean RenderTakeExtraLogicCycles = false;
+	
+	/**
+	 * Debug counter for stuff
+	 */
+	public static long CurLogicCycle = 0;
 
 }

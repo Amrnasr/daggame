@@ -106,7 +106,7 @@ public class AIInputDevice extends InputDevice
 		((ParentTaskController)hunt.GetControl()).Add(new GetClosestOwnedTileTask(blackboard, "GetClosestOwnedTile"));
 		((ParentTaskController)hunt.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
 		((ParentTaskController)hunt.GetControl()).Add(new FindEnemyDensityTask(blackboard, "FindEnemyDensity"));
-		Task aStarSearch = new AStarSearchTask(blackboard, "AStarSearch", 60);
+		Task aStarSearch = new AStarSearchTask(blackboard, "AStarSearch", 40);
 		aStarSearch = new AStarSplitDecorator(blackboard, aStarSearch, "AStarSearch {SplitDec}");
 		aStarSearch = new StopIfAttackedDecorator(blackboard, aStarSearch, "AStarSearch {StopIfAttack}");
 		((ParentTaskController)hunt.GetControl()).Add( aStarSearch );
