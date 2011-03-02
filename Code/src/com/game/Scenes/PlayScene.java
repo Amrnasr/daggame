@@ -356,6 +356,9 @@ public class PlayScene extends Scene
 		{
 			startTime = System.currentTimeMillis();
 		}
+		
+		
+		
 		// Logic not dependent on game state
 		if(Constants.OnScreenProfiler)
 		{
@@ -405,7 +408,7 @@ public class PlayScene extends Scene
 		if(!gameplayRegulator.IsReady())
 		{
 			return;
-		}		
+		}
 		
 		Tile.ShuffleIndexVector();
 		

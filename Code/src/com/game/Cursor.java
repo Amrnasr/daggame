@@ -308,5 +308,11 @@ public class Cursor
 	 * @return True if it is, false otherwise.
 	 */
 	public boolean Rotating() { return this.rotating; }
+	
+	/**
+	 * Moddifies the speed of the cursor, by adding the increment.
+	 * @param speedIncrement
+	 */
+	public void AddToSpeed(float speedIncrement) { this.speed += speedIncrement; }
 
 }

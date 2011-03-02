@@ -31,6 +31,7 @@ public class SlowPowerUp extends PowerUp
 			if( player.GetID() != playerID)
 			{
 				player.EditDensitySpeed(penalizer);
+				player.GetCursor().AddToSpeed(penalizer);
 			}
 		}
 
@@ -48,6 +49,7 @@ public class SlowPowerUp extends PowerUp
 			if( player.GetID() != playerID)
 			{
 				player.EditDensitySpeed(-penalizer);
+				player.GetCursor().AddToSpeed(-penalizer);
 			}
 		}
 	}

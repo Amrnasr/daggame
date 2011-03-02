@@ -462,6 +462,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		gl.glLoadIdentity();
 		gl.glViewport(0,0,w,h);
 		
+		/*
 		Log.i("MapDebug", " ^^^^^^^^^^^^^^^^^^^^^^^^ " );
 		Log.i("MapDebug", " ------------------------ " );
 		Log.i("MapDebug", " ---------()_()---------- " );
@@ -471,6 +472,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		Log.i("MapDebug", " ------------------------ " );
 		Log.i("MapDebug", " ------------------------ " );
 		Log.i("MapDebug", " ------------------------ " );
+		*/
 
 		GLU.gluPerspective(gl, 45.0f, ((float)w)/h, this.minZ, this.maxZ);	
 	}
@@ -531,12 +533,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		{
 			DrawMap(gl);
 			map.notifyAll();
-		
 		}
-		
-		Constants.CurLogicCycle ++ ;
-		Log.i("MapDebug", "Cycle : " + gl.toString() );
-		//Log.i("MapDebug", "Cycle : " + Constants.CurLogicCycle);
 		
 		// Draw textured elements
 		gl.glEnable(GL10.GL_TEXTURE_2D);

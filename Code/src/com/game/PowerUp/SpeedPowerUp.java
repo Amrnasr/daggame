@@ -31,6 +31,7 @@ public class SpeedPowerUp extends PowerUp
 	public void ApplyEffect() 
 	{		
 		parent.EditDensitySpeed(speedIncrement);
+		parent.GetCursor().AddToSpeed(speedIncrement);
 	}
 
 	/**
@@ -40,7 +41,7 @@ public class SpeedPowerUp extends PowerUp
 	public void RemoveEffect() 
 	{
 		parent.EditDensitySpeed(-speedIncrement);
-
+		parent.GetCursor().AddToSpeed(-speedIncrement);
 	}
 
 	/**
