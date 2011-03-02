@@ -173,6 +173,10 @@ public class DagActivity extends Activity
     	
     	// Pause
     	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.PAUSE_GAME);
+    	
+    	// Make sure it destroys everything    	
+    	finish();
+    	android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     /**
@@ -194,10 +198,7 @@ public class DagActivity extends Activity
     		gameLogic.stopGame();
     	}
     	
-    	// Make sure it destroys everything
     	
-    	finish();
-    	android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     /**
