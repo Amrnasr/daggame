@@ -9,16 +9,13 @@ import com.game.Tile;
 
 public class AStarSearchTask extends LeafTask 
 {
-
-	private final int numberIterations;
-	public AStarSearchTask(Blackboard blackboard, int numberIterations) {
+	private final long maxMilisecondsAllowed  = 3;
+	public AStarSearchTask(Blackboard blackboard) {
 		super(blackboard);
-		this.numberIterations = numberIterations;
 	}
 
-	public AStarSearchTask(Blackboard blackboard, String name, int numberIterations) {
+	public AStarSearchTask(Blackboard blackboard, String name) {
 		super(blackboard, name);
-		this.numberIterations = numberIterations;
 	}
 
 	@Override
@@ -33,8 +30,9 @@ public class AStarSearchTask extends LeafTask
 	{
 		LogTask("Doing action");
 		int curIter = 0;
+		long startTime = System.currentTimeMillis();
 		
-		while(bb.aStarData.openSet.size() != 0 && curIter < numberIterations)
+		while(bb.aStarData.openSet.size() != 0 && (System.currentTimeMillis() - startTime) < maxMilisecondsAllowed) // curIter < numberIterations
 		{
 			Tile curTile = GetLowestFTile();
 			
@@ -90,15 +88,15 @@ public class AStarSearchTask extends LeafTask
 			curIter++;
 		}
 		
-		if(curIter == numberIterations)
-		{
-			control.FinishWithSuccess();
-		}
-		else
+		if(System.currentTimeMillis() - startTime < maxMilisecondsAllowed/2 && bb.aStarData.openSet.size() == 0)
 		{
 			// If we got here, found no path
 			bb.aStarData.done = true;
 			control.FinishWithFailure();
+		}
+		else
+		{
+			control.FinishWithSuccess();
 		}
 	}
 

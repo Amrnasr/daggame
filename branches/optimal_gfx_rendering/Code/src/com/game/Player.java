@@ -298,18 +298,21 @@ public class Player
 		int prevDensity = this.previousDensity;
 		
 		this.cursor.Update();
+		
 		this.inputDevice.Update();
+		
 		if(tileUpdateRegulator.IsReady())
 		{
 			UpdateTiles();			
-			//Log.i("Player" + GetID(), " Tiles: " + this.tiles.size() + ", density: " + this.totalDensity);
 		}
+		
 		UpdatePowerUps();
 		
 		if(prevDensity != this.totalDensity)
 		{
 			this.lastTimeDensityUpdated = System.currentTimeMillis();
 		}
+		
 	}
 	
 	/**
