@@ -260,7 +260,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	{
 		super();
 		Log.i("DagRenderer", "Started constructor");
-		
+		Log.i("DagRenderer", "multiplayer game: " + Preferences.Get().multiplayerGame);
 		this.map = null;
 		this.cursorBitmap = null;
 		this.cursorShadowBitmap = null;

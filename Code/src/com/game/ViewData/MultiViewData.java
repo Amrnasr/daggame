@@ -126,7 +126,8 @@ public class MultiViewData extends ViewData {
         mapsGallery.setSelection(Preferences.Get().multiCurrentMap);
         mapsGallery.setOnItemClickListener(new OnItemClickListener() 
         {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) 
+            {
             	Log.i("MultiViewData", "Clicked maps gallery item");
             	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.GALLERY_ITEM_CLICK, R.id.maps_multi_gal, position);
             }

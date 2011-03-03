@@ -146,6 +146,8 @@ public class PlayScene extends Scene
 	{
 		super();
 		
+		int currentMap = Preferences.Get().multiplayerGame ? Preferences.Get().multiCurrentMap : Preferences.Get().singleCurrentMap;
+		
 		this.gameState = LogicState.UNINITIALIZED;
 		this.players = new Vector<Player>();
 		this.trackballEvent = null;
@@ -155,8 +157,8 @@ public class PlayScene extends Scene
 		this.gameplayRegulator = new Regulator(60);
 		this.cameraZoomRegulator = new Regulator(1);
 		this.messageManagerRegulator = new Regulator(1);
-		this.mapFile =  MapsImageAdapter.getImageID(Preferences.Get().singleCurrentMap);
-		this.tileMapFile = MapsImageAdapter.getTilemapID(Preferences.Get().singleCurrentMap);
+		this.mapFile =  MapsImageAdapter.getImageID(currentMap);
+		this.tileMapFile = MapsImageAdapter.getTilemapID(currentMap);
 		this.powerUpManager = new PowerUpManager(this);
 		
 		CreatePlayers();
