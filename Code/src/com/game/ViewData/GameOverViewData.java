@@ -49,9 +49,9 @@ public class GameOverViewData extends ViewData {
         });
         
         TextView winner = new TextView(activity);
-        winner.setText("" + Preferences.Get().winnerPlayer );
+        winner.setText("" + Preferences.Get().playerColor(Preferences.Get().winnerPlayerColorIndex) );
         winner.setGravity(Gravity.CENTER_HORIZONTAL);
-        winner.setTextSize(160);
+        winner.setTextSize(80);
         LinearLayout textHolder = (LinearLayout) xmlLayout.findViewById(R.id.gameover_layout_inner_scroll);
         textHolder.addView(winner);
         

@@ -25,7 +25,7 @@ public class Preferences
 		// Made up default map size
 		this.mapHeight = 0;
 		this.mapWidth = 0;
-		this.winnerPlayer = -1;
+		this.winnerPlayerColorIndex = -1;
 		
 		//Made up default map
 		this.singleCurrentMap = 0;
@@ -251,11 +251,26 @@ public class Preferences
 	/**
 	 * Player that has won this round
 	 */
-	public int winnerPlayer;
+	public int winnerPlayerColorIndex;
 	
 	/**
 	 * Size of a map tile
 	 */
 	public int tileWidth;
+	
+	public String playerColor(int colIndex)
+	{
+		//set the base color of the density
+		switch(colIndex)
+		{
+			case 0: return "Brown";
+			case 1: return "Green";
+			case 2: return "Blue"; 
+			case 3: return "Cyan"; 
+			case 4: return "Purple"; 
+			case 5: return "Yellow"; 
+			default: return "ERROR!";
+		}	
+	}
 
 }

@@ -58,7 +58,7 @@ public class PowerUpManager
 	{
 		this.powerUps = new Vector<PowerUp>();
 		this.recomendedNumberPowerUps = 3;
-		this.addNewPowerUpRegulator = new Regulator(0.15f);
+		this.addNewPowerUpRegulator = new Regulator(0.08f);
 		this.playRef = playRef; 
 	}
 	
