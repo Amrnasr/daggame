@@ -609,7 +609,7 @@ public class PlayScene extends Scene
 		// Everyone has 0 points except 1 player, game over
 		if(playersWithNullPoints == (this.players.size() - 1))
 		{
-			Preferences.Get().winnerPlayer = winnerPlayer;
+			Preferences.Get().winnerPlayerColorIndex = GetPlayerColorIndex(winnerPlayer);
 			gameWon = true;
 		}
 		else if(!humanPlayersLeft) // No humans left, get the AI with the most density
@@ -623,11 +623,26 @@ public class PlayScene extends Scene
 					winnerPlayer = players.elementAt(i).GetID();
 				}
 			}
-			Preferences.Get().winnerPlayer = winnerPlayer;
+			
+			Preferences.Get().winnerPlayerColorIndex = GetPlayerColorIndex(winnerPlayer);
+			
 			gameWon = true;
 		}
 		
 		return gameWon;
+	}
+	
+	private int GetPlayerColorIndex(int id)
+	{
+		int index = -1;
+		for(int j = 0; j < players.size(); j++)
+		{
+			if(id == players.elementAt(j).GetID())
+			{
+				index= players.elementAt(j).GetColorIndex();
+			}
+		}
+		return index;
 	}
 	
 	/**

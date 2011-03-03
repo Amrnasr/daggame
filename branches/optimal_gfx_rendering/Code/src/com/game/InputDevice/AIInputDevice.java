@@ -90,7 +90,7 @@ public class AIInputDevice extends InputDevice
 		
 		// PowerUp search
 		Task powerUpSearch = new Sequence(blackboard, "Get PowerUp sequence");
-		powerUpSearch = new ChanceDecorator(blackboard, powerUpSearch, "Get PowerUp sequence", 20);
+		powerUpSearch = new ChanceDecorator(blackboard, powerUpSearch, "Get PowerUp sequence", 10);
 		((ParentTaskController)powerUpSearch.GetControl()).Add( new SearchForPowerUpTask(blackboard, "SearchForPowerUpTask") );
 		((ParentTaskController)powerUpSearch.GetControl()).Add( new MoveToDestinationTask(blackboard, "MoveToDestinationTask") );
 		((ParentTaskController)powerUpSearch.GetControl()).Add( new WaitTillNearDestinationTask(blackboard, "WaitTillNearDestinationTask"));
@@ -101,7 +101,7 @@ public class AIInputDevice extends InputDevice
 		
 		/// Hunt Attack
 		Task hunt = new Sequence(blackboard, "Hunt sequence");
-		hunt = new ChanceDecorator(blackboard, hunt, "Hunt sequence", 40);
+		hunt = new ChanceDecorator(blackboard, hunt, "Hunt sequence", 30);
 		((ParentTaskController)hunt.GetControl()).Add(new CheckIfNeedToHuntTask(blackboard, "CheckIfNeedToHunt"));
 		((ParentTaskController)hunt.GetControl()).Add(new GetClosestOwnedTileTask(blackboard, "GetClosestOwnedTile"));
 		((ParentTaskController)hunt.GetControl()).Add(new MoveToDestinationTask(blackboard, "MoveToDestination"));
