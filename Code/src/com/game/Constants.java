@@ -52,6 +52,11 @@ public class Constants
 	public static final int CombatEffectImgNum = 4;
 	
 	/**
+	 * Number of different maps
+	 */
+	public static final int MapsNum = 9;
+	
+	/**
 	 * To show the profiler on screen
 	 */
 	public static final boolean OnScreenProfiler = true;
