@@ -54,7 +54,7 @@ public class Map {
 	/**
 	 * PowerUp rendering time constant
 	 */
-	private final static long powerUpRenderingTime = 1500;
+	private final static long powerUpRenderingTime = 750;
 	
 	/// Drawing data
 	private CharBuffer indexBuffer;
