@@ -26,10 +26,6 @@ public class Preferences
 		this.mapHeight = 0;
 		this.mapWidth = 0;
 		this.winnerPlayerColorIndex = -1;
-		
-		//Made up default map
-		this.singleCurrentMap = 0;
-		this.multiCurrentMap = 0;
 	}
 	
 	/**
@@ -72,13 +68,13 @@ public class Preferences
 		multiShowMinimap = settings.getBoolean("multiShowMinimap", true);
 		multiPowerups = settings.getBoolean("multiPowerups", true);
 		
-		if(singleCurrentMap >= Constants.MapsNum){
+		/*if(singleCurrentMap >= Constants.MapsNum){
 			singleCurrentMap = 0;
 		}
 		
 		if(multiCurrentMap >= Constants.MapsNum){
 			multiCurrentMap = 0;
-		}
+		}*/
 		// Color preferences
 		
 	}
