@@ -45,7 +45,7 @@ public class MultiViewData extends ViewData {
 	@Override
 	public View createXMLView(Activity activity) 
 	{
-		Log.i("MultiViewData", "createXMLView");
+		//Log.i("MultiViewData", "createXMLView");
 		
 		// Access xml layout
 		LayoutInflater li = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -61,7 +61,7 @@ public class MultiViewData extends ViewData {
         {
           @Override
           public void onClick(View v) {
-            Log.i("MultiViewData", "Clicked OK button");
+        	  //Log.i("MultiViewData", "Clicked OK button");
             MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.BUTTON_CLICK, R.id.ok_multi_but);
           }
         });
@@ -71,7 +71,7 @@ public class MultiViewData extends ViewData {
         {
           @Override
           public void onClick(View v) {
-            Log.i("MultiViewData", "Clicked Back button");
+        	  //Log.i("MultiViewData", "Clicked Back button");
             MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.back_multi_but);
           }
         });
@@ -85,7 +85,7 @@ public class MultiViewData extends ViewData {
 			@Override
 			public void onClick(View v) 
 			{
-				Log.i("MultiViewData", "Clicked minimap checkbox");
+				//Log.i("MultiViewData", "Clicked minimap checkbox");
 				
 				int checked = 0;
 				if(((CheckBox) MultiViewData.this.minimapCheckBoxView).isChecked() == true)
@@ -115,7 +115,7 @@ public class MultiViewData extends ViewData {
 				{
 					checked = 0;
 				}
-				Log.i("MultiViewData", "Clicked power-ups checkbox");
+				//Log.i("MultiViewData", "Clicked power-ups checkbox");
 				MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.CHECKBOX_CLICK, R.id.powerups_multi_check, checked);	
 			}
 		});
@@ -128,7 +128,7 @@ public class MultiViewData extends ViewData {
         {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) 
             {
-            	Log.i("MultiViewData", "Clicked maps gallery item");
+            	//Log.i("MultiViewData", "Clicked maps gallery item");
             	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.GALLERY_ITEM_CLICK, R.id.maps_multi_gal, position);
             }
         });
@@ -144,7 +144,7 @@ public class MultiViewData extends ViewData {
         color1Spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
-        		Log.i("MultiViewData", "Selected color 1 spinner item");
+        		//Log.i("MultiViewData", "Selected color 1 spinner item");
         		long color2SpinnerIndex = ((Spinner) MultiViewData.this.color2SpinnerView).getSelectedItemId();
         		//If the color has already been chosen
         		if(color2SpinnerIndex == position){
@@ -177,7 +177,7 @@ public class MultiViewData extends ViewData {
         color2Spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
-        		Log.i("MultiViewData", "Selected color 2 spinner item");
+        		//Log.i("MultiViewData", "Selected color 2 spinner item");
         		long color1SpinnerIndex = ((Spinner) MultiViewData.this.color1SpinnerView).getSelectedItemId();
         		//If the color has already been chosen
         		if(color1SpinnerIndex == position){
@@ -195,7 +195,7 @@ public class MultiViewData extends ViewData {
         	}
 
         	public void onNothingSelected(AdapterView<?> parent) {
-        		Log.i("MultiViewData", "No color 2 spinner item has been selected");
+        		//Log.i("MultiViewData", "No color 2 spinner item has been selected");
         	}
         });
         
@@ -208,12 +208,12 @@ public class MultiViewData extends ViewData {
         opponentsSpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
-        		Log.i("MultiViewData", "Selected opponents spinner item");
+        		//Log.i("MultiViewData", "Selected opponents spinner item");
         		MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.SPINNER_ITEM_CLICK, R.id.op_multi_spin, position);
         	}
 
         	public void onNothingSelected(AdapterView<?> parent) {
-        		Log.i("MultiViewData", "No opponents spinner item has been selected");
+        		//Log.i("MultiViewData", "No opponents spinner item has been selected");
         	}
         });
         opponentsSpinner.setSelection(Preferences.Get().multiNumberOpponents-1);

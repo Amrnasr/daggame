@@ -52,32 +52,32 @@ public class MenuScene extends Scene
 		switch (which) 
     	{
 		case R.id.single_but:
-			Log.i("MenuScene", "Single button handler called");
+			//Log.i("MenuScene", "Single button handler called");
 			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.SINGLE_SCENE.ordinal());
 			break;
 			
 		case R.id.multi_but:
-			Log.i("MenuScene", "Multi button handler called");
+			//Log.i("MenuScene", "Multi button handler called");
 			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.MULTI_SCENE.ordinal());
 			break;
 			
 		case R.id.options_but:
-			Log.i("MenuScene", "Options button handler called");
+			//Log.i("MenuScene", "Options button handler called");
 			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.OPTIONS_SCENE.ordinal());
 			break;
 			
 		case R.id.about_but:
-			Log.i("MenuScene", "About button handler called");
+			//Log.i("MenuScene", "About button handler called");
 			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.ABOUT_SCENE.ordinal());
 			break;
 			
 		case R.id.how_but:
-			Log.i("MenuScene", "How button handler called");
+			//Log.i("MenuScene", "How button handler called");
 			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.HOW_SCENE.ordinal());
 			break;
 			
 		default:
-			Log.e("MenuScene", "No handler options for that message!!");
+			//Log.e("MenuScene", "No handler options for that message!!");
 			break;
 		}
 	}

@@ -72,13 +72,13 @@ public class Map {
 	public Map(Activity activity, int bitmapID,int tileMapID)
 	{	
 		//Load the image
-		Log.i("Map", "Started constructor");
+		//Log.i("Map", "Started constructor");
 		bitmap=BitmapFactory.decodeResource(activity.getResources(), bitmapID);
 
 		tilesPerRow = bitmap.getWidth() / Preferences.Get().tileWidth;
 		tilesPerColumn = bitmap.getHeight() / Preferences.Get().tileWidth;		
 		
-		Log.i("Map", "Tiles: " + tilesPerRow + ", " + tilesPerColumn);
+		//Log.i("Map", "Tiles: " + tilesPerRow + ", " + tilesPerColumn);
 		
 		//Store the width and height of the map
 		Preferences.Get().mapWidth=bitmap.getWidth();
@@ -127,7 +127,7 @@ public class Map {
 		this.combatPosVector = new Vector<Vec3>();
 		//DrawDebugLines(bitmap);
 		
-		Log.i("Map", "Tiles: " + tilesPerRow + ", " + tilesPerColumn + " total: " + tileMap.size());
+		//Log.i("Map", "Tiles: " + tilesPerRow + ", " + tilesPerColumn + " total: " + tileMap.size());
 	}
 	
 	private void DrawDebugLines(Bitmap bitmap2)
@@ -302,7 +302,7 @@ public class Map {
 				//if the time for rendering that PowerUp has passed
 				if(SystemClock.elapsedRealtime() - powerUpRenderingStartTimeMillis >= powerUpRenderingTime){
 					//if that was the last PowerUp
-					Log.i("Map","rendering time finished");
+					//Log.i("Map","rendering time finished");
 					Vector<PowerUp> powerUps = player.GetPowerUps();
 					//if there no PowerUps left to render then render the slow PowerUp if it's applied
 					if((player.GetPowerUps().size() <= player.GetPowerUpBeingRenderedIndex()+1) || (player.GetPowerUps().elementAt(player.GetPowerUpBeingRenderedIndex()).GetType() == 2 && (player.GetPowerUps().size() <= player.GetPowerUpBeingRenderedIndex()+2) )){

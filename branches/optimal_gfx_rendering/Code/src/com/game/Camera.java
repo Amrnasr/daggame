@@ -235,7 +235,7 @@ public class Camera
 			minY -= borderMargin;
 			maxY += borderMargin;
 			
-			Log.i("Camera", "4 - Extended bounding box: (" + minX + ", " + minY + "),  (" + maxX + ", " + maxY + ")");
+			//Log.i("Camera", "4 - Extended bounding box: (" + minX + ", " + minY + "),  (" + maxX + ", " + maxY + ")");
 		}
 		
 		

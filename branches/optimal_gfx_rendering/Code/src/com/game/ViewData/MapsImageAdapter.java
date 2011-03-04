@@ -120,7 +120,7 @@ public class MapsImageAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ImageView i = new ImageView(context);
 		
-		Log.i("MapsImageAdapter","gallery position: " + position);
+		//Log.i("MapsImageAdapter","gallery position: " + position);
 		i.setImageResource(galleryIDs[position]);
         i.setLayoutParams(new Gallery.LayoutParams(150, 100));
         i.setScaleType(ImageView.ScaleType.FIT_XY);

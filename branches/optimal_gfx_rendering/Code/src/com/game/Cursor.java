@@ -99,7 +99,7 @@ public class Cursor
 	{
 		this.pos = new Vec2(x, y);
 		
-		Log.i("Cursor", "Initial position: " + x + ", " + y);
+		//Log.i("Cursor", "Initial position: " + x + ", " + y);
 	}
 	
 	/**

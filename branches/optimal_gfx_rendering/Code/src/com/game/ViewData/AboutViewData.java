@@ -26,7 +26,7 @@ public class AboutViewData extends ViewData
 	@Override
 	public View createXMLView(Activity activity) 
 	{
-		Log.i("AboutViewData", "createXMLView");
+		//Log.i("AboutViewData", "createXMLView");
 		
 		// Access xml layout
 		LayoutInflater li = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -39,7 +39,7 @@ public class AboutViewData extends ViewData
           @Override
           public void onClick(View v) 
           {
-            Log.i("ViewData", " Clicked OK button");            
+        	  //Log.i("ViewData", " Clicked OK button");            
             MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.BUTTON_CLICK, R.id.ok_about_but);
           }
         });

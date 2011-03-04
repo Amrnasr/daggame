@@ -26,7 +26,7 @@ public class MenuViewData extends ViewData
 	 */
 	@Override public View createXMLView(Activity activity) 
 	{
-		Log.i("MenuViewData", "createXMLView");
+		//Log.i("MenuViewData", "createXMLView");
 		// Access xml layout
 		LayoutInflater li = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View xmlLayout = (View) li.inflate(R.layout.menu, null);
@@ -39,7 +39,7 @@ public class MenuViewData extends ViewData
         {
           @Override
           public void onClick(View v) {
-            Log.i("ViewData", " Clicked Single button");
+        	  //Log.i("ViewData", " Clicked Single button");
             MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.single_but);
           }
         });
@@ -49,7 +49,7 @@ public class MenuViewData extends ViewData
         {
           @Override
           public void onClick(View v) {
-            Log.i("ViewData", " Clicked Multiplayer button");
+        	  //Log.i("ViewData", " Clicked Multiplayer button");
             MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.multi_but);
           }
         });
@@ -59,7 +59,7 @@ public class MenuViewData extends ViewData
         {
           @Override
           public void onClick(View v) {
-            Log.i("ViewData", " Clicked Options button");
+        	  //Log.i("ViewData", " Clicked Options button");
             MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.options_but);
           }
         });
@@ -69,7 +69,7 @@ public class MenuViewData extends ViewData
         {
           @Override
           public void onClick(View v) {
-            Log.i("ViewData", " Clicked How to play button");
+        	  //Log.i("ViewData", " Clicked How to play button");
             MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.how_but);
           }
         });
@@ -79,7 +79,7 @@ public class MenuViewData extends ViewData
         {
           @Override
           public void onClick(View v) {
-            Log.i("ViewData", " Clicked About us button");
+        	  //Log.i("ViewData", " Clicked About us button");
             MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.about_but);
           }
         });

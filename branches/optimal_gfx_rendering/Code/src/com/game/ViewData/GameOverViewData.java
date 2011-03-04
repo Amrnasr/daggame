@@ -30,7 +30,7 @@ public class GameOverViewData extends ViewData {
 	 */
 	@Override
 	public View createXMLView(Activity activity) {
-		Log.i("GameOverViewData", "createXMLView");
+		//Log.i("GameOverViewData", "createXMLView");
 		
 		// Access xml layout
 		LayoutInflater li = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -43,7 +43,7 @@ public class GameOverViewData extends ViewData {
           @Override
           public void onClick(View v) 
           {
-            Log.i("ViewData", " Clicked OK button");
+        	  //Log.i("ViewData", " Clicked OK button");
             MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.ok_gameover_but);
           }
         });

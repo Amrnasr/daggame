@@ -32,22 +32,22 @@ public class MultiSelectScene extends Scene {
 				// If a menu button is clicked, find out which and do something about it.
 	        	if(msg.what == MsgType.BUTTON_CLICK.ordinal())
 	        	{
-	        		Log.i("Multi", "Handle button");
+	        		//Log.i("Multi", "Handle button");
 	        		handleButtonClick(msg.arg1);
 	        	}
 	        	// If a checkbox is clicked, find out which and do something about it.
 	        	else if(msg.what == MsgType.CHECKBOX_CLICK.ordinal()){
-	        		Log.i("Multi", "Handle checkbox");
+	        		//Log.i("Multi", "Handle checkbox");
 	        		handleCheckBoxClick(msg.arg1,msg.arg2);
 	        	}
 	        	// If a gallery item is clicked, find out which gallery and gallery item and do something about it.
 	        	else if(msg.what == MsgType.GALLERY_ITEM_CLICK.ordinal()){
-	        		Log.i("Multi", "Handler gallery");
+	        		//Log.i("Multi", "Handler gallery");
 	        		handleGalleryItemClick(msg.arg1,msg.arg2);
 	        	}
 	        	// If a spinner item is clicked, find out which spinner and spinner item and do something about it.
 	        	else if(msg.what == MsgType.SPINNER_ITEM_CLICK.ordinal()){
-	        		Log.i("Multi", "Handle spinner");
+	        		//Log.i("Multi", "Handle spinner");
 	        		handleSpinnerItemClick(msg.arg1,msg.arg2);
 	        	}
 	        	// If the activity tells us to stop, we stop.
@@ -64,15 +64,15 @@ public class MultiSelectScene extends Scene {
 		switch (which) 
     	{	
     	case R.id.ok_multi_but:
-			Log.i("MultiSelectScene", "Ok button handler called");
+    		//Log.i("MultiSelectScene", "Ok button handler called");
 			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.PLAY_SCENE.ordinal());
     		break;
     	case R.id.back_multi_but:
-			Log.i("MultiSelectScene", "Back button handler called");
+    		//Log.i("MultiSelectScene", "Back button handler called");
 			MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.MENU_SCENE.ordinal());
     		break;
     	default:
-			Log.e("MultiSelectScene", "No handler options for that message!!");
+    		//Log.e("MultiSelectScene", "No handler options for that message!!");
 			break;		
     	}
 	}
@@ -85,15 +85,15 @@ public class MultiSelectScene extends Scene {
 		switch (which) 
     	{	
 		case R.id.minimap_multi_check:
-			Log.i("MultiSelectScene", "Minimap checkbox handler called");
+			//Log.i("MultiSelectScene", "Minimap checkbox handler called");
 			Preferences.Get().multiShowMinimap = (checked != 0);
 			break;
 		case R.id.powerups_multi_check:
-			Log.i("MultiSelectScene", "Power-ups checkbox handler called");
+			//Log.i("MultiSelectScene", "Power-ups checkbox handler called");
 			Preferences.Get().multiPowerups = (checked != 0);
 			break;
     	default:
-			Log.e("MultiSelectScene", "No handler options for that message!!");
+    		//Log.e("MultiSelectScene", "No handler options for that message!!");
 			break;		
     	}
 	}
@@ -107,11 +107,11 @@ public class MultiSelectScene extends Scene {
 		switch (which) 
     	{	
 		case R.id.maps_multi_gal:
-			Log.i("MultiSelectScene", "Maps gallery handler called");
+			//Log.i("MultiSelectScene", "Maps gallery handler called");
 			Preferences.Get().multiCurrentMap = position;
 			break;
     	default:
-			Log.e("MultiSelectScene", "No handler options for that message!!");
+    		//Log.e("MultiSelectScene", "No handler options for that message!!");
 			break;		
     	}
 	}
@@ -125,15 +125,15 @@ public class MultiSelectScene extends Scene {
 		switch (which) 
     	{	
 		case R.id.color1_multi_spin:
-			Log.i("MultiSelectScene", "Color 1 spinner handler called");
+			//Log.i("MultiSelectScene", "Color 1 spinner handler called");
 			Preferences.Get().multiPlayer1Color = position;
 			break;
 		case R.id.color2_multi_spin:
-			Log.i("MultiSelectScene", "Color 2 spinner handler called");
+			//Log.i("MultiSelectScene", "Color 2 spinner handler called");
 			Preferences.Get().multiPlayer2Color = position;
 			break;
 		case R.id.op_multi_spin:
-			Log.i("MultiSelectScene", "Opponents spinner handler called");
+			//Log.i("MultiSelectScene", "Opponents spinner handler called");
 			Preferences.Get().multiNumberOpponents = position; // Because pos == 0 means numb oponents = 1
 			break;
 			/*
@@ -143,7 +143,7 @@ public class MultiSelectScene extends Scene {
 			break;
 			*/
 		default:
-			Log.e("MultiSelectScene", "No handler options for that message!!");
+			//Log.e("MultiSelectScene", "No handler options for that message!!");
 			break;	
     	}
 	}
