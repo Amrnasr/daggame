@@ -40,7 +40,7 @@ public class SingleViewData extends ViewData
 	@Override
 	public View createXMLView(Activity activity) 
 	{
-		Log.i("SingleViewData", "createXMLView");
+		//Log.i("SingleViewData", "createXMLView");
 		
 		// Access xml layout
 		LayoutInflater li = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -56,7 +56,7 @@ public class SingleViewData extends ViewData
         {
           @Override
           public void onClick(View v) {
-            Log.i("SingleViewData", "Clicked OK button");
+        	  //Log.i("SingleViewData", "Clicked OK button");
             MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.BUTTON_CLICK, R.id.ok_single_but);
           }
         });
@@ -66,7 +66,7 @@ public class SingleViewData extends ViewData
         {
           @Override
           public void onClick(View v) {
-            Log.i("SingleViewData", "Clicked Back button");
+        	  //Log.i("SingleViewData", "Clicked Back button");
             MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.BUTTON_CLICK, R.id.back_single_but );
           }
         });
@@ -80,7 +80,7 @@ public class SingleViewData extends ViewData
 			@Override
 			public void onClick(View v) 
 			{
-				Log.i("SingleViewData", "Clicked minimap checkbox");
+				//Log.i("SingleViewData", "Clicked minimap checkbox");
 				
 				int checked = 0;
 				if(((CheckBox) SingleViewData.this.minimapCheckBoxView).isChecked() == true)
@@ -99,7 +99,7 @@ public class SingleViewData extends ViewData
         {			
 			@Override
 			public void onClick(View v) {
-				Log.i("SingleViewData", "Clicked power-ups checkbox");
+				//Log.i("SingleViewData", "Clicked power-ups checkbox");
 				int checked = 0;
 				if(((CheckBox) SingleViewData.this.powerupsCheckBoxView).isChecked() == true)
 				{
@@ -121,7 +121,7 @@ public class SingleViewData extends ViewData
         {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) 
             {
-            	Log.i("SingleViewData", "Clicked maps gallery item");
+            	//Log.i("SingleViewData", "Clicked maps gallery item");
             	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.GALLERY_ITEM_CLICK, R.id.maps_single_gal, position);
             }
         });
@@ -137,12 +137,12 @@ public class SingleViewData extends ViewData
         {
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
-        		Log.i("SingleViewData", "Selected color spinner item");
+        		//Log.i("SingleViewData", "Selected color spinner item");
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.color_single_spin, position);
         	}
 
         	public void onNothingSelected(AdapterView<?> parent) {
-        		Log.i("SingleViewData", "No color spinner item has been selected");
+        		//Log.i("SingleViewData", "No color spinner item has been selected");
         	}
 
         });
@@ -157,12 +157,12 @@ public class SingleViewData extends ViewData
         opponentsSpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
-        		Log.i("SingleViewData", "Selected opponents spinner item");
+        		//Log.i("SingleViewData", "Selected opponents spinner item");
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.op_single_spin, position);
         	}
 
         	public void onNothingSelected(AdapterView<?> parent) {
-        		Log.i("SingleViewData", "No opponents spinner item has been selected");
+        		//Log.i("SingleViewData", "No opponents spinner item has been selected");
         	}
 
         });
@@ -177,12 +177,12 @@ public class SingleViewData extends ViewData
         controlSpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) {
-        		Log.i("SingleViewData", "Selected control spinner item");
+        		//Log.i("SingleViewData", "Selected control spinner item");
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.control_single_spin, position);
         	}
 
         	public void onNothingSelected(AdapterView<?> parent) {
-        		Log.i("SingleViewData", "No control spinner item has been selected");
+        		//Log.i("SingleViewData", "No control spinner item has been selected");
         	}
 
         });

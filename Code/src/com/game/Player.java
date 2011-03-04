@@ -216,7 +216,7 @@ public class Player
 		
 		initialTile.AddDensity(this, initialDensity);	
 		
-		Log.i("Player" + GetID(), "Initial tile: " + initialTile.GetPos().X() + ", " + initialTile.GetPos().Y());
+		//Log.i("Player" + GetID(), "Initial tile: " + initialTile.GetPos().X() + ", " + initialTile.GetPos().Y());
 	}
 	
 	/**

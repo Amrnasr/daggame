@@ -27,8 +27,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@+id/title_text"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:text="BATTLE OF PIXELS"
-		android:textSize="24sp"	
+		android:text="@string/menu_title"
+		android:textSize="20sp"	
 		android:gravity="center"	
 		>
 	</TextView>
@@ -87,6 +87,15 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_gravity="right"
 		>
 	</Button>
+	<TextView
+		android:id="@+id/version_text"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="v0.8.9"
+		android:textSize="14sp"	
+		android:gravity="center"	
+		>
+	</TextView>
 
 </LinearLayout>
 </ScrollView>

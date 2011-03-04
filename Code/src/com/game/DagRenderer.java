@@ -259,8 +259,8 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	public DagRenderer()
 	{
 		super();
-		Log.i("DagRenderer", "Started constructor");
-		Log.i("DagRenderer", "multiplayer game: " + Preferences.Get().multiplayerGame);
+		//Log.i("DagRenderer", "Started constructor");
+		//Log.i("DagRenderer", "multiplayer game: " + Preferences.Get().multiplayerGame);
 		this.map = null;
 		this.cursorBitmap = null;
 		this.cursorShadowBitmap = null;
@@ -339,13 +339,13 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	        		surfaceUpdatePending = true;
 	        		minZ = Camera.Get().GetMinZ() - camZOffset;
 	        		maxZ = 2*Camera.Get().GetMaxZ() + camZOffset;
-	        		Log.i("DagRenderer", "zMin: " + minZ + " zMax: " + maxZ);
+	        		//Log.i("DagRenderer", "zMin: " + minZ + " zMax: " + maxZ);
 	        	}
 	        }
 	    };
 	    
 	    MessageHandler.Get().SetRendererHandler(this.handler);	   
-	    Log.i("DagRenderer", "Renderer constructed");
+	    //Log.i("DagRenderer", "Renderer constructed");
 	}
 	
 	/**
@@ -408,7 +408,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	    MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.RENDERER_INITIALIZATION_DONE);		    
 	    this.state = RenderState.RENDERING;
 	    
-	    Log.i("DagRenderer", "Initialization done");
+	    //Log.i("DagRenderer", "Initialization done");
 	}
 	
 	/**
@@ -416,7 +416,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) 
     {   
-		Log.i("DagRenderer","Surface Created" );
+		//Log.i("DagRenderer","Surface Created" );
 		
 		//Enable blending
 		gl.glEnable (GL10.GL_BLEND);
@@ -438,7 +438,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 	 */
 	public void onSurfaceChanged(GL10 gl, int w, int h) 
 	{        
-		Log.i("DagRenderer","Surface changed: " + w + " / " + h );
+		//Log.i("DagRenderer","Surface changed: " + w + " / " + h );
 		
 		this.lastWidth = w;
 		this.lastHeight = h;
@@ -995,7 +995,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 		this.joystickSmallTextureId = LoadTexture(gl, this.joystickSmallBitmap);
 		
 		
-		Log.i("DagRenderer", "Cursor: " + this.cursorBitmap.getWidth() + " Map: " + this.map.getBitmap().getWidth());
+		//Log.i("DagRenderer", "Cursor: " + this.cursorBitmap.getWidth() + " Map: " + this.map.getBitmap().getWidth());
 		
 		//Log.i("DagRenderer", "DEBUG!! Map: " + this.mapTextureId +" Cursor: " + this.cursorTextureId + " PowerUp: " + this.powerUpTextureId);
 		
@@ -1057,7 +1057,7 @@ public class DagRenderer implements GLSurfaceView.Renderer
 				0f,Preferences.Get().mapHeight,1.0f,
 				Preferences.Get().mapWidth,0f,1.0f,
 				0f,0f,1.0f};
-		Log.i("DagRenderer","Map width: " + Preferences.Get().mapWidth + " height: " + Preferences.Get().mapHeight);
+		//Log.i("DagRenderer","Map width: " + Preferences.Get().mapWidth + " height: " + Preferences.Get().mapHeight);
 		float textureArray[] = {1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 		float VertexCombatArray[] = {Preferences.Get().tileWidth,Preferences.Get().tileWidth,1.0f,
 				0f,Preferences.Get().tileWidth,1.0f,

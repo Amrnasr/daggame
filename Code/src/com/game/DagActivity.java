@@ -100,8 +100,8 @@ public class DagActivity extends Activity
     public void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
-        Log.i("DagActivity", "======== onCreate");
-
+        //Log.i("DagActivity", "======== onCreate");
+        setContentView(R.layout.splash);
         
     }
     
@@ -116,7 +116,7 @@ public class DagActivity extends Activity
     	
     	
     	
-    	Log.i("DagActivity", "======== onStart");
+    	//Log.i("DagActivity", "======== onStart");
     	
     	// I don't like it, but ORDER IS IMPORTANT! So don't change the order.
         // (Because the view uses the logic handler objects.)
@@ -148,7 +148,7 @@ public class DagActivity extends Activity
     @Override protected void onRestart()
     {
     	super.onRestart();
-    	Log.i("DagActivity", "======== onRestart");
+    	//Log.i("DagActivity", "======== onRestart");
     }
 
     /**
@@ -157,10 +157,10 @@ public class DagActivity extends Activity
     @Override protected void onResume()
     {
     	super.onResume();
-    	Log.i("DagActivity", "======== onResume");
+    	//Log.i("DagActivity", "======== onResume");
     	
     	// Unpause
-    	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
+    	//MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
     }
 
     /**
@@ -169,7 +169,7 @@ public class DagActivity extends Activity
     @Override protected void onPause()
     {
     	super.onPause();
-    	Log.i("DagActivity", "======== onPause");
+    	//Log.i("DagActivity", "======== onPause");
     	
     	// Pause
     	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.PAUSE_GAME);
@@ -191,7 +191,7 @@ public class DagActivity extends Activity
     		Debug.stopMethodTracing();
     	}
     	
-    	Log.i("DagActivity", "======== onStop");
+    	//Log.i("DagActivity", "======== onStop");
     	
     	if(gameLogic.isAlive())
     	{
@@ -207,7 +207,7 @@ public class DagActivity extends Activity
     @Override protected void onDestroy()
     {
     	super.onDestroy();
-    	Log.i("DagActivity", "======== onDestroy");
+    	//Log.i("DagActivity", "======== onDestroy");
     	
     	
     }
@@ -456,14 +456,14 @@ public class DagActivity extends Activity
         // Handle item selection
     	if(item.getItemId() == OptionsMenuID.OP_MENU_MENU.ordinal())
     	{
-    		Log.i("Activity", "MENU MENU");
+    		//Log.i("Activity", "MENU MENU");
     		CreateAlert(OptionsMenuID.OP_MENU_MENU);
     		this.menuOpen = false;
     		return true;
     	}
     	else if(item.getItemId() == OptionsMenuID.OP_MENU_HOME.ordinal()) 
     	{
-    		Log.i("Activity", "MENU HOME");
+    		//Log.i("Activity", "MENU HOME");
     		CreateAlert(OptionsMenuID.OP_MENU_HOME);
     		this.menuOpen = false;
     		return true;

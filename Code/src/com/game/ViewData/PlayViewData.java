@@ -20,7 +20,7 @@ public class PlayViewData extends ViewData
 	public View createXMLView(Activity activity) 
 	{
 		//handlerRef
-		Log.i("PlayViewData", "createXMLView");
+		//Log.i("PlayViewData", "createXMLView");
 		
 		// Create GLSurfaceView
 		DagGLSurfaceView oglLayout = new DagGLSurfaceView(activity);  

@@ -46,6 +46,14 @@
 				>
 			</TextView>
 			<TextView
+				android:id="@+id/par11_text"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="10px"
+				android:text="This is a BETA version, help us improve it by submitting any issues or problems you find to 'code.google.com/p/daggame/issues'"
+				>
+			</TextView>
+			<TextView
 				android:id="@+id/par2_text"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
@@ -53,6 +61,12 @@
 				android:text="Use the different power-ups to your advantage:"
 				>
 			</TextView>
+			<ImageView 
+			   android:id="@+id/test_image"
+			   android:src="@drawable/powerup2"
+			   android:layout_width="wrap_content"
+			   android:layout_height="wrap_content"
+			   />	
 			<TextView
 				android:id="@+id/par3_text"
 				android:layout_width="wrap_content"
@@ -61,6 +75,12 @@
 				android:text="- Speed: Gives your army extra movement speed."
 				>
 			</TextView>
+			<ImageView 
+			   android:id="@+id/test_image"
+			   android:src="@drawable/powerup4"
+			   android:layout_width="wrap_content"
+			   android:layout_height="wrap_content"
+			   />	
 			<TextView
 				android:id="@+id/par4_text"
 				android:layout_width="wrap_content"
@@ -69,6 +89,12 @@
 				android:text="- Slow: Slow down all the other enemy armies."
 				>
 			</TextView>
+			<ImageView 
+			   android:id="@+id/test_image"
+			   android:src="@drawable/powerup3"
+			   android:layout_width="wrap_content"
+			   android:layout_height="wrap_content"
+			   />	
 			<TextView
 				android:id="@+id/par5_text"
 				android:layout_width="wrap_content"

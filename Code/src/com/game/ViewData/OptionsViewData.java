@@ -41,7 +41,7 @@ public class OptionsViewData extends ViewData
 	@Override
 	public View createXMLView(Activity activity) 
 	{
-		Log.i("OptionsViewData", "createXMLView");
+		//Log.i("OptionsViewData", "createXMLView");
 		
 		// Access xml layout
 		LayoutInflater li = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -57,7 +57,7 @@ public class OptionsViewData extends ViewData
         {
           @Override
           public void onClick(View v) {
-            Log.i("ViewData", " Clicked OK button");
+        	  //Log.i("ViewData", " Clicked OK button");
             MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.BUTTON_CLICK, R.id.ok_options_but);
           }
         });
@@ -72,12 +72,12 @@ public class OptionsViewData extends ViewData
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) 
         	{
-        		Log.i("OptionsViewData", "Selected number units spinner item");
+        		//Log.i("OptionsViewData", "Selected number units spinner item");
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.num_units_spin, position);
         	}
 
         	public void onNothingSelected(AdapterView<?> parent) {
-        		Log.i("OptionsViewData", "No number units spinner item has been selected");
+        		//Log.i("OptionsViewData", "No number units spinner item has been selected");
         	}
 
         });
@@ -130,12 +130,12 @@ public class OptionsViewData extends ViewData
         	public void onItemSelected(AdapterView<?> parent,
         			View view, int position, long id) 
         	{
-        		Log.i("OptionsViewData", "Selected eat speed spinner item");
+        		//Log.i("OptionsViewData", "Selected eat speed spinner item");
         		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.SPINNER_ITEM_CLICK, R.id.eat_speed_spin, position);
         	}
 
         	public void onNothingSelected(AdapterView<?> parent) {
-        		Log.i("OptionsViewData", "No eat speed spinner item has been selected");
+        		//Log.i("OptionsViewData", "No eat speed spinner item has been selected");
         	}
 
         });

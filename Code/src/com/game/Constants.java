@@ -59,7 +59,7 @@ public class Constants
 	/**
 	 * To show the profiler on screen
 	 */
-	public static final boolean OnScreenProfiler = true;
+	public static final boolean OnScreenProfiler = false;
 	
 	/**
 	 * Create a tracert trace of the game

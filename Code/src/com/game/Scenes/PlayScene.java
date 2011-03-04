@@ -256,7 +256,7 @@ public class PlayScene extends Scene
 	        }
 	    };	  
 	    
-	    Log.i("PlayScene", "PlayScene constructed");
+	    //Log.i("PlayScene", "PlayScene constructed");
 	}
 
 	@Override
@@ -321,7 +321,7 @@ public class PlayScene extends Scene
         		
         		// Done initializing logic, get the word out to the renderer.
         		MessageHandler.Get().Send(MsgReceiver.RENDERER, MsgType.INITIALIZE_RENDERER, renderInitData); 
-        		Log.i("PlayScene", "Start function finished");
+        		//Log.i("PlayScene", "Start function finished");
             }
         };
         mapLoadThread.start();		
