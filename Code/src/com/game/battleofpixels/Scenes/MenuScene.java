@@ -23,7 +23,7 @@ public class MenuScene extends Scene
 	public MenuScene()
 	{
 		super();
-		
+		//Log.i("MenuScene", " ++++++++++++++++ Starting constructor");
 		this.handler = new Handler() 
 		{
 	        public void handleMessage(Message msg) 
