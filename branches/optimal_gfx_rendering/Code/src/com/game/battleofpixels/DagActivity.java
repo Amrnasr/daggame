@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 
 import android.util.Log;
@@ -93,6 +94,19 @@ public class DagActivity extends Activity
 	 */
 	private boolean menuOpen;
 	
+	/**
+	 * Handler just for the waiting time of the first load of the game
+	 */
+	private final Handler loadHandler = new Handler()
+    {
+    	public void handleMessage(Message msg) 
+	    {
+    		setContentView(gameView);
+	    }
+    };
+	
+    
+    
     /** 
      * Called when the activity is first created. 
      * Creates the initial view of the game
@@ -101,9 +115,7 @@ public class DagActivity extends Activity
     public void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
-        //Log.i("DagActivity", "======== onCreate");
-        setContentView(R.layout.splash);
-        
+        Log.i("DagActivity", "======== onCreate");         
     }
     
     /**
@@ -115,13 +127,48 @@ public class DagActivity extends Activity
     {
     	super.onStart();
     	
-    	
-    	
     	//Log.i("DagActivity", "======== onStart");
     	
-    	// I don't like it, but ORDER IS IMPORTANT! So don't change the order.
-        // (Because the view uses the logic handler objects.)
+        setContentView(R.layout.splash);
         
+        // Create handler
+        createHandler();
+        
+        Thread t = new Thread() 
+        {
+            public void run() {
+            	// I don't like it, but ORDER IS IMPORTANT! So don't change the order.
+                // (Because the view uses the logic handler objects.)
+            	
+            	Looper.prepare();
+            	
+            	// Load stored game preferences
+                LoadPreferences();
+                
+                // Set initial camera parameters
+                InitializeCamera();
+                
+                // Create handler
+                //createHandler();
+                
+                // Create logic and view
+                gameLogic = new DagLogicThread();        
+                createLogicScene(SceneType.MENU_SCENE);
+                createView(SceneType.MENU_SCENE);
+
+                // Start logic and set view
+                gameLogic.start();
+
+                
+                loadHandler.sendEmptyMessage(0);
+                Looper.loop();
+                
+            }
+        };
+        
+        t.start();
+        
+    	/*
         // Load stored game preferences
         LoadPreferences();
         
@@ -139,6 +186,8 @@ public class DagActivity extends Activity
         // Start logic and set view
         gameLogic.start();
     	setContentView(gameView);
+    	Log.i("DagActivity", "======== ended onStart");
+    	*/
     }
     
     /**
@@ -159,9 +208,7 @@ public class DagActivity extends Activity
     {
     	super.onResume();
     	//Log.i("DagActivity", "======== onResume");
-    	
-    	// Unpause
-    	//MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
+
     }
 
     /**

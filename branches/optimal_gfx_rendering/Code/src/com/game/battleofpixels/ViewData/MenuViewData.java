@@ -26,7 +26,7 @@ public class MenuViewData extends ViewData
 	 */
 	@Override public View createXMLView(Activity activity) 
 	{
-		//Log.i("MenuViewData", "createXMLView");
+		//Log.i("MenuViewData", " ------------ createXMLView start");
 		// Access xml layout
 		LayoutInflater li = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View xmlLayout = (View) li.inflate(R.layout.menu, null);
@@ -83,6 +83,7 @@ public class MenuViewData extends ViewData
             MessageHandler.Get().Send(MsgReceiver.LOGIC,MsgType.BUTTON_CLICK, R.id.about_but);
           }
         });
+        
         
 		return xmlLayout;
 	}
