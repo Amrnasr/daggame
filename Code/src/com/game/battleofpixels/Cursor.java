@@ -28,7 +28,7 @@ public class Cursor
 	private double distance;
 	
 	/** Normal speed constant. To turn into a valued enum if there is more than one**/
-	private static final int NORMAL_SPEED  = 2;
+	private static final int NORMAL_SPEED  = 4;
 	
 	private float rotationAngle;
 	private final float pi = 3.14f;
