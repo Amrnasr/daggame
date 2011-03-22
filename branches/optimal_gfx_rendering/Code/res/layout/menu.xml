@@ -91,7 +91,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@+id/version_text"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:text="v0.8.9"
+		android:text="v0.9.0"
 		android:textSize="14sp"	
 		android:gravity="center"	
 		>

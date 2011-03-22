@@ -1,0 +1,6 @@
+Changes for version v0.9.0
+
+- Fixed freeze during load time
+- Made the input more intuitive by making the cursors faster
+- Making camera-movement update faster
+- Made so the back button is disabled during the game scene

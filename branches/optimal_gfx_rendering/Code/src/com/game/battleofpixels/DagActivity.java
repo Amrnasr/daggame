@@ -167,27 +167,7 @@ public class DagActivity extends Activity
         };
         
         t.start();
-        
-    	/*
-        // Load stored game preferences
-        LoadPreferences();
-        
-        // Set initial camera parameters
-        InitializeCamera();
-        
-        // Create handler
-        createHandler();
-        
-        // Create logic and view
-        gameLogic = new DagLogicThread();        
-        createLogicScene(SceneType.MENU_SCENE);
-        createView(SceneType.MENU_SCENE);
 
-        // Start logic and set view
-        gameLogic.start();
-    	setContentView(gameView);
-    	Log.i("DagActivity", "======== ended onStart");
-    	*/
     }
     
     /**
@@ -528,6 +508,19 @@ public class DagActivity extends Activity
     	if(this.menuOpen)
     	{
     		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
+    	}
+    }
+    
+    @Override
+    public void onBackPressed()
+    {
+    	if(nextScene == SceneType.PLAY_SCENE)
+    	{
+    		return;
+    	}
+    	else
+    	{
+    		finish();
     	}
     }
     

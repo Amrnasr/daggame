@@ -155,7 +155,7 @@ public class PlayScene extends Scene
 		this.leftJoystickEvent = null;
 		this.rightJoystickEvent = null;
 		this.gameplayRegulator = new Regulator(60);
-		this.cameraZoomRegulator = new Regulator(1);
+		this.cameraZoomRegulator = new Regulator(5);
 		this.messageManagerRegulator = new Regulator(1);
 		this.mapFile =  MapsImageAdapter.getImageID(currentMap);
 		this.tileMapFile = MapsImageAdapter.getTilemapID(currentMap);
