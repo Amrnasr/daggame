@@ -26,6 +26,8 @@ public class Preferences
 		this.mapHeight = 0;
 		this.mapWidth = 0;
 		this.winnerPlayerColorIndex = -1;
+		this.tipIsActive = new boolean [TipName.values().length];
+		
 	}
 	
 	/**
@@ -68,14 +70,11 @@ public class Preferences
 		multiShowMinimap = settings.getBoolean("multiShowMinimap", true);
 		multiPowerups = settings.getBoolean("multiPowerups", true);
 		
-		/*if(singleCurrentMap >= Constants.MapsNum){
-			singleCurrentMap = 0;
+		// Tips
+		for(int i= 0; i < tipIsActive.length; i++)
+		{
+			tipIsActive[i] = settings.getBoolean("tip"+i, true);
 		}
-		
-		if(multiCurrentMap >= Constants.MapsNum){
-			multiCurrentMap = 0;
-		}*/
-		// Color preferences
 		
 	}
 	
@@ -110,6 +109,12 @@ public class Preferences
 	    editor.putInt("multiControlMode", multiControlMode);
 	    editor.putBoolean("multiShowMinimap", multiShowMinimap);
 	    editor.putBoolean("multiPowerups", multiPowerups);
+	    
+	    // Tips
+		for(int i= 0; i < tipIsActive.length; i++)
+		{
+			editor.putBoolean("tip"+i, tipIsActive[i]);
+		}
 	    
 	    // Commit the edits!
 	    editor.commit();
@@ -250,6 +255,16 @@ public class Preferences
 	public int winnerPlayerColorIndex;
 	
 	/**
+	 * Array of tip activation values
+	 */
+	private boolean [] tipIsActive;
+	
+	/**
+	 * Names for the tips of the PowerUp
+	 */
+	public enum TipName {startTip, fastTip, slowTip, lifeTip};
+	
+	/**
 	 * Size of a map tile
 	 */
 	public int tileWidth;
@@ -267,6 +282,63 @@ public class Preferences
 			case 5: return "Yellow"; 
 			default: return "ERROR!";
 		}	
+	}
+	
+	/**
+	 * Disables all tips
+	 */
+	public void DisableAllTips()
+	{
+		for(int i= 0; i < tipIsActive.length; i++)
+		{
+			tipIsActive[i] = false;
+		}
+	}
+	
+	/**
+	 * Enables all tips
+	 */
+	public void EnableAllTips()
+	{
+		for(int i= 0; i < tipIsActive.length; i++)
+		{
+			tipIsActive[i] = true;
+		}
+	}
+	
+	/**
+	 * Gets if a particular tip is active
+	 * @param wich Tip to check
+	 * @return True if it's enabled, false otherwise
+	 */
+	public boolean IsTipActive(TipName wich)
+	{
+		return tipIsActive[wich.ordinal()];
+	}
+	
+	/**
+	 * Indicates whether the tips are enabled or dissabled
+	 * @return True if dissabled, false if enabled
+	 */
+	public boolean AreTipsDissabled()
+	{
+		for(int i= 0; i < tipIsActive.length; i++)
+		{
+			if(tipIsActive[i] == true)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Disables a particular tip
+	 * @param wich Tip to disable
+	 */
+	public void MarkTip(TipName wich)
+	{
+		tipIsActive[wich.ordinal()] = false;
 	}
 
 }

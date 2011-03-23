@@ -6,6 +6,7 @@ import java.util.Vector;
 import android.util.Log;
 
 import com.game.battleofpixels.AI.Blackboard;
+import com.game.battleofpixels.MessageHandler.MsgReceiver;
 import com.game.battleofpixels.PowerUp.PowerUp;
 
 
@@ -516,6 +517,14 @@ public class Tile
 		{
 			//Log.i("Tile", "Giving powerup to Player " + player.GetID() +" !");
 			this.powerUpRef.Assign(player, this.powerUpRef.GetDuration());
+			
+			if(!Preferences.Get().multiplayerGame && player.GetID() == 0)
+			{
+				if(Preferences.Get().IsTipActive(powerUpRef.tipType))
+				{
+					MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.DISPLAY_TIP, powerUpRef.tipType.ordinal());
+				}
+			}
 			this.RemovePowerUp();
 		}
 	}

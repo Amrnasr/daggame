@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content">
+
+ 
+ <ScrollView 
+ 	android:id="@+id/ScrollView01"
+	 android:layout_width="wrap_content" 
+	 android:layout_height="200px">
+	 <LinearLayout
+			android:id="@+id/how_layout_inner_scroll"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:gravity="center_horizontal"
+			android:layout_gravity="center_horizontal"
+			xmlns:android="http://schemas.android.com/apk/res/android"
+			>
+
+	<TextView
+		android:id="@+id/par4_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:padding="12px"
+		android:text="You've just picked up a Speed Power-Up!"
+		>
+	</TextView>
+	<ImageView 
+			   android:id="@+id/test_image"
+			   android:src="@drawable/powerup2"
+			   android:layout_width="wrap_content"
+			   android:layout_height="wrap_content"
+			   />	
+	<TextView
+		android:id="@+id/par4_text"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:padding="10px"
+		android:text="It gives your army extra movement speed. You can always tell when you have Speed because your army will glow black."
+		>
+	</TextView>
+	
+ </LinearLayout>
+ </ScrollView>
+ 
+
+
+<LinearLayout
+		android:id="@+id/bottom_buttons_single_layout"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:orientation="horizontal"
+		android:layout_below="@+id/ScrollView01"
+		android:weightSum="2"
+		>
+		<CheckBox
+			android:id="@+id/not_show_again"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="Don't show again"
+			android:layout_weight="1"
+			android:gravity="center_horizontal"
+			android:checked="true"
+			>
+		</CheckBox>
+		<Button 
+		 	android:id="@+id/ok_button" 
+		 	android:layout_width="wrap_content" 
+		 	android:layout_height="wrap_content"
+		 	android:text="OK" 
+		 	android:layout_weight="1"
+		 	android:gravity="center_horizontal"/>
+</LinearLayout>
+ 
+</RelativeLayout>
