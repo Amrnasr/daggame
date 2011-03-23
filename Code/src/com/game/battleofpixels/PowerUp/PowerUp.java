@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import android.util.Log;
+
 import com.game.battleofpixels.Constants;
 import com.game.battleofpixels.DagRenderer;
 import com.game.battleofpixels.MessageHandler;
@@ -150,6 +152,7 @@ public  abstract class PowerUp
 		
 		if(doneTimer.IsReady())
 		{
+			Log.i("PowerUp", "powerup effect removed");
 			done = true;
 			RemoveEffect();
 		}

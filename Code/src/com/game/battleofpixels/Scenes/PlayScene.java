@@ -250,7 +250,7 @@ public class PlayScene extends Scene
 	        	{
 	        		if(powerUpManager != null)
 	        		{
-	        			powerUpManager.RemovePoweUp((PowerUp) msg.obj);
+	        			powerUpManager.RemovePowerUp((PowerUp) msg.obj);
 	        		}
 	        	}
 	        }

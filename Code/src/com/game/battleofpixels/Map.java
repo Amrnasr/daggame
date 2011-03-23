@@ -291,47 +291,41 @@ public class Map {
 			b = (b > 0f) ? (0.75f - b) : 0f;
 			a = (r+g+b > 0f) ? 0.75f + a : 0f;
 			
-			//HACKHACK: write here the color of the slow PowerUp
-			float slowPowerUpR = 0.6f, slowPowerUpG = 0.6f, slowPowerUpB = 0f;
-			float powerUpR = slowPowerUpR, powerUpG = slowPowerUpG, powerUpB = slowPowerUpB, powerUpA = 0f;
+			boolean isPowerUpActivated = false; 
+			float powerUpR = 0f, powerUpG = 0f, powerUpB = 0f, powerUpA = 0f;
 			boolean renderSlowPowerUp = false; // whether the slow PowerUp is being rendered or not
 			long powerUpRenderingStartTimeMillis = player.GetPowerUpRenderingStartTimeMillis();
 			
 			//if the player has any PowerUps applied
-			if(player.IsSlowed() || (player.GetPowerUps().size() > 1) || (!player.GetPowerUps().isEmpty() && !player.IsSlowPowerUpApplied())){	
+			if(player.IsSlowed() || player.GetPowerUps().size() > 0 ){	
 				//if the time for rendering that PowerUp has passed
 				if(SystemClock.elapsedRealtime() - powerUpRenderingStartTimeMillis >= powerUpRenderingTime){
-					//if that was the last PowerUp
-					//Log.i("Map","rendering time finished");
-					Vector<PowerUp> powerUps = player.GetPowerUps();
+					renderSlowPowerUp = player.IsSlowed();
 					//if there no PowerUps left to render then render the slow PowerUp if it's applied
-					if((player.GetPowerUps().size() <= player.GetPowerUpBeingRenderedIndex()+1) || (player.GetPowerUps().elementAt(player.GetPowerUpBeingRenderedIndex()).GetType() == 2 && (player.GetPowerUps().size() <= player.GetPowerUpBeingRenderedIndex()+2) )){
-						renderSlowPowerUp = player.IsSlowed();
-
-						player.SetPowerUpBeingRenderedIndex(0);
-					}
-					//Choose the next PowerUp that it's not the slow PowerUp
-					else if(player.GetPowerUps().elementAt(player.GetPowerUpBeingRenderedIndex()).GetType() != 2){
-						renderSlowPowerUp = false;
-						
-						player.SetPowerUpBeingRenderedIndex(player.GetPowerUpBeingRenderedIndex()+1);
+					if(player.GetPowerUps().size() <= player.GetPowerUpBeingRenderedIndex()+1){		
+						if(renderSlowPowerUp)
+						{
+							player.SetPowerUpBeingRenderedIndex(-1);
+						}
+						else
+						{
+							player.SetPowerUpBeingRenderedIndex(0);
+						}
 					}
 					else{
-						renderSlowPowerUp = false;
-						player.SetPowerUpBeingRenderedIndex(player.GetPowerUpBeingRenderedIndex()+2);
+						player.SetPowerUpBeingRenderedIndex(player.GetPowerUpBeingRenderedIndex()+1);
 					}
 					powerUpRenderingStartTimeMillis = player.GetPowerUpRenderingStartTimeMillis();
 				}
 				
-				
-				
 				//calculate the color of PowerUp
 				//if the slow PowerUp is being rendered
-				if(renderSlowPowerUp){
+				if(player.GetPowerUpBeingRenderedIndex() == -1){
 					//HACKHACK: write as the default color the color of the slow PowerUp
-					powerUpR = slowPowerUpR; 
-					powerUpG = slowPowerUpG; 
-					powerUpB = slowPowerUpB;
+					powerUpR = 0.6f; 
+					powerUpG = 0.6f; 
+					powerUpB = 0f;
+					isPowerUpActivated = true;
 				}
 				else if(player.GetPowerUps().size() > player.GetPowerUpBeingRenderedIndex()){
 					PowerUp curPowerUp = player.GetPowerUps().elementAt(player.GetPowerUpBeingRenderedIndex());
@@ -341,6 +335,7 @@ public class Map {
 							powerUpR = 0.1f; 
 							powerUpG = 0.1f; 
 							powerUpB = 0.1f;
+							isPowerUpActivated = true;
 							break;
 						/*case 1: //ExtraDensityPowerUp
 							r = 0.6f; 
@@ -350,13 +345,19 @@ public class Map {
 							break;*/
 					}	
 				}
-				//calculate the alpha of the PowerUp
-				powerUpA = 1 - Math.abs(SystemClock.elapsedRealtime() - (powerUpRenderingStartTimeMillis + powerUpRenderingTime/2))  / (float) (powerUpRenderingTime/2);
 				
-				//blend the color of the PowerUp with the color of the player
-				r = powerUpA * powerUpR + (1 - powerUpA) * r;
-				g = powerUpA * powerUpG + (1 - powerUpA) * g;
-				b = powerUpA * powerUpB + (1 - powerUpA) * b;
+				
+				
+				if(isPowerUpActivated)
+				{
+					//calculate the alpha of the PowerUp
+					powerUpA = 1 - Math.abs(SystemClock.elapsedRealtime() - (powerUpRenderingStartTimeMillis + powerUpRenderingTime/2))  / (float) (powerUpRenderingTime/2);
+					
+					//blend the color of the PowerUp with the color of the player
+					r = powerUpA * powerUpR + (1 - powerUpA) * r;
+					g = powerUpA * powerUpG + (1 - powerUpA) * g;
+					b = powerUpA * powerUpB + (1 - powerUpA) * b;
+				}
 			}
 			
 			SetColor(realPos, r, g, b, a);
