@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import com.game.battleofpixels.R;
 import com.game.battleofpixels.MessageHandler.MsgReceiver;
+import com.game.battleofpixels.Preferences.TipName;
 import com.game.battleofpixels.ViewData.*;
 
 import android.app.Activity;
@@ -14,6 +15,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.os.Bundle;
 import android.os.Debug;
@@ -27,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
 
 /**
  * Activity class of the game. Creates and maintains the needed views.
@@ -77,10 +81,10 @@ public class DagActivity extends Activity
 	private SceneType nextScene;
 	
 	/**
-	 * Dialog used for long loading times
+	 * Dialog ID used for long loading times
+	 * High number so it doesn't conflict with tips dialogs
 	 */
-	//private ProgressDialog dialog = null;
-	private final static int LOAD_DIALOG = 0;
+	private final static int LOAD_DIALOG = 10000;
 	
 	/**
 	 * Identifiers for the options menu buttons.
@@ -105,7 +109,10 @@ public class DagActivity extends Activity
 	    }
     };
 	
-    
+    /**
+     * Reference for the dialogs
+     */
+    Dialog dialog = null;
     
     /** 
      * Called when the activity is first created. 
@@ -242,20 +249,93 @@ public class DagActivity extends Activity
     
     @Override protected Dialog onCreateDialog(int id)
     {
-    	Dialog dialog = null;
     	
-    	switch (id) {
-		case LOAD_DIALOG:
-			// Loading dialog
+    	
+    	if(id == LOAD_DIALOG)
+    	{
+    		// Loading dialog
 			dialog = new ProgressDialog(this);
     		((ProgressDialog)dialog).setMessage("Loading...");
     		dialog.setCancelable(false);
-			break;
-
-		default:
-			Log.e("DagActivity", "Requested dialog that does not exist!!");
-			break;
-		}
+    	}
+    	else if(id == Preferences.TipName.startTip.ordinal())
+    	{
+    		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.PAUSE_GAME);
+    		dialog = new Dialog(this);
+			dialog.setContentView(R.layout.gamestarttip);
+			Button button = (Button) dialog.findViewById(R.id.ok_button);
+			button.setOnClickListener(new OnClickListener() {
+			@Override public void onClick(View v) 
+			{
+			 	if(((CheckBox)dialog.findViewById(R.id.not_show_again)).isChecked())
+			 	{
+			 		Preferences.Get().MarkTip(Preferences.TipName.startTip);
+			 	}
+			 	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
+			    MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.REMOVE_TIP, Preferences.TipName.startTip.ordinal());
+			}
+			});
+    	}
+    	else if(id == Preferences.TipName.lifeTip.ordinal())
+    	{
+    		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.PAUSE_GAME);
+    		dialog = new Dialog(this);
+			dialog.setContentView(R.layout.lifepuptip);
+			Button button = (Button) dialog.findViewById(R.id.ok_button);
+			button.setOnClickListener(new OnClickListener() {
+			@Override public void onClick(View v) 
+			{
+			 	if(((CheckBox)dialog.findViewById(R.id.not_show_again)).isChecked())
+			 	{
+			 		Preferences.Get().MarkTip(Preferences.TipName.lifeTip);
+			 	}
+			 	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
+			    MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.REMOVE_TIP, Preferences.TipName.lifeTip.ordinal());
+			}
+			});
+    	}
+    	else if(id == Preferences.TipName.fastTip.ordinal())
+    	{
+    		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.PAUSE_GAME);
+    		dialog = new Dialog(this);
+			dialog.setContentView(R.layout.fastpuptip);
+			Button button = (Button) dialog.findViewById(R.id.ok_button);
+			button.setOnClickListener(new OnClickListener() {
+			@Override public void onClick(View v) 
+			{
+			 	if(((CheckBox)dialog.findViewById(R.id.not_show_again)).isChecked())
+			 	{
+			 		Preferences.Get().MarkTip(Preferences.TipName.fastTip);
+			 	}
+			 	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
+			    MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.REMOVE_TIP, Preferences.TipName.fastTip.ordinal());
+			}
+			});
+    	}
+    	else if(id == Preferences.TipName.slowTip.ordinal())
+    	{
+    		MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.PAUSE_GAME);
+    		dialog = new Dialog(this);
+			dialog.setContentView(R.layout.slowpuptip);
+			Button button = (Button) dialog.findViewById(R.id.ok_button);
+			button.setOnClickListener(new OnClickListener() {
+			@Override public void onClick(View v) 
+			{
+			 	if(((CheckBox)dialog.findViewById(R.id.not_show_again)).isChecked())
+			 	{
+			 		Preferences.Get().MarkTip(Preferences.TipName.slowTip);
+			 	}
+			 	MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.UNPAUSE_GAME);
+			    MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.REMOVE_TIP, Preferences.TipName.slowTip.ordinal());
+			}
+			});
+    	}
+    	// ADD MORE BEFORE THIS ELSE
+    	else
+    	{
+    		Log.e("DagActivity", "Requested dialog that does not exist!!");
+    	}
+    	
     	
     	return dialog;
     }
@@ -387,6 +467,18 @@ public class DagActivity extends Activity
 	        	else if (msg.what == MsgType.ACTIVITY_DISMISS_LOAD_DIALOG.ordinal())
 	        	{
 	        		removeDialog(LOAD_DIALOG);
+	        		if(Preferences.Get().IsTipActive(TipName.startTip))
+	        		{
+	        			showDialog(Preferences.TipName.startTip.ordinal());
+	        		}
+	        	}
+	        	else if (msg.what == MsgType.DISPLAY_TIP.ordinal())
+	        	{
+	        		showDialog(msg.arg1);
+	        	}
+	        	else if (msg.what == MsgType.REMOVE_TIP.ordinal())
+	        	{
+	        		removeDialog(msg.arg1);
 	        	}
 	        }
 	    };

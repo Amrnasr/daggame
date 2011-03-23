@@ -1,6 +1,7 @@
 package com.game.battleofpixels.PowerUp;
 
 import com.game.battleofpixels.Vec2;
+import com.game.battleofpixels.Preferences.TipName;
 
 /**
  * PowerUp that increases the cursor's speed.
@@ -20,7 +21,7 @@ public class SpeedPowerUp extends PowerUp
 	 */
 	public SpeedPowerUp(Vec2 startingPos, int type)
 	{
-		super(startingPos,type, 3);
+		super(startingPos,type, 3, TipName.fastTip);
 		this.speedIncrement = 0.3f;
 	}
 	

@@ -65,6 +65,13 @@
 				android:layout_height="wrap_content"
 				>
 			</Spinner>
+			<CheckBox
+				android:id="@+id/tips_check"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Active tips"
+				>
+			</CheckBox>
 			
 			<TextView
 				android:id="@+id/options_bottom_filler_text_do_not_remove"

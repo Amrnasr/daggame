@@ -1,6 +1,7 @@
 package com.game.battleofpixels.PowerUp;
 
 import com.game.battleofpixels.Vec2;
+import com.game.battleofpixels.Preferences.TipName;
 
 /**
  * PowerUp that gives the player extra density.
@@ -13,7 +14,7 @@ public class ExtraDensityPowerUp extends PowerUp
 
 	public ExtraDensityPowerUp(Vec2 startingPos, int type) 
 	{
-		super(startingPos, type, 0.1f);
+		super(startingPos, type, 0.1f, TipName.lifeTip);
 	}
 
 	@Override

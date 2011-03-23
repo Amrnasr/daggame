@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import com.game.battleofpixels.Player;
 import com.game.battleofpixels.Vec2;
+import com.game.battleofpixels.Preferences.TipName;
 /**
  * PowerUp that slows all the enemies by a fixed amount.
  * @author Ying
@@ -15,7 +16,7 @@ public class SlowPowerUp extends PowerUp
 	
 	public SlowPowerUp(Vec2 startingPoint, int type)
 	{
-		super(startingPoint,type, 3);
+		super(startingPoint,type, 3, TipName.slowTip);
 		
 	}
 

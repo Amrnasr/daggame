@@ -34,6 +34,7 @@ public class OptionsViewData extends ViewData
 {
 	// Used to access data inside the OnClickListener classes
 	private View auxView = null;
+	private View tipCheckBoxView;
 
 	/**
 	 * @see ViewData createXMLView(Activity activity) 
@@ -142,39 +143,25 @@ public class OptionsViewData extends ViewData
         eatSpeedSpin.setSelection(Preferences.Get().optionsUnitEatSpeed);
         
         // Callback for the checkboxes
-        /*
-        CheckBox soundCheckBox = (CheckBox) xmlLayout.findViewById(R.id.sound_mute);
-        soundCheckBox.setChecked(Preferences.Get().optionsSoundMute);
-        
-        this.auxView = soundCheckBox;
-        soundCheckBox.setOnClickListener(new OnClickListener() 
-        {			
+        CheckBox tipsCheckBox = (CheckBox) xmlLayout.findViewById(R.id.tips_check);
+        tipsCheckBox.setChecked(!Preferences.Get().AreTipsDissabled());
+        this.tipCheckBoxView = tipsCheckBox;
+        tipsCheckBox.setOnClickListener(new OnClickListener() {
+			
 			@Override
-			public void onClick(View v) {
-				Log.i("OptionsViewData", "Clicked mute");				
+			public void onClick(View v) 
+			{
+				//Log.i("SingleViewData", "Clicked minimap checkbox");
 				
 				int checked = 0;
-				if(((CheckBox) OptionsViewData.this.auxView).isChecked() == true)
+				if(((CheckBox) OptionsViewData.this.tipCheckBoxView).isChecked() == true)
 				{
 					checked = 1;
 				}
-				else
-				{
-					checked = 0;
-				}
-				
-				MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.CHECKBOX_CLICK, R.id.sound_mute, checked);	
+
+				MessageHandler.Get().Send(MsgReceiver.LOGIC, MsgType.CHECKBOX_CLICK, R.id.tips_check, checked);	
 			}
 		});
-		
-		<CheckBox
-				android:id="@+id/sound_mute"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:text="Sound"
-				>
-			</CheckBox>
-		*/
         
 		return xmlLayout;
 	}

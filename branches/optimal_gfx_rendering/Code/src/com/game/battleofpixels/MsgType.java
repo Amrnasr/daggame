@@ -158,4 +158,16 @@ public enum MsgType
 	 * Sent when the Camera has changed the min/max z. 
 	 */
 	RENDERER_REQUEST_SURFACE_UPDATED,
+	
+	/**
+	 * Sent to the Activity when we want to request a tip to be displayed
+	 * arg1: ID of the tip to be displayed
+	 */
+	DISPLAY_TIP,
+	
+	/**
+	 * Sent to the Activity when we want to request a tip to be removed
+	 * arg1: ID of the tip to be removed
+	 */
+	REMOVE_TIP,
 }

@@ -2,6 +2,7 @@ package com.game.battleofpixels.Scenes;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.game.battleofpixels.R;
 import com.game.battleofpixels.MessageHandler;
@@ -35,13 +36,24 @@ public class OptionsScene extends Scene
 	        	{
 	        		MessageHandler.Get().Send(MsgReceiver.ACTIVITY, MsgType.ACTIVITY_CHANGE_SCENE, SceneType.MENU_SCENE.ordinal());	        		
 	        	}
-	        	/*
+	        	
 	        	if(msg.what == MsgType.CHECKBOX_CLICK.ordinal())
 	        	{
 	        		// Some operator magic to turn a int into a boolean
-	        		Preferences.Get().optionsSoundMute = (msg.arg2 != 0);
+	        		if(msg.arg2 == 0)
+	        		{
+	        			Preferences.Get().DisableAllTips();
+	        		}
+	        		else if(msg.arg2 == 1)
+	        		{
+	        			Preferences.Get().EnableAllTips();
+	        		}
+	        		else
+	        		{
+	        			Log.e("OptionsScene", "Wrong argument passed!");
+	        		}
 	        	}
-	        	*/
+	        	
 	        	if(msg.what == MsgType.SPINNER_ITEM_CLICK.ordinal())
 	        	{
 	        		if(msg.arg1 == R.id.eat_speed_spin)

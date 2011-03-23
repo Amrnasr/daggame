@@ -12,6 +12,7 @@ import com.game.battleofpixels.Player;
 import com.game.battleofpixels.Regulator;
 import com.game.battleofpixels.Vec2;
 import com.game.battleofpixels.MessageHandler.MsgReceiver;
+import com.game.battleofpixels.Preferences.TipName;
 import com.game.battleofpixels.Scenes.PlayScene;
 
 /**
@@ -62,6 +63,11 @@ public  abstract class PowerUp
 	 */
 	protected PlayScene sceneRef;
 	
+	/**
+	 * Type of tip to display
+	 */
+	public TipName tipType;
+	
 	/** 
 	 * Buffer for the cursor square in ogl 
 	 * **/
@@ -94,13 +100,14 @@ public  abstract class PowerUp
 	/**
 	 * Creates a instance of the PowerUp class
 	 */
-	public PowerUp(Vec2 startingPos, int type, float duration) 
+	public PowerUp(Vec2 startingPos, int type, float duration, TipName tipType) 
 	{
 		this.parent = null;
 		this.done = false;
 		this.mapPos = startingPos;
 		this.type = type;
 		this.duration = duration;
+		this.tipType = tipType;
 	}
 	
 	/**
