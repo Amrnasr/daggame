@@ -116,7 +116,7 @@ public class PowerUpManager
 	 * Removes a PowerUp from it's care.
 	 * @param powerUp PowerUp to remove
 	 */
-	public void RemovePoweUp(PowerUp powerUp)
+	public void RemovePowerUp(PowerUp powerUp)
 	{
 		this.powerUps.remove(powerUp);
 	}

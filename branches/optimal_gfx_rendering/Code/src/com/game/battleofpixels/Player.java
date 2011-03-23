@@ -320,10 +320,22 @@ public class Player
 	 */
 	private void UpdatePowerUps() 
 	{
+		Vector<PowerUp> donePowerUps = new Vector<PowerUp>();
+		
 		for(int i= 0; i < powerUps.size(); i++)
 		{
 			powerUps.elementAt(i).PlayerUpdate();
-		}		
+			
+			if(powerUps.elementAt(i).Done())
+			{
+				donePowerUps.add(powerUps.elementAt(i));
+			}
+		}
+		
+		for(int i= 0; i < donePowerUps.size(); i++)
+		{
+			UnlinkPowerUp(donePowerUps.elementAt(i));
+		}
 	}
 
 	/**
@@ -506,7 +518,7 @@ public class Player
 				this.powerUpRenderingStartTimeMillis = 0;
 			}*/
 		}
-		Log.i("Player","slowed: " + this.isSlowed + ", Faster: " + this.isFaster);
+		Log.i("Player","player number: " + playerNumber + ", slowed: " + this.isSlowed + ", Faster: " + this.isFaster);
 	}
 	
 	/**
