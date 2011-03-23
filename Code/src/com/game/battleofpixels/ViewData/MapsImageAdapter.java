@@ -37,7 +37,9 @@ public class MapsImageAdapter extends BaseAdapter {
         R.drawable.map6gallery,
         R.drawable.map7gallery,
         R.drawable.map8gallery,
-        R.drawable.map9gallery
+        R.drawable.map9gallery,
+        R.drawable.map10gallery,
+        R.drawable.map11gallery
     };
 	
 	private static Integer[] imageIDs = {
@@ -49,7 +51,9 @@ public class MapsImageAdapter extends BaseAdapter {
         R.drawable.map6,
         R.drawable.map7,
         R.drawable.map8,
-        R.drawable.map9
+        R.drawable.map9,
+        R.drawable.map10,
+        R.drawable.map11
     };
 	
 	private static Integer[] tilemapIDs = {
@@ -61,7 +65,9 @@ public class MapsImageAdapter extends BaseAdapter {
         R.raw.map6tilemap,
         R.raw.map7tilemap,
         R.raw.map8tilemap,
-        R.raw.map9tilemap
+        R.raw.map9tilemap,
+        R.raw.map10tilemap,
+        R.raw.map11tilemap
 	};
 	
 	private static Integer[] tilemapIDsLowDpi = {
@@ -73,7 +79,9 @@ public class MapsImageAdapter extends BaseAdapter {
         R.raw.map6tilemaplowdpi,
         R.raw.map7tilemaplowdpi,
         R.raw.map8tilemaplowdpi,
-        R.raw.map9tilemaplowdpi
+        R.raw.map9tilemaplowdpi,
+        R.raw.map10tilemaplowdpi,
+        R.raw.map11tilemaplowdpi
 	};
 
 	/**
@@ -93,7 +101,7 @@ public class MapsImageAdapter extends BaseAdapter {
         
     	display.getMetrics(dMetrics);
 
-    	Preferences.Get().tileWidth = (dMetrics.densityDpi == DisplayMetrics.DENSITY_LOW) ? Constants.TileWidthLowDpi : Constants.TileWidth;
+    	Preferences.Get().tileWidth = (dMetrics.densityDpi != DisplayMetrics.DENSITY_HIGH) ? Constants.TileWidthLowDpi : Constants.TileWidth;
 	}
 	
 	/**

@@ -54,7 +54,7 @@ public class Constants
 	/**
 	 * Number of different maps
 	 */
-	public static final int MapsNum = 9;
+	public static final int MapsNum = 11;
 	
 	/**
 	 * To show the profiler on screen
